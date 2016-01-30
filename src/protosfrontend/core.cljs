@@ -115,8 +115,10 @@
 
 (defn app-page [app]
   [:div
-   (menu)
-   [:h1 app]])
+   (regular-page
+     [:button {:on-click (fn [e] (.preventDefault e)
+                           (get-apps))} "Refresh"]
+     app)])
 
 
 (defn current-page []
