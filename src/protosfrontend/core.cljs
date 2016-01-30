@@ -127,13 +127,13 @@
 (secretary/set-config! :prefix "#")
 
 (secretary/defroute "/" []
-  (session/put! :current-page #'home-page))
+  (session/put! :current-page home-page))
 
 (secretary/defroute "/about" []
-  (session/put! :current-page #'about-page))
+  (session/put! :current-page about-page))
 
-(secretary/defroute "/apps/" [name]
-                    (session/put! :current-page #'app-page))
+(secretary/defroute "/apps/:name" {:as params}
+  (session/put! :current-page #(app-page (:name params))))
 
 ;; -------------------------
 ;; History
