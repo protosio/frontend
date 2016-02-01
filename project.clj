@@ -12,7 +12,7 @@
                  [reagent-forms "0.5.9"]
                  [secretary "1.2.3"]
                  [cljs-ajax "0.3.14"]
-                 [figwheel-sidecar "0.5.0-2"]]
+                 [figwheel-sidecar "0.5.0-6"]]
 
   :plugins [[lein-cljsbuild "1.1.0"]]
 
