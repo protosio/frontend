@@ -1,14 +1,41 @@
-/resources/public/js/compiled/**
-figwheel_server.log
+
+# Created by https://www.gitignore.io/
+
+### Leiningen ###
 pom.xml
+pom.xml.asc
 *jar
 /lib/
 /classes/
-/out/
 /target/
+/checkouts/
 .lein-deps-sum
 .lein-repl-history
 .lein-plugins/
-.repl
+.lein-failures
 .nrepl-port
-.idea
+
+
+### Vim ###
+# swap
+[._]*.s[a-w][a-z]
+[._]s[a-w][a-z]
+# session
+Session.vim
+# temporary
+.netrwhist
+*~
+
+# extra stuff
+*.log
+*.iml
+
+### VisualStudioCode ###
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
+### Compiled js ###
+resources/public/js/compiled
