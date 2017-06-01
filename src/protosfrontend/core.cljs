@@ -71,22 +71,23 @@
     [:div {:id "navbar" :class "collapse navbar-collapse"}
      [:ul {:class "nav navbar-nav"}
       [:li [:a {:href "#/"} "Home"]]
-      [:li [:a {:href "#/about"} "About page"]]]]
-    ]])
+      [:li [:a {:href "#/about"} "About page"]]]]]])
+
 
 (defn app-list []
   [:table {:class "table table-hover"}
+   [:tbody
     [:tr
       [:th "Name"]
       [:th "State"]
       [:th "Action"]]
     (for [[title body] (get @app-state :apps)]
       (let [app-status (str (get-in body ["Status" "Running"]))]
-      [:tr {:key title :border "1" :style {:width "100%"}}
-       [:td [:a {:href (str "#/apps/" title)} title]]
-       [:td app-status]
-       [:td [:button {:on-click (fn [e] (.preventDefault e)
-                                       (toggle-app title app-status))} "Start/Stop"]]]))])
+       [:tr {:key title :border "1" :style {:width "100%"}}
+        [:td [:a {:href (str "#/apps/" title)} title]]
+        [:td app-status]
+        [:td [:button {:on-click (fn [e] (.preventDefault e)
+                                        (toggle-app title app-status))} "Start/Stop"]]]))]])
 
 (defn regular-page [left right]
   [:div
@@ -103,15 +104,15 @@
 
 (defn home-page []
   [:div
-  (regular-page
-  [:button {:on-click (fn [e] (.preventDefault e)
-                              (get-apps))} "Refresh"]
-  [app-list])])
+   (regular-page
+    [:button {:on-click (fn [e] (.preventDefault e)
+                                (get-apps))} "Refresh"]
+    [app-list])])
 
 (defn about-page []
   [:div
-  (menu)
-  [:h1 "This is the about text"]])
+   (menu)
+   [:h1 "This is the about text"]])
 
 (defn app-page [app]
   [:div
