@@ -14,7 +14,9 @@
                  [cljs-ajax "0.6.0"]
                  [figwheel-sidecar "0.5.10"]
                  [com.cemerick/piggieback "0.2.1"]
-                 [leiningen-core "2.7.1"]]
+                 [leiningen-core "2.7.1"]
+                 [re-frame "0.9.4"]
+                 [day8.re-frame/http-fx "0.1.3"]]
 
   :plugins [[lein-cljsbuild "1.1.6"]
             [lein-figwheel "0.5.10"]]

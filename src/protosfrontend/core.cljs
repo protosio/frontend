@@ -1,59 +1,55 @@
-(ns ^:figwheel-always protosfrontend.core
-    (:require [reagent.core :as reagent]
-              [reagent.session :as session]
-              [goog.events :as events]
-              [goog.history.EventType :as EventType]
-              [secretary.core :as secretary :include-macros true]
-              [ajax.core :refer [GET POST]])
-    (:import goog.History))
+(ns protosfrontend.core
+  (:require [reagent.core :as reagent]
+            [reagent.session :as session]
+            [re-frame.core :as rf]
+            [ajax.core :as ajax]
+            [day8.re-frame.http-fx]
+            [goog.events :as events]
+            [goog.history.EventType :as EventType]
+            [secretary.core :as secretary :include-macros true])
+  (:import goog.History))
 
 (enable-console-print!)
 
-(println "Executing frontend code")
+;; -- Event Handlers -----------------------------------------------
 
+(rf/reg-event-db
+  :initialize
+  (fn [_ _]
+    {:apps {}
+     :installers {}}))
 
+(rf/reg-event-db
+  :process-response
+  (fn [db [_ dbkey result]]
+    (assoc db dbkey result)))
 
-;; define your app data so that it doesn't get over-written on reload
+(rf/reg-event-fx
+  :update-list
+  (fn
+    [{db :db} [_ uri dbkey]]
+   
+    {:http-xhrio {:method          :get
+                  :uri             uri
+                  :format          (ajax/json-request-format)
+                  :response-format (ajax/json-response-format {:keywords? true})
+                  :on-success      [:process-response dbkey]
+                  :on-failure      [:bad-response]}
+     :db  (assoc db :loading? true)}))
 
-(defonce app-state (reagent/atom {:text "Hello worlds!" :apps nil}))
+;; -- Queries -----------------------------------------------
 
-;; utils
+(rf/reg-sub
+  :apps
+  (fn [db _]
+    (-> db
+        :apps)))
 
-(def truthy? #{"true"})
-
-;;-------------------------
-;; Backend comm.
-
-(defn response-handler [response]
-  (println "Received response from backend")
-  (swap! app-state assoc :apps (get response "Apps"))
-  (println "Saved apps ")) ;(get @app-state :apps)))
-
-(defn update-app [response]
-  (println @app-state)
-  (println "Updating app: " (get response "Name"))
-  (swap! app-state assoc-in [:apps (get response "Name")] response)
-  (println @app-state))
-
-(defn error-handler [{:keys [status status-text]}]
-  (.log js/console (str "something bad happened: " status " " status-text)))
-
-(defn get-apps []
-  (.log js/console (str "Retrieving applications"))
-  (GET "/apps"
-     {:handler response-handler
-      :error-handler error-handler
-      :format :json
-      :response-format :json}))
-
-(defn toggle-app [appkey app-status]
-  (println "Changing state for application " appkey " from " app-status " to " (not (truthy? app-status)))
-  (POST (str "/apps/" appkey)
-    {:handler update-app
-     :error-handler error-handler
-     :format :json
-     :response-format :json
-     :params {"Status" {"Running" (not (truthy? app-status))}}}))
+(rf/reg-sub
+  :installers
+  (fn [db _]
+    (-> db
+        :installers)))
 
 ;;-------------------------
 ;; Page elements
@@ -71,23 +67,32 @@
     [:div {:id "navbar" :class "collapse navbar-collapse"}
      [:ul {:class "nav navbar-nav"}
       [:li [:a {:href "#/"} "Home"]]
+      [:li [:a {:href "#/installers"} "Installers"]]
       [:li [:a {:href "#/about"} "About page"]]]]]])
 
+(defn installer-list []
+  [:table {:class "table table-hover"}
+   [:tbody
+    [:tr
+      [:th "Name"]
+      [:th "ID"]]
+    (let [installers @(rf/subscribe [:installers])]
+      (for [{Name :Name, ID :ID} installers]
+        [:tr {:key ID :style {:width "100%"}}
+          [:td [:a {:href (str "/#/installers/" ID)} Name]]
+          [:td ID]]))]])
 
 (defn app-list []
   [:table {:class "table table-hover"}
    [:tbody
     [:tr
       [:th "Name"]
-      [:th "State"]
-      [:th "Action"]]
-    (for [[title body] (get @app-state :apps)]
-      (let [app-status (str (get-in body ["Status" "Running"]))]
-       [:tr {:key title :border "1" :style {:width "100%"}}
-        [:td [:a {:href (str "#/apps/" title)} title]]
-        [:td app-status]
-        [:td [:button {:on-click (fn [e] (.preventDefault e)
-                                        (toggle-app title app-status))} "Start/Stop"]]]))]])
+      [:th "ID"]]
+    (let [apps @(rf/subscribe [:apps])]
+      (for [{name :name, id :id} apps]
+        [:tr {:key id :style {:width "100%"}}
+          [:td [:a {:href (str "/#/apps/" id)} name]]
+          [:td id]]))]])
 
 (defn regular-page [left right]
   [:div
@@ -99,28 +104,27 @@
       [:div {:class "col-md-11"}
        right]]]])
 
-;;--------------------------
+;; -------------------------
 ;; Pages
-
-(defn home-page []
+(defn home-page
+  []
   [:div
    (regular-page
-    [:button {:on-click (fn [e] (.preventDefault e)
-                                (get-apps))} "Refresh"]
+    [:button {:on-click #(rf/dispatch [:update-list "/apps" :apps])} "Apps"]
     [app-list])])
+
+(defn installers-page
+  []
+  [:div
+   (regular-page
+    [:button {:on-click #(rf/dispatch [:update-list "/installers" :installers])} "Installers"]
+    [installer-list])])
 
 (defn about-page []
   [:div
    (menu)
-   [:h1 "This is the about text"]])
-
-(defn app-page [app]
-  [:div
-   (regular-page
-     [:button {:on-click (fn [e] (.preventDefault e)
-                           (get-apps))} "Refresh"]
-     app)])
-
+   [:div {:class "container"}
+    [:h1 "This is the about text"]]])
 
 (defn current-page []
   [:div [(session/get :current-page)]])
@@ -132,11 +136,11 @@
 (secretary/defroute "/" []
   (session/put! :current-page home-page))
 
+(secretary/defroute "/installers" []
+  (session/put! :current-page installers-page))
+
 (secretary/defroute "/about" []
   (session/put! :current-page about-page))
-
-(secretary/defroute "/apps/:name" {:as params}
-  (session/put! :current-page #(app-page (:name params))))
 
 ;; -------------------------
 ;; History
@@ -151,12 +155,13 @@
 
 ;; -------------------------
 ;; Initialize app
+
 (defn mount-root []
+  (rf/dispatch-sync [:initialize])
   (reagent/render [current-page] (.getElementById js/document "app")))
 
 (defn init! []
   (hook-browser-navigation!)
   (mount-root))
-
 
 (init!)
