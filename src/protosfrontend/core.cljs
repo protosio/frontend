@@ -87,12 +87,15 @@
    [:tbody
     [:tr
       [:th "Name"]
-      [:th "ID"]]
+      [:th "ID"]
+      [:th "Status"]]
     (let [apps @(rf/subscribe [:apps])]
-      (for [{name :name, id :id} apps]
+      (for [{name :name, id :id, status :status} apps]
         [:tr {:key id :style {:width "100%"}}
           [:td [:a {:href (str "/#/apps/" id)} name]]
-          [:td id]]))]])
+          [:td id]
+          [:td status]]))]])
+
 
 (defn regular-page [left right]
   [:div
@@ -134,9 +137,11 @@
 (secretary/set-config! :prefix "#")
 
 (secretary/defroute "/" []
+  (rf/dispatch [:update-list "/apps" :apps])
   (session/put! :current-page home-page))
 
 (secretary/defroute "/installers" []
+  (rf/dispatch [:update-list "/installers" :installers])
   (session/put! :current-page installers-page))
 
 (secretary/defroute "/about" []
