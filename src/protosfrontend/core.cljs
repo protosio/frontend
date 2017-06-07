@@ -77,7 +77,7 @@
       [:th "Name"]
       [:th "ID"]]
     (let [installers @(rf/subscribe [:installers])]
-      (for [{Name :Name, ID :ID} installers]
+      (for [{Name :Name, ID :ID} (vals installers)]
         [:tr {:key ID :style {:width "100%"}}
           [:td [:a {:href (str "/#/installers/" ID)} Name]]
           [:td ID]]))]])
@@ -123,6 +123,17 @@
     [:button {:on-click #(rf/dispatch [:update-list "/installers" :installers])} "Refresh"]
     [installer-list])])
 
+(defn installer-page
+  [id]
+  [:div
+    (menu)
+    [:div {:class "container"}
+     (let [installers @(rf/subscribe [:installers])
+           installer (get installers (keyword id))]
+       [:div
+        [:h1 (:Name installer)]
+        [:div.installer-details "Image ID: " (:ID installer)]])]])
+
 (defn about-page []
   [:div
    (menu)
@@ -143,6 +154,9 @@
 (secretary/defroute "/installers" []
   (rf/dispatch [:update-list "/installers" :installers])
   (session/put! :current-page installers-page))
+
+(secretary/defroute "/installers/:id" {:as params}
+  (session/put! :current-page #(installer-page (:id params))))
 
 (secretary/defroute "/about" []
   (session/put! :current-page about-page))
