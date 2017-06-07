@@ -113,14 +113,14 @@
   []
   [:div
    (regular-page
-    [:button {:on-click #(rf/dispatch [:update-list "/apps" :apps])} "Apps"]
+    [:button {:on-click #(rf/dispatch [:update-list "/apps" :apps])} "Refresh"]
     [app-list])])
 
 (defn installers-page
   []
   [:div
    (regular-page
-    [:button {:on-click #(rf/dispatch [:update-list "/installers" :installers])} "Installers"]
+    [:button {:on-click #(rf/dispatch [:update-list "/installers" :installers])} "Refresh"]
     [installer-list])])
 
 (defn about-page []
