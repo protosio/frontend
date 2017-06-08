@@ -22,13 +22,13 @@
 (rf/reg-event-db
   :process-response
   (fn [db [_ dbkey result]]
-    (assoc db dbkey result)))
+    (assoc-in db dbkey result)))
 
 (rf/reg-event-fx
   :update-list
   (fn
     [{db :db} [_ uri dbkey]]
-   
+
     {:http-xhrio {:method          :get
                   :uri             uri
                   :format          (ajax/json-request-format)
@@ -113,14 +113,14 @@
   []
   [:div
    (regular-page
-    [:button {:on-click #(rf/dispatch [:update-list "/apps" :apps])} "Refresh"]
+    [:button {:on-click #(rf/dispatch [:update-list "/apps" [:apps]])} "Refresh"]
     [app-list])])
 
 (defn installers-page
   []
   [:div
    (regular-page
-    [:button {:on-click #(rf/dispatch [:update-list "/installers" :installers])} "Refresh"]
+    [:button {:on-click #(rf/dispatch [:update-list "/installers" [:installers]])} "Refresh"]
     [installer-list])])
 
 (defn installer-page
@@ -148,15 +148,17 @@
 (secretary/set-config! :prefix "#")
 
 (secretary/defroute "/" []
-  (rf/dispatch [:update-list "/apps" :apps])
+  (rf/dispatch [:update-list "/apps" [:apps]])
   (session/put! :current-page home-page))
 
 (secretary/defroute "/installers" []
-  (rf/dispatch [:update-list "/installers" :installers])
+  (rf/dispatch [:update-list "/installers" [:installers]])
   (session/put! :current-page installers-page))
 
 (secretary/defroute "/installers/:id" {:as params}
-  (session/put! :current-page #(installer-page (:id params))))
+  (let [id (:id params)]
+   (rf/dispatch [:update-list (str "/installers/" id) [:installers (keyword id)]])
+   (session/put! :current-page #(installer-page id))))
 
 (secretary/defroute "/about" []
   (session/put! :current-page about-page))
