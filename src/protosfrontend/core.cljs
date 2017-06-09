@@ -15,25 +15,71 @@
 
 (rf/reg-event-db
   :initialize
-  (fn [_ _]
+  (fn [_ [_ active-page]]
     {:apps {}
-     :installers {}}))
+     :installers {}
+     :active-page active-page
+     :urls {:apps "/apps"
+            :installers "/installers"}}))
 
 (rf/reg-event-db
   :process-response
   (fn [db [_ dbkey result]]
     (assoc-in db dbkey result)))
 
+(rf/reg-event-db
+  :bad-response
+  (fn [db [_ result]]
+    (println result)))
+
+(rf/reg-event-db
+  :set-active-page
+  (fn [db [_ active-page]]
+    (assoc db :active-page active-page)))
+
+(rf/reg-event-fx
+  :update-and-set-active-page
+  (fn
+    [{db :db} [_ dbkey active-page]]
+    {:dispatch (if (vector? dbkey)
+                (into [:update-resource] dbkey)
+                [:update-list dbkey])
+     :db (assoc db :active-page active-page)}))
+
 (rf/reg-event-fx
   :update-list
   (fn
-    [{db :db} [_ uri dbkey]]
+    [{db :db} [_ dbkey]]
+   {:http-xhrio {:method          :get
+                 :uri             (get-in db [:urls dbkey])
+                 :format          (ajax/json-request-format)
+                 :response-format (ajax/json-response-format {:keywords? true})
+                 :on-success      [:process-response [dbkey]]
+                 :on-failure      [:bad-response]}
+    :db  (assoc db :loading? true)}))
 
-    {:http-xhrio {:method          :get
-                  :uri             uri
-                  :format          (ajax/json-request-format)
-                  :response-format (ajax/json-response-format {:keywords? true})
-                  :on-success      [:process-response dbkey]
+(rf/reg-event-fx
+  :update-resource
+  (fn
+    [{db :db} [_ dbkey id]]
+   {:http-xhrio {:method          :get
+                 :uri             (str (get-in db [:urls dbkey]) "/" id)
+                 :format          (ajax/json-request-format)
+                 :response-format (ajax/json-response-format {:keywords? true})
+                 :on-success      [:process-response [dbkey (keyword id)]]
+                 :on-failure      [:bad-response]}
+    :db  (assoc db :loading? true)}))
+
+(rf/reg-event-fx
+  :remove-resource
+  (fn
+    [{db :db} [_ dbkey id redirect-page]]
+
+    {:http-xhrio {:method          :delete
+                  :uri             (str (get-in db [:urls dbkey]) "/" id)
+                  :format          (ajax/url-request-format)
+                  :response-format (ajax/raw-response-format)
+                  :on-success      [:update-and-set-active-page dbkey redirect-page]
                   :on-failure      [:bad-response]}
      :db  (assoc db :loading? true)}))
 
@@ -50,6 +96,12 @@
   (fn [db _]
     (-> db
         :installers)))
+
+(rf/reg-sub
+  :active-page
+  (fn [db _]
+    (-> db
+        :active-page)))
 
 ;;-------------------------
 ;; Page elements
@@ -113,14 +165,14 @@
   []
   [:div
    (regular-page
-    [:button {:on-click #(rf/dispatch [:update-list "/apps" [:apps]])} "Refresh"]
+    [:button {:on-click #(rf/dispatch [:update-list :apps])} "Refresh"]
     [app-list])])
 
 (defn installers-page
   []
   [:div
    (regular-page
-    [:button {:on-click #(rf/dispatch [:update-list "/installers" [:installers]])} "Refresh"]
+    [:button {:on-click #(rf/dispatch [:update-list :installers])} "Refresh"]
     [installer-list])])
 
 (defn installer-page
@@ -132,7 +184,9 @@
            installer (get installers (keyword id))]
        [:div
         [:h1 (:Name installer)]
-        [:div.installer-details "Image ID: " (:ID installer)]])]])
+        [:div.installer-details "Image ID: " (:ID installer)]
+        [:button {:class "label label-danger"
+                  :on-click #(rf/dispatch [:remove-resource :installers (:ID installer) installers-page])} "Remove"]])]])
 
 (defn about-page []
   [:div
@@ -141,27 +195,24 @@
     [:h1 "This is the about text"]]])
 
 (defn current-page []
-  [:div [(session/get :current-page)]])
+  [:div [@(rf/subscribe [:active-page])]])
 
 ;; -------------------------
 ;; Routes
 (secretary/set-config! :prefix "#")
 
 (secretary/defroute "/" []
-  (rf/dispatch [:update-list "/apps" [:apps]])
-  (session/put! :current-page home-page))
+  (rf/dispatch [:update-and-set-active-page :apps home-page]))
 
 (secretary/defroute "/installers" []
-  (rf/dispatch [:update-list "/installers" [:installers]])
-  (session/put! :current-page installers-page))
+  (rf/dispatch [:update-and-set-active-page :installers installers-page]))
 
 (secretary/defroute "/installers/:id" {:as params}
   (let [id (:id params)]
-   (rf/dispatch [:update-list (str "/installers/" id) [:installers (keyword id)]])
-   (session/put! :current-page #(installer-page id))))
+   (rf/dispatch [:update-and-set-active-page [:installers id] #(installer-page id)])))
 
 (secretary/defroute "/about" []
-  (session/put! :current-page about-page))
+  (rf/dispatch [:set-active-page about-page]))
 
 ;; -------------------------
 ;; History
@@ -178,7 +229,7 @@
 ;; Initialize app
 
 (defn mount-root []
-  (rf/dispatch-sync [:initialize])
+  (rf/dispatch-sync [:initialize home-page])
   (reagent/render [current-page] (.getElementById js/document "app")))
 
 (defn init! []
