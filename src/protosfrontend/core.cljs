@@ -6,7 +6,10 @@
             [day8.re-frame.http-fx]
             [goog.events :as events]
             [goog.history.EventType :as EventType]
-            [secretary.core :as secretary :include-macros true])
+            [secretary.core :as secretary :include-macros true]
+            [baking-soda.bootstrap3 :as b3]
+            [free-form.re-frame :as free-form]
+            [free-form.bootstrap-3])
   (:import goog.History))
 
 (enable-console-print!)
@@ -20,7 +23,8 @@
      :installers {}
      :active-page active-page
      :urls {:apps "/apps"
-            :installers "/installers"}}))
+            :installers "/installers"}
+     :show-create-app-modal false}))
 
 (rf/reg-event-db
   :process-response
@@ -30,12 +34,23 @@
 (rf/reg-event-db
   :bad-response
   (fn [db [_ result]]
-    (println result)))
+    (println result)
+    db))
+
+(rf/reg-event-db
+  :create-app-form
+  (fn [db [_ keys value]]
+    (assoc-in db (cons :create-app-form keys) value)))
 
 (rf/reg-event-db
   :set-active-page
   (fn [db [_ active-page]]
     (assoc db :active-page active-page)))
+
+(rf/reg-event-db
+  :show-create-app-modal
+  (fn [db [_ modal-open image-id]]
+    (assoc db :show-create-app-modal modal-open :create-app-form {:imageid image-id})))
 
 (rf/reg-event-fx
   :update-and-set-active-page
@@ -83,6 +98,20 @@
                   :on-failure      [:bad-response]}
      :db  (assoc db :loading? true)}))
 
+(rf/reg-event-fx
+  :create-resource
+  (fn
+    [{db :db} [_ dbkey data-key redirect-page]]
+
+    {:http-xhrio {:method          :post
+                  :uri             (get-in db [:urls dbkey])
+                  :params          (data-key db)
+                  :format          (ajax/json-request-format)
+                  :response-format (ajax/json-response-format {:keywords? true})
+                  :on-success      [:update-and-set-active-page dbkey redirect-page]
+                  :on-failure      [:bad-response]}
+     :db  (assoc db :loading? true)}))
+
 ;; -- Queries -----------------------------------------------
 
 (rf/reg-sub
@@ -103,6 +132,18 @@
     (-> db
         :active-page)))
 
+(rf/reg-sub
+  :show-create-app-modal
+  (fn [db _]
+    (-> db
+        :show-create-app-modal)))
+
+(rf/reg-sub
+  :create-app-form
+  (fn [db _]
+    (-> db
+        :create-app-form)))
+
 ;;-------------------------
 ;; Page elements
 
@@ -121,6 +162,42 @@
       [:li [:a {:href "#/"} "Home"]]
       [:li [:a {:href "#/installers"} "Installers"]]
       [:li [:a {:href "#/about"} "About page"]]]]]])
+
+(defn row [label input]
+  [:div.row
+    [:div.col-md-2 [:label label]]
+    [:div.col-md-5 input]])
+
+(defn input [label type id]
+  (row label [:input.form-control {:id id}]))
+
+(defn create-app-form []
+  [:div
+   (input "Name" :text :name)
+   (input "Command" :text :command)])
+
+(defn modal-create-app []
+  [b3/Modal {:show    @(rf/subscribe [:show-create-app-modal])
+             :on-hide #(rf/dispatch [:show-create-app-modal false])}
+   [b3/ModalHeader {:close-button true}
+       [b3/ModalTitle
+        "Create application"]]
+   [b3/ModalBody
+    ; (create-app-form)]
+    (let [data @(rf/subscribe [:create-app-form])]
+     [free-form/form data (:-errors data) :create-app-form :bootstrap-3
+      [:form.form-horizontal {:noValidate true}
+       [:free-form/field {:type  :text
+                          :key   :name
+                          :label "Name"}]
+       [:free-form/field {:type  :text
+                          :key   :command
+                          :label "Command"}]]])]
+
+   [b3/ModalFooter
+    [b3/Button {:on-click #(rf/dispatch [:show-create-app-modal false])} "Close"]
+    [b3/Button {:bs-style "primary" :on-click #(rf/dispatch [:create-resource :apps :create-app-form home-page])} "Create"]]])
+
 
 (defn installer-list []
   [:table {:class "table table-hover"}
@@ -168,6 +245,23 @@
     [:button {:on-click #(rf/dispatch [:update-list :apps])} "Refresh"]
     [app-list])])
 
+(defn app-page
+  [id]
+  [:div
+    (menu)
+    [:div {:class "container"}
+     (let [apps @(rf/subscribe [:apps])
+           app (get apps (keyword id))]
+       [:div
+        [:h1 (:Name app)]
+        [:div.installer-details "App ID: " (:ID app)]
+        [b3/Button {:bs-style "danger"
+                    :on-click #(rf/dispatch [:remove-resource :apps (:ID app) home-page])} "Remove"]
+        [b3/Button {:bs-style "primary"
+                    :on-click #(rf/dispatch [:show-create-app-modal true (:ID app)])} "Start"]
+        [:div
+         (modal-create-app)]])]])
+
 (defn installers-page
   []
   [:div
@@ -185,8 +279,12 @@
        [:div
         [:h1 (:Name installer)]
         [:div.installer-details "Image ID: " (:ID installer)]
-        [:button {:class "label label-danger"
-                  :on-click #(rf/dispatch [:remove-resource :installers (:ID installer) installers-page])} "Remove"]])]])
+        [b3/Button {:bs-style "danger"
+                    :on-click #(rf/dispatch [:remove-resource :installers (:ID installer) installers-page])} "Remove"]
+        [b3/Button {:bs-style "primary"
+                    :on-click #(rf/dispatch [:show-create-app-modal true (:ID installer)])} "Create app"]
+        [:div
+         (modal-create-app)]])]])
 
 (defn about-page []
   [:div
@@ -203,6 +301,10 @@
 
 (secretary/defroute "/" []
   (rf/dispatch [:update-and-set-active-page :apps home-page]))
+
+(secretary/defroute "/apps/:id" {:as params}
+  (let [id (:id params)]
+   (rf/dispatch [:update-and-set-active-page [:apps id] #(app-page id)])))
 
 (secretary/defroute "/installers" []
   (rf/dispatch [:update-and-set-active-page :installers installers-page]))
