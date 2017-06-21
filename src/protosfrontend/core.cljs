@@ -89,7 +89,6 @@
   :remove-resource
   (fn
     [{db :db} [_ dbkey id redirect-page]]
-
     {:http-xhrio {:method          :delete
                   :uri             (str (get-in db [:urls dbkey]) "/" id)
                   :format          (ajax/url-request-format)
@@ -101,14 +100,27 @@
 (rf/reg-event-fx
   :create-resource
   (fn
-    [{db :db} [_ dbkey data-key redirect-page]]
+    [{db :db} [_ dbkey form-data-key redirect-page]]
 
     {:http-xhrio {:method          :post
                   :uri             (get-in db [:urls dbkey])
-                  :params          (data-key db)
+                  :params          (form-data-key db)
                   :format          (ajax/json-request-format)
                   :response-format (ajax/json-response-format {:keywords? true})
                   :on-success      [:update-and-set-active-page dbkey redirect-page]
+                  :on-failure      [:bad-response]}
+     :db  (assoc db :loading? true :show-create-app-modal false)}))
+
+(rf/reg-event-fx
+  :create-resource-action
+  (fn
+    [{db :db} [_ dbkey id action redirect-page]]
+    {:http-xhrio {:method          :post
+                  :uri             (str (get-in db [:urls dbkey]) "/" id "/action")
+                  :params          {:name action}
+                  :format          (ajax/json-request-format)
+                  :response-format (ajax/raw-response-format)
+                  :on-success      [:update-resource dbkey id]
                   :on-failure      [:bad-response]}
      :db  (assoc db :loading? true)}))
 
@@ -163,19 +175,6 @@
       [:li [:a {:href "#/installers"} "Installers"]]
       [:li [:a {:href "#/about"} "About page"]]]]]])
 
-(defn row [label input]
-  [:div.row
-    [:div.col-md-2 [:label label]]
-    [:div.col-md-5 input]])
-
-(defn input [label type id]
-  (row label [:input.form-control {:id id}]))
-
-(defn create-app-form []
-  [:div
-   (input "Name" :text :name)
-   (input "Command" :text :command)])
-
 (defn modal-create-app []
   [b3/Modal {:show    @(rf/subscribe [:show-create-app-modal])
              :on-hide #(rf/dispatch [:show-create-app-modal false])}
@@ -183,7 +182,6 @@
        [b3/ModalTitle
         "Create application"]]
    [b3/ModalBody
-    ; (create-app-form)]
     (let [data @(rf/subscribe [:create-app-form])]
      [free-form/form data (:-errors data) :create-app-form :bootstrap-3
       [:form.form-horizontal {:noValidate true}
@@ -196,7 +194,7 @@
 
    [b3/ModalFooter
     [b3/Button {:on-click #(rf/dispatch [:show-create-app-modal false])} "Close"]
-    [b3/Button {:bs-style "primary" :on-click #(rf/dispatch [:create-resource :apps :create-app-form home-page])} "Create"]]])
+    [b3/Button {:bs-style "primary" :on-click #(rf/dispatch [:create-resource :apps :create-app-form apps-page])} "Create"]]])
 
 
 (defn installer-list []
@@ -219,7 +217,7 @@
       [:th "ID"]
       [:th "Status"]]
     (let [apps @(rf/subscribe [:apps])]
-      (for [{name :name, id :id, status :status} apps]
+      (for [{name :name, id :id, status :status} (vals apps)]
         [:tr {:key id :style {:width "100%"}}
           [:td [:a {:href (str "/#/apps/" id)} name]]
           [:td id]
@@ -238,7 +236,7 @@
 
 ;; -------------------------
 ;; Pages
-(defn home-page
+(defn apps-page
   []
   [:div
    (regular-page
@@ -251,14 +249,39 @@
     (menu)
     [:div {:class "container"}
      (let [apps @(rf/subscribe [:apps])
-           app (get apps (keyword id))]
+           app (get apps (keyword id))
+           app-id (:id app)]
        [:div
-        [:h1 (:Name app)]
-        [:div.installer-details "App ID: " (:ID app)]
+        [:h1 (:name app)]
+        [:div.app-details
+         [:div.row
+          [:div.col-md-12
+            [:div.table-responsive
+              [:table {:class "table table-striped table-bordered"}
+               [:tbody
+                [:tr
+                  [:th "ID"]
+                  [:td (:id app)]]
+                [:tr
+                  [:th "Name"]
+                  [:td (:name app)]]
+                [:tr
+                  [:th "Image ID"]
+                  [:td (:imageid app)]]
+                [:tr
+                 [:th "Command"]
+                 [:td (:command app)]]
+                [:tr
+                 [:th "Status"]
+                 [:td (:status app)]]]]]]]]
         [b3/Button {:bs-style "danger"
-                    :on-click #(rf/dispatch [:remove-resource :apps (:ID app) home-page])} "Remove"]
+                    :on-click #(rf/dispatch [:remove-resource :apps app-id apps-page])} "Remove"]
         [b3/Button {:bs-style "primary"
-                    :on-click #(rf/dispatch [:show-create-app-modal true (:ID app)])} "Start"]
+                    :on-click #(rf/dispatch [:create-resource-action :apps app-id "stop"])} "Stop"]
+        [b3/Button {:bs-style "success"
+                    :on-click #(rf/dispatch [:create-resource-action :apps app-id "start"])} "Start"]
+        [b3/Button {:bs-style "primary"
+                    :on-click #(rf/dispatch [:update-resource :apps app-id])} "Refresh"]
         [:div
          (modal-create-app)]])]])
 
@@ -278,7 +301,15 @@
            installer (get installers (keyword id))]
        [:div
         [:h1 (:Name installer)]
-        [:div.installer-details "Image ID: " (:ID installer)]
+        [:div.installer-details
+         [:div.row
+          [:div.col-md-12
+            [:div.table-responsive
+              [:table {:class "table table-striped table-bordered"}
+               [:tbody
+                [:tr
+                  [:th "ID"]
+                  [:td (:ID installer)]]]]]]]]
         [b3/Button {:bs-style "danger"
                     :on-click #(rf/dispatch [:remove-resource :installers (:ID installer) installers-page])} "Remove"]
         [b3/Button {:bs-style "primary"
@@ -300,7 +331,7 @@
 (secretary/set-config! :prefix "#")
 
 (secretary/defroute "/" []
-  (rf/dispatch [:update-and-set-active-page :apps home-page]))
+  (rf/dispatch [:update-and-set-active-page :apps apps-page]))
 
 (secretary/defroute "/apps/:id" {:as params}
   (let [id (:id params)]
@@ -331,7 +362,7 @@
 ;; Initialize app
 
 (defn mount-root []
-  (rf/dispatch-sync [:initialize home-page])
+  (rf/dispatch-sync [:initialize apps-page])
   (reagent/render [current-page] (.getElementById js/document "app")))
 
 (defn init! []
