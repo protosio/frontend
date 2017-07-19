@@ -18,18 +18,18 @@
 (secretary/set-config! :prefix "#")
 
 (secretary/defroute "/" []
-  (rf/dispatch [:update-and-set-active-page :apps [:apps-page]]))
+  (rf/dispatch [:set-active-page [:apps-page] [:get-apps]]))
 
 (secretary/defroute "/apps/:id" {:as params}
   (let [id (:id params)]
-   (rf/dispatch [:update-and-set-active-page [:apps id] [:app-page id]])))
+   (rf/dispatch [:set-active-page [:app-page id] [:get-app id]])))
 
 (secretary/defroute "/installers" []
-  (rf/dispatch [:update-and-set-active-page :installers [:installers-page]]))
+  (rf/dispatch [:set-active-page [:installers-page] [:get-installers]]))
 
 (secretary/defroute "/installers/:id" {:as params}
   (let [id (:id params)]
-   (rf/dispatch [:update-and-set-active-page [:installers id] [:installer-page id]])))
+   (rf/dispatch [:set-active-page [:installer-page id] [:get-installer id]])))
 
 (secretary/defroute "/about" []
   (rf/dispatch [:set-active-page [:about-page]]))

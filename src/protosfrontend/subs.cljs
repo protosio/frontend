@@ -1,7 +1,11 @@
 (ns protosfrontend.subs
     (:require
-        [re-frame.core :as rf]))
+        [re-frame.core :as rf]
+        [clairvoyant.core :refer-macros [trace-forms]]
+        [re-frame-tracer.core :refer [tracer]]))
 
+
+(trace-forms {:tracer (tracer :color "yellow")}
 
 ;; -- Queries -----------------------------------------------
 
@@ -35,14 +39,35 @@
     (-> db
         :show-installer-metadata-modal)))
 
-(rf/reg-sub
-  :create-app-form
-  (fn [db _]
-    (-> db
-        :create-app-form)))
+;; -- Modal subs -----------------------------------------------
 
 (rf/reg-sub
-  :add-metadata-form
+  :show-modal
   (fn [db _]
     (-> db
-        :add-metadata-form)))
+        :modal-data
+        :show-modal)))
+
+(rf/reg-sub
+  :active-modal
+  (fn [db _]
+    (-> db
+        :modal-data
+        :active-modal)))
+
+(rf/reg-sub
+  :modal-params
+  (fn [db _]
+    (-> db
+        :modal-data
+        :modal-params)))
+
+;; -- Form subs -----------------------------------------------
+
+(rf/reg-sub
+  :form-data
+  (fn [db _]
+    (-> db
+        :form-data)))
+
+)

@@ -22,7 +22,10 @@
                  [leiningen-core "2.7.1"]
                  [re-frame "0.9.4"]
                  [day8.re-frame/http-fx "0.1.3"]
-                 [com.pupeno/free-form "0.5.0"]]
+                 [com.pupeno/free-form "0.5.0"]
+                 [binaryage/devtools "0.9.4"]
+                 [org.clojars.stumitchell/clairvoyant "0.2.1"]
+                 [day8/re-frame-tracer "0.1.1-SNAPSHOT"]]
 
   :plugins [[lein-cljsbuild "1.1.6"]
             [lein-figwheel "0.5.10"]]
@@ -35,10 +38,12 @@
               :builds [{:id "dev"
                         :source-paths ["src"]
                         :figwheel true
-                        :compiler {:main protosfrontend.core
+                        :compiler {:preloads [devtools.preload]
+                                   :main protosfrontend.core
                                    :asset-path "js/compiled/out"
                                    :output-to "resources/public/js/compiled/protosfrontend.js"
                                    :output-dir "resources/public/js/compiled/out"
+                                   :closure-defines {"clairvoyant.core.devmode" true}
                                    :source-map-timestamp true}}
                        {:id "min"
                         :source-paths ["src"]
