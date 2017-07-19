@@ -198,9 +198,17 @@
                  [:tr
                   [:th "Name"]
                   [:td (:name installer)]]
+                (if (get-in installer [:metadata])
+                 nil
+                 [:tr
+                  [:th "Metadata"]
+                  [:td "Not present"]])
                  [:tr
                   [:th "Description"]
-                  [:td (get-in installer [:metadata :description])]]]]]]]]
+                  [:td (get-in installer [:metadata :description])]]
+                 [:tr
+                  [:th "Provides"]
+                  [:td (get-in installer [:metadata :provides])]]]]]]]]
          [b3/Button {:bs-style "danger"
                      :on-click #(rf/dispatch [:remove-resource :installers (:id installer) [:installers-page]])} "Remove"]
          [b3/Button {:bs-style "primary"
