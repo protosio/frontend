@@ -26,6 +26,7 @@
       [:ul {:class "nav navbar-nav"}
        [:li [:a {:href "#/"} "Home"]]
        [:li [:a {:href "#/installers"} "Installers"]]
+       [:li [:a {:href "#/resources"} "Resources"]]
        [:li [:a {:href "#/about"} "About page"]]]]]])
 
 ;;-- Modal components -----------------------
@@ -48,7 +49,10 @@
                            :label "Name"}]
         [:free-form/field {:type  :text
                            :key   :command
-                           :label "Command"}]]])]
+                           :label "Command"}]
+        [:free-form/field {:type  :text
+                           :key   :publicports
+                           :label "Public ports"}]]])]
 
     [b3/ModalFooter
      [b3/Button {:on-click #(rf/dispatch [:close-modal :create-app-modal])} "Close"]
@@ -107,6 +111,20 @@
            [:td [:a {:href (str "/#/apps/" id)} name]]
            [:td id]
            [:td status]]))]])
+
+ (defn resource-list []
+   [:table {:class "table table-hover"}
+    [:tbody
+     [:tr
+       [:th "ID"]
+       [:th "Status"]
+       [:th "Type"]]
+     (let [resources @(rf/subscribe [:resources])]
+       (for [{type :type, id :id, status :status} (vals resources)]
+         [:tr {:key id :style {:width "100%"}}
+           [:td [:a {:href (str "/#/resources/" id)} id]]
+           [:td status]
+           [:td type]]))]])
 
 
 
@@ -218,6 +236,14 @@
          [:div
           (current-modal)]])]])
 
+ (defn resources-page
+   []
+   [:div
+    (regular-page
+     [:button {:on-click #(rf/dispatch [:get-resources])} "Refresh"]
+     [resource-list])])
+
+
  (defn about-page []
    [:div
     (menu)
@@ -231,6 +257,7 @@
            :installers-page   [installers-page]
            :app-page          [#(apply app-page params)]
            :apps-page         [apps-page]
+           :resources-page    [resources-page]
            :about-page        [about-page])]))
 
 )

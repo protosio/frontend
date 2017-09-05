@@ -22,6 +22,12 @@
         :installers)))
 
 (rf/reg-sub
+  :resources
+  (fn [db _]
+    (-> db
+        :resources)))
+
+(rf/reg-sub
   :active-page
   (fn [db _]
     (-> db

@@ -102,6 +102,14 @@
 ;; -- Resource operations -----------------------------------------
 
 (rf/reg-event-fx
+  :get-resources
+  (fn get-resources
+    [{db :db} [_ _]]
+    {:dispatch [:http-get {:url (createurl ["resources"])
+                           :result-db-key [:resources]}]
+     :db db}))
+
+(rf/reg-event-fx
   :get-installer
   (fn get-installer-handler
     [{db :db} [_ installer-id]]

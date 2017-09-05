@@ -31,6 +31,9 @@
   (let [id (:id params)]
    (rf/dispatch [:set-active-page [:installer-page id] [:get-installer id]])))
 
+(secretary/defroute "/resources" []
+  (rf/dispatch [:set-active-page [:resources-page] [:get-resources]]))
+
 (secretary/defroute "/about" []
   (rf/dispatch [:set-active-page [:about-page]]))
 
