@@ -118,13 +118,15 @@
      [:tr
        [:th "ID"]
        [:th "Status"]
-       [:th "Type"]]
+       [:th "Type"]
+       [:th "App"]]
      (let [resources @(rf/subscribe [:resources])]
-       (for [{type :type, id :id, status :status} (vals resources)]
+       (for [{type :type, id :id, status :status, app-id :app} (vals resources)]
          [:tr {:key id :style {:width "100%"}}
            [:td [:a {:href (str "/#/resources/" id)} id]]
            [:td status]
-           [:td type]]))]])
+           [:td type]
+           [:td [:a {:href (str "/#/apps/" app-id)} app-id]]]))]])
 
 
 
@@ -243,6 +245,32 @@
      [:button {:on-click #(rf/dispatch [:get-resources])} "Refresh"]
      [resource-list])])
 
+(defn resource-page
+  [id]
+  [:div
+    (menu)
+    [:div {:class "container"}
+      (let [resources @(rf/subscribe [:resources])
+            resource (get resources (keyword id))
+            resource-id (:id resources)]
+        [:div
+          [:h1 (:id resource)]
+          [:div.resource-details
+            [:div.row
+            [:div.col-md-12
+              [:div.table-responsive
+                [:table {:class "table table-striped table-bordered"}
+                  [:tbody
+                  [:tr
+                    [:th "Type"]
+                    [:td (:type resource)]]
+                  [:tr
+                    [:th "App"]
+                    [:td (:app resource)]]
+                  [:tr
+                    [:th "Status"]
+                    [:td (:status resource)]]]]]]]]])]])
+
 
  (defn about-page []
    [:div
@@ -258,6 +286,7 @@
            :app-page          [#(apply app-page params)]
            :apps-page         [apps-page]
            :resources-page    [resources-page]
+           :resource-page     [#(apply resource-page params)]
            :about-page        [about-page])]))
 
 )
