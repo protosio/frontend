@@ -31,6 +31,13 @@
 
 ;;-- Modal components -----------------------
 
+ (defn custom-installer-params
+  [params]
+  (for [fld params]
+      [:free-form/field {:type  :text
+                        :key   (keyword fld)
+                        :label fld}]))
+
  (defn modal-create-app []
    [b3/Modal {:show    @(rf/subscribe [:show-modal])
               :on-hide #(rf/dispatch [:close-modal :create-app-modal])}
@@ -39,9 +46,11 @@
          "Create application"]]
     [b3/ModalBody
      (let [data @(rf/subscribe [:form-data])
-           installer-id @(rf/subscribe [:modal-params])]
+           installer-id @(rf/subscribe [:modal-params])
+           installers @(rf/subscribe [:installers])
+           installer-params (get-in installers [(keyword installer-id) :metadata :params])]
       [free-form/form data (:-errors data) :update-form-data :bootstrap-3
-       [:form.form-horizontal {:noValidate true}
+       (into [:form.form-horizontal {:noValidate true}
         [:free-form/field {:type  :hidden
                            :key   :imageid}]
         [:free-form/field {:type  :text
@@ -52,7 +61,11 @@
                            :label "Command"}]
         [:free-form/field {:type  :text
                            :key   :publicports
-                           :label "Public ports"}]]])]
+                           :label "Public ports"}]]
+        (let [installer-params (custom-installer-params installer-params)]
+          (if (not-empty installer-params)
+            (into [[:hr]] installer-params)
+            installer-params)))])]
 
     [b3/ModalFooter
      [b3/Button {:on-click #(rf/dispatch [:close-modal :create-app-modal])} "Close"]
