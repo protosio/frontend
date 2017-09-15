@@ -5,7 +5,7 @@
         [re-frame-tracer.core :refer [tracer]]))
 
 
-(trace-forms {:tracer (tracer :color "yellow")}
+(trace-forms {:tracer (tracer :color "blue")}
 
 ;; -- Queries -----------------------------------------------
 
@@ -39,13 +39,15 @@
 
 (rf/reg-sub
   :show-create-app-modal
-  (fn [db _]
+  (fn show-create-app-modal-sub
+    [db _]
     (-> db
         :show-create-app-modal)))
 
 (rf/reg-sub
   :show-installer-metadata-modal
-  (fn [db _]
+  (fn show-installer-metadata-modal-sub
+    [db _]
     (-> db
         :show-installer-metadata-modal)))
 
@@ -53,21 +55,24 @@
 
 (rf/reg-sub
   :show-modal
-  (fn [db _]
+  (fn show-modal-sub
+    [db _]
     (-> db
         :modal-data
         :show-modal)))
 
 (rf/reg-sub
   :active-modal
-  (fn [db _]
+  (fn active-modal-sub
+    [db _]
     (-> db
         :modal-data
         :active-modal)))
 
 (rf/reg-sub
   :modal-params
-  (fn [db _]
+  (fn modal-params-sub
+    [db _]
     (-> db
         :modal-data
         :modal-params)))
@@ -76,7 +81,8 @@
 
 (rf/reg-sub
   :form-data
-  (fn [db _]
+  (fn form-data-sub
+    [db _]
     (-> db
         :form-data)))
 

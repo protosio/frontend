@@ -35,7 +35,7 @@
   [params]
   (for [fld params]
       [:free-form/field {:type  :text
-                        :key   (keyword fld)
+                        :keys   [:installer-params (keyword fld)]
                         :label fld}]))
 
  (defn modal-create-app []
@@ -49,6 +49,7 @@
            installer-id @(rf/subscribe [:modal-params])
            installers @(rf/subscribe [:installers])
            installer-params (get-in installers [(keyword installer-id) :metadata :params])]
+
       [free-form/form data (:-errors data) :update-form-data :bootstrap-3
        (into [:form.form-horizontal {:noValidate true}
         [:free-form/field {:type  :hidden
@@ -62,10 +63,9 @@
         [:free-form/field {:type  :text
                            :key   :publicports
                            :label "Public ports"}]]
-        (let [installer-params (custom-installer-params installer-params)]
-          (if (not-empty installer-params)
-            (into [[:hr]] installer-params)
-            installer-params)))])]
+        (custom-installer-params installer-params))]
+ 
+     )]
 
     [b3/ModalFooter
      [b3/Button {:on-click #(rf/dispatch [:close-modal :create-app-modal])} "Close"]
