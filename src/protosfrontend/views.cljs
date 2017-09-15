@@ -228,7 +228,7 @@
                   [:td (get-in installer [:metadata :description])]]
                  [:tr
                   [:th "Provides"]
-                  [:td (get-in installer [:metadata :provides])]]]]]]]]
+                  [:td (clojure.string/join  " " (get-in installer [:metadata :provides]))]]]]]]]]
          [b3/Button {:bs-style "danger"
                      :on-click #(rf/dispatch [:remove-resource :installers (:id installer) [:installers-page]])} "Remove"]
          [b3/Button {:bs-style "primary"

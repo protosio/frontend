@@ -11,25 +11,29 @@
 
 (rf/reg-sub
   :apps
-  (fn [db _]
+  (fn apps-sub
+    [db _]
     (-> db
         :apps)))
 
 (rf/reg-sub
   :installers
-  (fn [db _]
+  (fn installers-sub
+    [db _]
     (-> db
         :installers)))
 
 (rf/reg-sub
   :resources
-  (fn [db _]
+  (fn resources-sub
+    [db _]
     (-> db
         :resources)))
 
 (rf/reg-sub
   :active-page
-  (fn [db _]
+  (fn active-page-sub
+    [db _]
     (-> db
         :active-page)))
 
