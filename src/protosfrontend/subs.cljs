@@ -24,6 +24,18 @@
         :installers)))
 
 (rf/reg-sub
+  :installer
+  (fn installer-sub
+    [db [_ installer-id]]
+    (get-in db [:installers (keyword installer-id)])))
+
+(rf/reg-sub
+  :installer-params
+  (fn installer-params-sub
+    [db [_ installer-id]]
+    (get-in db [:installers (keyword installer-id) :metadata :params])))
+
+(rf/reg-sub
   :resources
   (fn resources-sub
     [db _]

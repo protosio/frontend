@@ -46,10 +46,7 @@
          "Create application"]]
     [b3/ModalBody
      (let [data @(rf/subscribe [:form-data])
-           installer-id @(rf/subscribe [:modal-params])
-           installers @(rf/subscribe [:installers])
-           installer-params (get-in installers [(keyword installer-id) :metadata :params])]
-
+           installer-id @(rf/subscribe [:modal-params])]
       [free-form/form data (:-errors data) :update-form-data :bootstrap-3
        (into [:form.form-horizontal {:noValidate true}
         [:free-form/field {:type  :hidden
@@ -63,9 +60,7 @@
         [:free-form/field {:type  :text
                            :key   :publicports
                            :label "Public ports"}]]
-        (custom-installer-params installer-params))]
- 
-     )]
+        (custom-installer-params @(rf/subscribe [:installer-params installer-id])))])]
 
     [b3/ModalFooter
      [b3/Button {:on-click #(rf/dispatch [:close-modal :create-app-modal])} "Close"]
@@ -215,8 +210,7 @@
    [:div
      (menu)
      [:div {:class "container"}
-      (let [installers @(rf/subscribe [:installers])
-            installer (get installers (keyword id))]
+      (let [installer @(rf/subscribe [:installer id])]
         [:div
          [:h1 (:Name installer)]
          [:div.installer-details
