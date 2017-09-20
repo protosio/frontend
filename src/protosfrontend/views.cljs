@@ -210,9 +210,12 @@
    [:div
      (menu)
      [:div {:class "container"}
-      (let [installer @(rf/subscribe [:installer id])]
+      (let [installer @(rf/subscribe [:installer id])
+            metadata (get-in installer [:metadata])]
         [:div
          [:h1 (:Name installer)]
+         [b3/Button {:bs-style "danger" :on-click #(rf/dispatch [:remove-installer id])} "Remove"]
+         [b3/Button {:bs-style "primary" :on-click #(rf/dispatch [:open-modal :create-app-modal (:id installer)])} "Create app"]
          [:div.installer-details
           [:div.row
            [:div.col-md-12
@@ -225,23 +228,18 @@
                  [:tr
                   [:th "Name"]
                   [:td (:name installer)]]
-                (if (get-in installer [:metadata])
+                (if metadata
                  nil
                  [:tr
                   [:th "Metadata"]
                   [:td "Not present"]])
                  [:tr
                   [:th "Description"]
-                  [:td (get-in installer [:metadata :description])]]
+                  [:td (-> metadata :description)]]
                  [:tr
                   [:th "Provides"]
-                  [:td (clojure.string/join  " " (get-in installer [:metadata :provides]))]]]]]]]]
-         [b3/Button {:bs-style "danger"
-                     :on-click #(rf/dispatch [:remove-resource :installers (:id installer) [:installers-page]])} "Remove"]
-         [b3/Button {:bs-style "primary"
-                     :on-click #(rf/dispatch [:open-modal :create-app-modal (:id installer)])} "Create app"]
-         [b3/Button {:bs-style "primary"
-                     :on-click #(rf/dispatch [:open-modal :add-metadata-modal (:id installer)])} "Add metadata"]
+                  [:td (clojure.string/join  " " (-> metadata :provides))]]]]]]]]
+
          [:div
           (current-modal)]])]])
 

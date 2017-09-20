@@ -135,6 +135,15 @@
      :db db}))
 
 (rf/reg-event-fx
+  :remove-installer
+  (fn remove-installer-handler
+    [{db :db} [_ installer-id]]
+    {:dispatch [:http-delete {:url (createurl ["installers" installer-id])
+                              :response-format :raw
+                              :on-success [:set-active-page [:installers-page] [:get-installers]]}]
+      :db db}))
+
+(rf/reg-event-fx
   :get-apps
   (fn get-apps
     [{db :db} [_ _]]
