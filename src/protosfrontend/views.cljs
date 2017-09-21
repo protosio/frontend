@@ -50,7 +50,7 @@
       [free-form/form data (:-errors data) :update-form-data :bootstrap-3
        (into [:form.form-horizontal {:noValidate true}
         [:free-form/field {:type  :hidden
-                           :key   :imageid}]
+                           :key   :installer-id}]
         [:free-form/field {:type  :text
                            :key   :name
                            :label "Name"}]
@@ -182,7 +182,7 @@
                    [:td (:name app)]]
                  [:tr
                    [:th "Image ID"]
-                   [:td (:imageid app)]]
+                   [:td (:installer-id app)]]
                  [:tr
                   [:th "Command"]
                   [:td (:command app)]]

@@ -78,7 +78,7 @@
   :open-modal
   (fn open-modal-handler
       [{db :db} [_ modal-type modal-params]]
-      {:dispatch [:update-form-data [:imageid] modal-params]
+      {:dispatch [:update-form-data [:installer-id] modal-params]
        :db (assoc db :modal-data {:show-modal true :active-modal modal-type :modal-params modal-params})}))
 
 (rf/reg-event-fx
