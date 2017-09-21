@@ -55,9 +55,6 @@
                            :key   :name
                            :label "Name"}]
         [:free-form/field {:type  :text
-                           :key   :command
-                           :label "Command"}]
-        [:free-form/field {:type  :text
                            :key   :publicports
                            :label "Public ports"}]]
         (custom-installer-params @(rf/subscribe [:installer-params installer-id])))])]
@@ -181,11 +178,8 @@
                    [:th "Name"]
                    [:td (:name app)]]
                  [:tr
-                   [:th "Image ID"]
+                   [:th "Installer ID"]
                    [:td (:installer-id app)]]
-                 [:tr
-                  [:th "Command"]
-                  [:td (:command app)]]
                  [:tr
                   [:th "Status"]
                   [:td (:status app)]]]]]]]]
