@@ -22,6 +22,7 @@
                  [leiningen-core "2.7.1"]
                  [re-frame "0.9.4"]
                  [day8.re-frame/http-fx "0.1.3"]
+                 [com.smxemail/re-frame-cookie-fx "0.0.2"]
                  [com.pupeno/free-form "0.5.0"]
                  [binaryage/devtools "0.9.4"]
                  [org.clojars.stumitchell/clairvoyant "0.2.1"]
