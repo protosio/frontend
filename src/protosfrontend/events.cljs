@@ -102,11 +102,14 @@
 
 ;; -- Authentication -----------------------------------------------
 
-(rf/reg-event-db ;; Saves the result of a HTTP request, to a top level DB key or a nested one.
+(rf/reg-event-fx
   :save-auth
   (fn save-auth-handler
-    [db [_ result]]
-    (assoc-in db [:user :token] (:token result))))
+    [_ [_ result]]
+    {:cookie/set {:name "token"
+                  :value (:token result)
+                  :on-success [:bad-response]
+                  :on-failure [:bad-response]}}))
 
 (rf/reg-event-fx
   :login
@@ -207,11 +210,12 @@
 
 (rf/reg-event-fx
   :http-get
+  [(rf/inject-cofx :cookie/get [:token])]
   (fn http-get-handler
-    [{db :db} [_ params]]
+    [{db :db cookies :cookie/get} [_ params]]
    {:http-xhrio {:method          :get
                  :uri             (:url params)
-                 :headers         [:Authorization (-> db :user :token)]
+                 :headers         [:Authorization (:token cookies)]
                  :format          (ajax/json-request-format)
                  :response-format (ajax/json-response-format {:keywords? true})
                  :on-success      [:process-response (:result-db-key params)]
