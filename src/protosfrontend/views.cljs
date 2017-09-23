@@ -27,9 +27,35 @@
        [:li [:a {:href "#/"} "Home"]]
        [:li [:a {:href "#/installers"} "Installers"]]
        [:li [:a {:href "#/resources"} "Resources"]]
-       [:li [:a {:href "#/about"} "About page"]]]]]])
+       [:li [:a {:href "#/about"} "About page"]]]
+      [:ul {:class "nav navbar-nav navbar-right"}
+       [:li [:button {:on-click #(rf/dispatch [:open-modal :login-modal])} "Log in"]]
+       ]
+       ]]])
 
 ;;-- Modal components -----------------------
+
+
+(defn modal-login []
+  [b3/Modal {:show    @(rf/subscribe [:show-modal])
+             :on-hide #(rf/dispatch [:close-modal :login-modal])}
+   [b3/ModalHeader {:close-button true}
+       [b3/ModalTitle
+        "Login"]]
+   [b3/ModalBody
+    (let [data @(rf/subscribe [:form-data])]
+     [free-form/form data (:-errors data) :update-form-data :bootstrap-3
+      (into [:form.form-horizontal {:noValidate true}
+       [:free-form/field {:type  :text
+                          :key   :username
+                          :label "Username"}]
+       [:free-form/field {:type  :text
+                          :key   :password
+                          :label "Password"}]])])]
+
+   [b3/ModalFooter
+    [b3/Button {:on-click #(rf/dispatch [:close-modal :create-app-modal])} "Close"]
+    [b3/Button {:bs-style "primary" :on-click #(rf/dispatch [:login])} "Login"]]])
 
  (defn custom-installer-params
   [params]
@@ -87,6 +113,7 @@
     [:div (condp = active-modal
            :create-app-modal    [modal-create-app]
            :add-metadata-modal  [modal-installer-metadata]
+           :login-modal         [modal-login]
            [:div])]))
 
 ;;-- List components -----------------------
@@ -234,8 +261,7 @@
                   [:th "Provides"]
                   [:td (clojure.string/join  " " (-> metadata :provides))]]]]]]]]
 
-         [:div
-          (current-modal)]])]])
+         ])]])
 
  (defn resources-page
    []
@@ -279,13 +305,15 @@
 
  (defn current-page []
   (let [[active-page & params]  @(rf/subscribe [:active-page])]
-    [:div (condp = active-page
-           :installer-page    [#(apply installer-page params)]
-           :installers-page   [installers-page]
-           :app-page          [#(apply app-page params)]
-           :apps-page         [apps-page]
-           :resources-page    [resources-page]
-           :resource-page     [#(apply resource-page params)]
-           :about-page        [about-page])]))
+    [:div
+      [current-modal]
+      [:div (condp = active-page
+            :installer-page    [#(apply installer-page params)]
+            :installers-page   [installers-page]
+            :app-page          [#(apply app-page params)]
+            :apps-page         [apps-page]
+            :resources-page    [resources-page]
+            :resource-page     [#(apply resource-page params)]
+            :about-page        [about-page])]]))
 
 )

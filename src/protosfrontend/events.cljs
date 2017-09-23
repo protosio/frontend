@@ -4,6 +4,7 @@
         [ajax.core :as ajax]
         [re-frame.core :as rf]
         [day8.re-frame.http-fx]
+        [com.smxemail.re-frame-cookie-fx]
         [clairvoyant.core :refer-macros [trace-forms]]
         [re-frame-tracer.core :refer [tracer]]))
 
@@ -98,6 +99,22 @@
      {:db (assoc db :active-page active-page)
       :dispatch update-event}
      {:db (assoc db :active-page active-page)})))
+
+;; -- Authentication -----------------------------------------------
+
+(rf/reg-event-db ;; Saves the result of a HTTP request, to a top level DB key or a nested one.
+  :save-auth
+  (fn save-auth-handler
+    [db [_ result]]
+    (assoc-in db [:user :token] (:token result))))
+
+(rf/reg-event-fx
+  :login
+  (fn login-handler
+    [{db :db} _]
+    {:dispatch [:http-post {:url (createurl ["login"])
+                            :on-success [:save-auth]}]
+     :db db}))
 
 ;; -- Resource operations -----------------------------------------
 
@@ -194,6 +211,7 @@
     [{db :db} [_ params]]
    {:http-xhrio {:method          :get
                  :uri             (:url params)
+                 :headers         [:Authorization (-> db :user :token)]
                  :format          (ajax/json-request-format)
                  :response-format (ajax/json-response-format {:keywords? true})
                  :on-success      [:process-response (:result-db-key params)]
