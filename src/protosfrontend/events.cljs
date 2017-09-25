@@ -215,7 +215,7 @@
     [{db :db cookies :cookie/get} [_ params]]
    {:http-xhrio {:method          :get
                  :uri             (:url params)
-                 :headers         [:Authorization (:token cookies)]
+                 :headers         [:Authorization (clojure.string/join " " ["Bearer" (:token cookies)])]
                  :format          (ajax/json-request-format)
                  :response-format (ajax/json-response-format {:keywords? true})
                  :on-success      [:process-response (:result-db-key params)]
@@ -224,10 +224,12 @@
 
 (rf/reg-event-fx
   :http-post
+  [(rf/inject-cofx :cookie/get [:token])]
   (fn http-post-handler
-    [{db :db} [_ params]]
+    [{db :db cookies :cookie/get} [_ params]]
     {:http-xhrio {:method          :post
                   :uri             (:url params)
+                  :headers         [:Authorization (clojure.string/join " " ["Bearer" (:token cookies)])]
                   :params          (let [post-data (:post-data params)]
                                     (if post-data
                                       post-data
@@ -243,10 +245,12 @@
 
 (rf/reg-event-fx
   :http-delete
+  [(rf/inject-cofx :cookie/get [:token])]
   (fn http-delete-handler
-    [{db :db} [_ params]]
+    [{db :db cookies :cookie/get} [_ params]]
     {:http-xhrio {:method          :delete
                   :uri             (:url params)
+                  :headers         [:Authorization (clojure.string/join " " ["Bearer" (:token cookies)])]
                   :format          (ajax/url-request-format)
                   :response-format (ajax/raw-response-format)
                   :on-success      (:on-success params)
