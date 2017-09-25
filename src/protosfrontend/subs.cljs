@@ -10,6 +10,13 @@
 ;; -- Queries -----------------------------------------------
 
 (rf/reg-sub
+  :username
+  (fn username-sub
+    [db _]
+    (-> db
+        :username)))
+
+(rf/reg-sub
   :apps
   (fn apps-sub
     [db _]

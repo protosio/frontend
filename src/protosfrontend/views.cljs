@@ -12,6 +12,12 @@
 ;;-------------------------
 ;; Page components
 
+(defn user-info []
+  (let [username @(rf/subscribe [:username])]
+    (if username
+      [:li [:a username]]
+      [:li [:button {:on-click #(rf/dispatch [:open-modal :login-modal])} "Log in"]])))
+
  (defn menu []
    [:nav {:class "navbar navbar-default navbar-static-top"}
     [:div {:class "container"}
@@ -29,7 +35,7 @@
        [:li [:a {:href "#/resources"} "Resources"]]
        [:li [:a {:href "#/about"} "About page"]]]
       [:ul {:class "nav navbar-nav navbar-right"}
-       [:li [:button {:on-click #(rf/dispatch [:open-modal :login-modal])} "Log in"]]
+       [user-info]
        ]
        ]]])
 

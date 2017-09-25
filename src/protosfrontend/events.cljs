@@ -52,12 +52,13 @@
     [db [_ dbkeys result]]
     (assoc-in db dbkeys result)))
 
-(rf/reg-event-db
+(rf/reg-event-fx
   :bad-response
   (fn bad-response-handler
-    [db [_ result]]
+    [{db :db} [_ result]]
     (println result)
-    db))
+    {:dispatch [:open-modal :login-modal]
+     :db db}))
 
 ;; -- Form events -----------------------------------------------
 
@@ -105,11 +106,12 @@
 (rf/reg-event-fx
   :save-auth
   (fn save-auth-handler
-    [_ [_ result]]
+    [{db :db} [_ result]]
     {:cookie/set {:name "token"
                   :value (:token result)
-                  :on-success [:bad-response]
-                  :on-failure [:bad-response]}}))
+                  :on-success [:close-modal]
+                  :on-failure [:bad-response]}
+    :db (assoc db :username (:username result))}))
 
 (rf/reg-event-fx
   :login
