@@ -46,6 +46,13 @@
      :form-data {}}))
 
 
+(rf/reg-event-db
+  :noop
+  (fn noop-handler
+    [db _]
+    db))
+
+
 (rf/reg-event-db ;; Saves the result of a HTTP request, to a top level DB key or a nested one.
   :process-response
   (fn process-response-handler
@@ -56,9 +63,10 @@
   :bad-response
   (fn bad-response-handler
     [{db :db} [_ result]]
-    (println result)
-    {:dispatch [:open-modal :login-modal]
-     :db db}))
+    (println (:status result))
+    (if (= (:status result) 401)
+      {:dispatch [:open-modal :login-modal]
+       :db (assoc db :username nil)})))
 
 ;; -- Form events -----------------------------------------------
 
@@ -120,6 +128,15 @@
     {:dispatch [:http-post {:url (createurl ["login"])
                             :on-success [:save-auth]}]
      :db db}))
+
+(rf/reg-event-fx
+  :logout
+  (fn logout-handler
+    [{db :db} [_ result]]
+    {:cookie/remove {:name "token"
+                     :on-success [:noop]
+                     :on-failure [:bad-response]}
+    :db (assoc db :username nil)}))
 
 ;; -- Resource operations -----------------------------------------
 

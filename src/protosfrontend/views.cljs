@@ -15,7 +15,7 @@
 (defn user-info []
   (let [username @(rf/subscribe [:username])]
     (if username
-      [:li [:a username]]
+      [:li [:a username] [:button {:on-click #(rf/dispatch [:logout])} "Log out"]]
       [:li [:button {:on-click #(rf/dispatch [:open-modal :login-modal])} "Log in"]])))
 
  (defn menu []
