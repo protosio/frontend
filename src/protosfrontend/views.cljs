@@ -85,10 +85,7 @@
                            :key   :installer-id}]
         [:free-form/field {:type  :text
                            :key   :name
-                           :label "Name"}]
-        [:free-form/field {:type  :text
-                           :key   :publicports
-                           :label "Public ports"}]]
+                           :label "Name"}]]
         (custom-installer-params @(rf/subscribe [:installer-params installer-id])))])]
 
     [b3/ModalFooter
