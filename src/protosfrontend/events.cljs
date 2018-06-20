@@ -22,7 +22,7 @@
 ;; -- Helper functions ---------------------------------------------
 
 (defn createurl [urlkeys]
-    (str "/" (string/join "/" (flatten [urlkeys]))))
+    (str "/api/v1/" (string/join "/" (flatten [urlkeys]))))
 
 (defn geturl [[resource & params]]
     (let [urlp (resource resources)
