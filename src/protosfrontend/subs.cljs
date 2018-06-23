@@ -4,7 +4,6 @@
         [clairvoyant.core :refer-macros [trace-forms]]
         [re-frame-tracer.core :refer [tracer]]))
 
-
 (trace-forms {:tracer (tracer :color "blue")}
 
 ;; -- Queries -----------------------------------------------

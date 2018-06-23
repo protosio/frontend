@@ -18,6 +18,9 @@
 (secretary/set-config! :prefix "#")
 
 (secretary/defroute "/" []
+  (rf/dispatch [:set-active-page [:dashboard-page]]))
+
+(secretary/defroute "/apps" []
   (rf/dispatch [:set-active-page [:apps-page] [:get-apps]]))
 
 (secretary/defroute "/apps/:id" {:as params}
@@ -37,9 +40,6 @@
 (secretary/defroute "/resources/:id" {:as params}
   (let [id (:id params)]
    (rf/dispatch [:set-active-page [:resource-page id]])))
-
-(secretary/defroute "/about" []
-  (rf/dispatch [:set-active-page [:about-page]]))
 
 ;; -------------------------
 ;; History
