@@ -56,7 +56,7 @@
 ;; Initialize app
 
 (defn mount-root []
-  (rf/dispatch-sync [:initialize [:apps-page]])
+  (rf/dispatch-sync [:initialize [:dashboard-page]])
   (reagent/render [v/current-page] (.getElementById js/document "app")))
 
 (defn init! []

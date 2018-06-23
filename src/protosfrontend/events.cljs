@@ -5,6 +5,7 @@
         [re-frame.core :as rf]
         [day8.re-frame.http-fx]
         [com.smxemail.re-frame-cookie-fx]
+        [com.degel.re-frame.storage]
         [clairvoyant.core :refer-macros [trace-forms]]
         [re-frame-tracer.core :refer [tracer]]))
 
@@ -36,14 +37,16 @@
 
 ;; -- Event Handlers -----------------------------------------------
 
-(rf/reg-event-db
+(rf/reg-event-fx
   :initialize
-  (fn [_ [_ active-page]]
-    {:apps {}
-     :installers {}
-     :active-page active-page
-     :modal-data {:show-modal false}
-     :form-data {}}))
+  (fn initialize
+    [_ [_ active-page]]
+    {:dispatch [:load-username]
+     :db {:apps {}
+          :installers {}
+          :active-page active-page
+          :modal-data {:show-modal false}
+          :form-data {}}}))
 
 
 (rf/reg-event-db
@@ -112,6 +115,13 @@
 ;; -- Authentication -----------------------------------------------
 
 (rf/reg-event-fx
+  :load-username
+  [(rf/inject-cofx :storage/get {:name :username})]
+  (fn load-username-handler
+    [{db :db username :storage/get} _]
+    {:db (assoc db :username username)}))
+
+(rf/reg-event-fx
   :save-auth
   (fn save-auth-handler
     [{db :db} [_ result]]
@@ -119,6 +129,7 @@
                   :value (:token result)
                   :on-success [:close-modal]
                   :on-failure [:bad-response]}
+    :storage/set {:name :username :value (:username result)}
     :db (assoc db :username (:username result))}))
 
 (rf/reg-event-fx
@@ -136,6 +147,7 @@
     {:cookie/remove {:name "token"
                      :on-success [:noop]
                      :on-failure [:bad-response]}
+    :storage/remove {:name :username}
     :db (assoc db :username nil)}))
 
 ;; -- Resource operations -----------------------------------------
