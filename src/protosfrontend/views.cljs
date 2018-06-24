@@ -2,6 +2,9 @@
     (:require
         [viewcomponents.sidebar :as sidebar]
         [viewcomponents.navbar :as navbar]
+        [viewcomponents.app :as app]
+        [viewcomponents.installer :as installer]
+        [viewcomponents.resource :as resource]
         [re-frame.core :as rf]
         [baking-soda.core :as b]
         [free-form.re-frame :as free-form]
@@ -87,216 +90,34 @@
            :login-modal         [modal-login]
            [:div])]))
 
-;;-- List components -----------------------
-
-(defn installer-list []
-  [:div {:class "col-lg-12 grid-margin stretch-card"}
-    [:div {:class "card"}
-      [:div {:class "card-body"}
-        [:h4 {:class "card-title"} "Installers"]
-        [:div {:class "table-responsive"}
-          [:table {:class "table table-striped"}
-            [:thead
-              [:tr
-                [:th "Name"]
-                [:th "ID"]]]
-            [:tbody
-            (let [installers @(rf/subscribe [:installers])]
-              (for [{Name :name, ID :id} (vals installers)]
-                [:tr {:key ID :style {:width "100%"}}
-                  [:td [:a {:href (str "/#/installers/" ID)} Name]]
-                  [:td ID]]))]]]]]])
-
-(defn app-list []
-  [:div {:class "col-lg-12 grid-margin stretch-card"}
-    [:div {:class "card"}
-      [:div {:class "card-body"}
-        [:h4 {:class "card-title"} "Apps"]
-        [:div {:class "table-responsive"}
-          [:table {:class "table table-striped"}
-            [:thead
-              [:tr
-                [:th "Name"]
-                [:th "ID"]
-                [:th "Status"]]]
-            [:tbody
-            (let [apps @(rf/subscribe [:apps])]
-              (for [{name :name, id :id, status :status} (vals apps)]
-                [:tr {:key id :style {:width "100%"}}
-                  [:td [:a {:href (str "/#/apps/" id)} name]]
-                  [:td id]
-                  [:td status]]))]]]]]])
-
-(defn resource-list []
-  [:div {:class "col-lg-12 grid-margin stretch-card"}
-    [:div {:class "card"}
-      [:div {:class "card-body"}
-        [:h4 {:class "card-title"} "Resources"]
-        [:div {:class "table-responsive"}
-          [:table {:class "table table-striped"}
-            [:thead
-              [:tr
-                [:th "ID"]
-                [:th "Status"]
-                [:th "Type"]
-                [:th "App"]]]
-            [:tbody
-          (let [resources @(rf/subscribe [:resources])]
-            (for [{type :type, id :id, status :status, app-id :app} (vals resources)]
-              [:tr {:key id :style {:width "100%"}}
-                [:td [:a {:href (str "/#/resources/" id)} id]]
-                [:td status]
-                [:td type]
-                [:td [:a {:href (str "/#/apps/" app-id)} app-id]]]))]]]]]])
-
 ;; ---------------------------------------
 ;; Pages
 
-(defn regular-page [left right]
+(defn regular-page [inner]
    [:div
       [navbar/menu]
       [:div {:class "container-fluid page-body-wrapper"}
         [sidebar/sidebar]
         [:div {:class "main-panel"}
           [:div {:class "content-wrapper"}
-            right]]]])
+            [inner]]]]])
 
 (defn dashboard-page []
-  [:div
-    [regular-page]])
+  [:div "Dashboard placeholder"])
 
-(defn apps-page []
+
+(defn current-page []
+ (let [[active-page & params]  @(rf/subscribe [:active-page])]
    [:div
-    [regular-page
-     [:button {:on-click #(rf/dispatch [:get-apps])} "Refresh"]
-     [:div {:class "row"}
-      [app-list]]]])
-
-(defn app-page
-   [id]
-   [:div
-     (navbar/menu)
-     [:div {:class "container"}
-      (let [apps @(rf/subscribe [:apps])
-            app (get apps (keyword id))
-            app-id (:id app)]
-        [:div
-         [:h1 (:name app)]
-         [:div.app-details
-          [:div.row
-           [:div.col-md-12
-             [:div.table-responsive
-               [:table {:class "table table-striped table-bordered"}
-                [:tbody
-                 [:tr
-                   [:th "ID"]
-                   [:td (:id app)]]
-                 [:tr
-                   [:th "Name"]
-                   [:td (:name app)]]
-                 [:tr
-                   [:th "Installer ID"]
-                   [:td (:installer-id app)]]
-                 [:tr
-                  [:th "Status"]
-                  [:td (:status app)]]]]]]]]
-         [b/Button {:bs-style "danger"
-                     :on-click #(rf/dispatch [:remove-app app-id])} "Remove"]
-         [b/Button {:bs-style "primary"
-                     :on-click #(rf/dispatch [:app-state app-id "stop"])} "Stop"]
-         [b/Button {:bs-style "success"
-                     :on-click #(rf/dispatch [:app-state app-id "start"])} "Start"]
-         [b/Button {:bs-style "primary"
-                     :on-click #(rf/dispatch [:get-app app-id])} "Refresh"]])]])
-
- (defn installers-page
-   []
-   [:div
-    (regular-page
-     [:button {:on-click #(rf/dispatch [:get-installers])} "Refresh"]
-     [installer-list])])
-
- (defn installer-page
-   [id]
-   [:div
-     (navbar/menu)
-     [:div {:class "container"}
-      (let [installer @(rf/subscribe [:installer id])
-            metadata (get-in installer [:metadata])]
-        [:div
-         [:h1 (:Name installer)]
-         [b/Button {:bs-style "danger" :on-click #(rf/dispatch [:remove-installer id])} "Remove"]
-         [b/Button {:bs-style "primary" :on-click #(rf/dispatch [:open-modal :create-app-modal (:id installer)])} "Create app"]
-         [:div.installer-details
-          [:div.row
-           [:div.col-md-12
-             [:div.table-responsive
-               [:table {:class "table table-striped table-bordered"}
-                [:tbody
-                 [:tr
-                   [:th "ID"]
-                   [:td (:id installer)]]
-                 [:tr
-                  [:th "Name"]
-                  [:td (:name installer)]]
-                (if metadata
-                 nil
-                 [:tr
-                  [:th "Metadata"]
-                  [:td "Not present"]])
-                 [:tr
-                  [:th "Description"]
-                  [:td (-> metadata :description)]]
-                 [:tr
-                  [:th "Provides"]
-                  [:td (clojure.string/join  " " (-> metadata :provides))]]]]]]]]
-
-         ])]])
-
- (defn resources-page
-   []
-   [:div
-    (regular-page
-     [:button {:on-click #(rf/dispatch [:get-resources])} "Refresh"]
-     [resource-list])])
-
-(defn resource-page
-  [id]
-  [:div
-    (navbar/menu)
-    [:div {:class "container"}
-      (let [resources @(rf/subscribe [:resources])
-            resource (get resources (keyword id))
-            resource-id (:id resources)]
-        [:div
-          [:h1 (:id resource)]
-          [:div.resource-details
-            [:div.row
-            [:div.col-md-12
-              [:div.table-responsive
-                [:table {:class "table table-striped table-bordered"}
-                  [:tbody
-                  [:tr
-                    [:th "Type"]
-                    [:td (:type resource)]]
-                  [:tr
-                    [:th "App"]
-                    [:td (:app resource)]]
-                  [:tr
-                    [:th "Status"]
-                    [:td (:status resource)]]]]]]]]])]])
-
- (defn current-page []
-  (let [[active-page & params]  @(rf/subscribe [:active-page])]
-    [:div
-      [current-modal]
-      [:div (condp = active-page
-            :dashboard-page    [dashboard-page]
-            :installer-page    [#(apply installer-page params)]
-            :installers-page   [installers-page]
-            :app-page          [#(apply app-page params)]
-            :apps-page         [apps-page]
-            :resources-page    [resources-page]
-            :resource-page     [#(apply resource-page params)])]]))
+     [current-modal]
+     [:div (condp = active-page
+           :dashboard-page    [regular-page dashboard-page]
+           :installer-page    [regular-page #(apply installer/installer-page params)]
+           :installers-page   [regular-page installer/installers-page]
+           :app-page          [regular-page #(apply app/app-page params)]
+           :apps-page         [regular-page app/apps-page]
+           :resources-page    [regular-page resource/resources-page]
+           :resource-page     [regular-page #(apply resource/resource-page params)]
+           )]]))
 
 )
