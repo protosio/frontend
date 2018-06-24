@@ -1,6 +1,7 @@
 (ns viewcomponents.navbar
   (:require
-    [re-frame.core :as rf]))
+    [re-frame.core :as rf]
+    [baking-soda.core :as b]))
 
 (defn user-info []
   (let [username @(rf/subscribe [:username])]
@@ -13,7 +14,7 @@
           [:a {:class "dropdown-item mt-2"} "Manage Account"]
           [:a {:class "dropdown-item"} "Change Password"]
           [:a {:class "dropdown-item" :on-click #(rf/dispatch [:logout])} "Sign Out"]]]
-      [:li [:button {:on-click #(rf/dispatch [:open-modal :login-modal])} "Log in"]])))
+      [:li [b/Button {:color "success" :on-click #(rf/dispatch [:open-modal :login-modal])} "Login"]])))
 
 (defn menu []
     [:nav {:class "navbar default-layout col-lg-12 col-12 p-0 fixed-top d-flex flex-row"}
