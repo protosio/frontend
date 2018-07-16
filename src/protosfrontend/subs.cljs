@@ -101,7 +101,20 @@
   :form-data
   (fn form-data-sub
     [db _]
-    (-> db
-        :form-data)))
+      (:form-data db)))
+
+(rf/reg-sub
+  :form-field-value
+  :<- [:form-data]
+  (fn form-field-value-sub
+    [doc [_ path]]
+      (get-in doc path)))
+
+; (rf/reg-sub
+;   :form-data
+;   (fn form-data-sub
+;     [db _]
+;     (-> db
+;         :form-data)))
 
 )

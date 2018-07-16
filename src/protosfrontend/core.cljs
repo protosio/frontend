@@ -41,6 +41,9 @@
   (let [id (:id params)]
    (rf/dispatch [:set-active-page [:resource-page id]])))
 
+(secretary/defroute "/init" []
+  (rf/dispatch [:set-active-page [:init-page]]))
+
 ;; -------------------------
 ;; History
 ;; must be called after routes have been defined
@@ -57,7 +60,7 @@
 
 (defn mount-root []
   (rf/dispatch-sync [:initialize [:dashboard-page]])
-  (reagent/render [v/current-page] (.getElementById js/document "app")))
+  (reagent/render [v/current-page] (.getElementById js/document "protos")))
 
 (defn init! []
   (hook-browser-navigation!)

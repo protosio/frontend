@@ -5,6 +5,7 @@
         [viewcomponents.app :as app]
         [viewcomponents.installer :as installer]
         [viewcomponents.resource :as resource]
+        [viewcomponents.init :as init]
         [re-frame.core :as rf]
         [baking-soda.core :as b]
         [free-form.re-frame :as free-form]
@@ -94,7 +95,7 @@
 ;; Pages
 
 (defn regular-page [inner]
-   [:div
+   [:div {:class "regular-page"}
       [navbar/menu]
       [:div {:class "container-fluid page-body-wrapper"}
         [sidebar/sidebar]
@@ -102,22 +103,27 @@
           [:div {:class "content-wrapper"}
             [inner]]]]])
 
+(defn init-page []
+  [:div {:class "init-page"}
+    [init/init-wizard]])
+
 (defn dashboard-page []
   [:div "Dashboard placeholder"])
 
 
 (defn current-page []
- (let [[active-page & params]  @(rf/subscribe [:active-page])]
-   [:div
-     [current-modal]
-     [:div (condp = active-page
-           :dashboard-page    [regular-page dashboard-page]
-           :installer-page    [regular-page #(apply installer/installer-page params)]
-           :installers-page   [regular-page installer/installers-page]
-           :app-page          [regular-page #(apply app/app-page params)]
-           :apps-page         [regular-page app/apps-page]
-           :resources-page    [regular-page resource/resources-page]
-           :resource-page     [regular-page #(apply resource/resource-page params)]
-           )]]))
+  (let [[active-page & params]  @(rf/subscribe [:active-page])]
+    [:div {:class "webui"}
+    ;  [current-modal]
+      (condp = active-page
+      :init-page         [init-page]
+      :dashboard-page    [regular-page dashboard-page]
+      :installer-page    [regular-page #(apply installer/installer-page params)]
+      :installers-page   [regular-page installer/installers-page]
+      :app-page          [regular-page #(apply app/app-page params)]
+      :apps-page         [regular-page app/apps-page]
+      :resources-page    [regular-page resource/resources-page]
+      :resource-page     [regular-page #(apply resource/resource-page params)]
+      )]))
 
 )

@@ -85,6 +85,14 @@
     [db [_ _]]
     (assoc db :form-data {})))
 
+;; -- Init wizard events -----------------------------------------------
+
+(rf/reg-event-db
+  :set-form-value
+  (fn set-form-value-handle
+    [db [_ path value]]
+    (assoc-in db (into [:form-data] path) value)))
+
 ;; -- Modal events -----------------------------------------------
 
 (rf/reg-event-fx
