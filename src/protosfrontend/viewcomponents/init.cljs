@@ -14,9 +14,9 @@
 (defn navigation-buttons []
   [:div {:class "form-row text-center"}
         [:div {:class "col-12"}
-          [:button {:type "button" :class "btn btn-icons btn-rounded btn-outline-primary mr-2"} [:i {:class "mdi mdi-arrow-left"}]]
+          [:button {:type "button" :class "btn btn-icons btn-rounded btn-outline-primary mr-2" :on-click #(rf/dispatch [:decrement-init-step])} [:i {:class "mdi mdi-arrow-left"}]]
           [:button {:type "button" :class "btn btn-rounded btn-outline-primary submit-btn mr-2"} "Register"]
-          [:button {:type "button" :class "btn btn-icons btn-rounded btn-outline-primary"} [:i {:class "mdi mdi-arrow-right"}]]]])
+          [:button {:type "button" :class "btn btn-icons btn-rounded btn-outline-primary" :on-click #(rf/dispatch [:increment-init-step])} [:i {:class "mdi mdi-arrow-right"}]]]])
 
 (defn input-field [properties]
   [:div {:class "form-group"}
@@ -39,9 +39,20 @@
         form-events]
       [navigation-buttons]]])
 
+(defn step2 []
+  [:div {:class "col-lg-4 mx-auto"}
+    [:h2 {:class "text-center mb-4"} "Domain provider"]
+    [:div {:class "auto-form-wrapper"}
+      [bind-fields
+        [:div
+          [input-field {:field :text :id :username :class "form-control" :placeholder "Username"}]
+          [input-field {:field :text :id :domain :class "form-control" :placeholder "Domain"}]]
+        form-events]
+      [navigation-buttons]]])
+
 (defn init-wizard []
-[:div {:class "container-scroller"}
-  [:div {:class "container-fluid page-body-wrapper full-page-wrapper auth-page"}
-    [:div {:class "content-wrapper d-flex align-items-center auth theme-one"}
-      [:div {:class "row w-100"}
-        [step1]]]]])
+  [:div {:class "container-scroller"}
+    [:div {:class "container-fluid page-body-wrapper full-page-wrapper auth-page"}
+      [:div {:class "content-wrapper d-flex align-items-center auth theme-one"}
+        [:div {:class "row w-100"}
+          [step1]]]]])

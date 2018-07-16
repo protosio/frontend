@@ -46,7 +46,8 @@
           :installers {}
           :active-page active-page
           :modal-data {:show-modal false}
-          :form-data {}}}))
+          :form-data {}
+          :init-step 1}}))
 
 
 (rf/reg-event-db
@@ -89,9 +90,25 @@
 
 (rf/reg-event-db
   :set-form-value
-  (fn set-form-value-handle
+  (fn set-form-value-handler
     [db [_ path value]]
     (assoc-in db (into [:form-data] path) value)))
+
+(rf/reg-event-db
+  :increment-init-step
+  (fn increment-init-step-handler
+    [db [_ _]]
+    (assoc db :init-step (if (= (:init-step db) 4)
+                            4
+                            (+ (:init-step db) 1)))))
+
+(rf/reg-event-db
+  :decrement-init-step
+  (fn decrement-init-step-handler
+    [db [_ _]]
+    (assoc db :init-step (if (= (:init-step db) 1)
+                            1
+                            (- (:init-step db) 1)))))
 
 ;; -- Modal events -----------------------------------------------
 
