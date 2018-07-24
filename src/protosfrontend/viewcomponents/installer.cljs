@@ -25,7 +25,6 @@
     [:div {:class "row"}
         [installer-list]])
 
-
 (defn installer-page [id]
     [:div {:class "row"}
         [:div {:class "col-lg-12 grid-margin stretch-card"}

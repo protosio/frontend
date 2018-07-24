@@ -47,7 +47,9 @@
           :active-page active-page
           :modal-data {:show-modal false}
           :form-data {}
-          :init-step 1}}))
+          :init-step 1
+          :alert nil
+          :loading? false}}))
 
 
 (rf/reg-event-db
@@ -56,21 +58,43 @@
     [db _]
     db))
 
+;; -- Response processing events --------------------------------
 
-(rf/reg-event-db ;; Saves the result of a HTTP request, to a top level DB key or a nested one.
-  :process-response
-  (fn process-response-handler
-    [db [_ dbkeys result]]
-    (assoc-in db dbkeys result)))
+(rf/reg-event-fx ;; Saves the result of a HTTP request, to a top level DB key or a nested one.
+  :good-response
+  (fn good-response-handler
+    [{db :db} [_ options result]]
+    (println options)
+    (println result)
+    {:dispatch [:success-alert (let [msg (:message options)] (if msg msg result))]
+     :db (assoc (if (:db-key options)
+                  (assoc db (:db-key options) result)
+                  db)
+          :loading? false)}))
 
 (rf/reg-event-fx
   :bad-response
   (fn bad-response-handler
     [{db :db} [_ result]]
-    (println (:status result))
     (if (= (:status result) 401)
       {:dispatch [:open-modal :login-modal]
-       :db (assoc db :username nil)})))
+       :db (assoc db :username nil)}
+      {:dispatch [:fail-alert (:status-text result)]
+       :db (assoc db :loading? false)})))
+
+;; -- Alert events -----------------------------------------------
+
+(rf/reg-event-db
+  :success-alert
+  (fn success-alert-handler
+    [db [_ text]]
+    (assoc db :alert {:type "success" :message text})))
+
+(rf/reg-event-db
+  :fail-alert
+  (fn fail-alert-handler
+    [db [_ text]]
+    (assoc db :alert {:type "danger" :message text})))
 
 ;; -- Form events -----------------------------------------------
 
@@ -86,29 +110,11 @@
     [db [_ _]]
     (assoc db :form-data {})))
 
-;; -- Init wizard events -----------------------------------------------
-
 (rf/reg-event-db
   :set-form-value
   (fn set-form-value-handler
     [db [_ path value]]
     (assoc-in db (into [:form-data] path) value)))
-
-(rf/reg-event-db
-  :increment-init-step
-  (fn increment-init-step-handler
-    [db [_ _]]
-    (assoc db :init-step (if (= (:init-step db) 4)
-                            4
-                            (+ (:init-step db) 1)))))
-
-(rf/reg-event-db
-  :decrement-init-step
-  (fn decrement-init-step-handler
-    [db [_ _]]
-    (assoc db :init-step (if (= (:init-step db) 1)
-                            1
-                            (- (:init-step db) 1)))))
 
 ;; -- Modal events -----------------------------------------------
 
@@ -274,7 +280,7 @@
                  :headers         [:Authorization (clojure.string/join " " ["Bearer" (:token cookies)])]
                  :format          (ajax/json-request-format)
                  :response-format (ajax/json-response-format {:keywords? true})
-                 :on-success      [:process-response (:result-db-key params)]
+                 :on-success      [:good-response (:result-db-key params)]
                  :on-failure      [:bad-response]}
     :db  (assoc db :loading? true)}))
 
@@ -294,7 +300,7 @@
                   :response-format (if (= (:response-format params) :raw)
                                     (ajax/raw-response-format)
                                     (ajax/json-response-format {:keywords? true}))
-                  :on-success      (:on-success params)
+                  :on-success      [:good-response (if (:response-options params) (:response-options params) {})]
                   :on-failure      [:bad-response]}
      :dispatch [:close-modal]
      :db  (assoc db :loading? true)}))

@@ -7,8 +7,10 @@
             [goog.history.EventType :as EventType]
             [secretary.core :as secretary :include-macros true]
             [protosfrontend.events :as e]
-            [protosfrontend.subs :as s]
-            [protosfrontend.views :as v])
+            [protosfrontend.subs]
+            [protosfrontend.views :as v]
+            [init.subs]
+            [init.events])
   (:import goog.History))
 
 (enable-console-print!)

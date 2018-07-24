@@ -5,7 +5,7 @@
         [viewcomponents.app :as app]
         [viewcomponents.installer :as installer]
         [viewcomponents.resource :as resource]
-        [viewcomponents.init :as init]
+        [init.views :as initviews]
         [re-frame.core :as rf]
         [baking-soda.core :as b]
         [free-form.re-frame :as free-form]
@@ -105,7 +105,7 @@
 
 (defn init-page []
   [:div {:class "init-page"}
-    [init/init-wizard]])
+    [initviews/init-wizard]])
 
 (defn dashboard-page []
   [:div "Dashboard placeholder"])
@@ -114,7 +114,7 @@
 (defn current-page []
   (let [[active-page & params]  @(rf/subscribe [:active-page])]
     [:div {:class "webui"}
-    ;  [current-modal]
+      [current-modal]
       (condp = active-page
       :init-page         [init-page]
       :dashboard-page    [regular-page dashboard-page]

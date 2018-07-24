@@ -110,11 +110,20 @@
     [doc [_ path]]
       (get-in doc path)))
 
-; (rf/reg-sub
-;   :form-data
-;   (fn form-data-sub
-;     [db _]
-;     (-> db
-;         :form-data)))
+;; -- Loading subs -----------------------------------------------
+
+(rf/reg-sub
+  :loading?
+  (fn form-data-sub
+    [db _]
+      (:loading? db)))
+
+;; -- Alert subs -----------------------------------------------
+
+(rf/reg-sub
+  :alert
+  (fn alert-sub
+    [db _]
+      (:alert db)))
 
 )
