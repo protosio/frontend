@@ -12,6 +12,36 @@
   :init-step
   (fn init-step-sub
     [db _]
-      (:init-step db)))
+      (get-in db [:init-wizard :step])))
+
+(rf/reg-sub
+  :init-form-step1
+  (fn init-form-step1-sub
+    [db _]
+      (get-in db [:init-wizard :step1])))
+
+(rf/reg-sub
+  :init-form-step2
+  (fn init-form-step2-sub
+    [db _]
+      (get-in db [:init-wizard :step2])))
+
+;; -- Alert subs for init steps --------------------------------
+
+(rf/reg-sub
+  :alert-init1
+  (fn alert-init1-sub
+    [db _]
+      (-> db
+          :alert
+          :init-step1)))
+
+(rf/reg-sub
+  :alert-init2
+  (fn alert-init2-sub
+    [db _]
+      (-> db
+          :alert
+          :init-step2)))
 
 )

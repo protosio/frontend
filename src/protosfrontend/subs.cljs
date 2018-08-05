@@ -8,12 +8,7 @@
 
 ;; -- Queries -----------------------------------------------
 
-(rf/reg-sub
-  :username
-  (fn username-sub
-    [db _]
-    (-> db
-        :username)))
+
 
 (rf/reg-sub
   :apps
@@ -118,12 +113,31 @@
     [db _]
       (:loading? db)))
 
-;; -- Alert subs -----------------------------------------------
+;; -- Alert sub -----------------------------------------------
 
 (rf/reg-sub
   :alert
   (fn alert-sub
     [db _]
-      (:alert db)))
+      (-> db
+          :alert
+          :main)))
+
+
+;; -- Auth data subs -----------------------------------------------
+
+(rf/reg-sub
+  :auth-data
+  (fn auth-data-sub
+    [db _]
+      (:auth db)))
+
+(rf/reg-sub
+  :username
+  (fn username-sub
+    [db _]
+    (-> db
+        :auth
+        :username)))
 
 )

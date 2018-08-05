@@ -7,7 +7,8 @@
         [com.smxemail.re-frame-cookie-fx]
         [com.degel.re-frame.storage]
         [clairvoyant.core :refer-macros [trace-forms]]
-        [re-frame-tracer.core :refer [tracer]]))
+        [re-frame-tracer.core :refer [tracer]]
+        [vimsical.re-frame.fx.track :as track]))
 
 
 (trace-forms {:tracer (tracer :color "green")}
@@ -47,16 +48,17 @@
           :active-page active-page
           :modal-data {:show-modal false}
           :form-data {}
-          :init-step 1
+          :init-wizard {:step 1}
           :alert nil
+          :auth nil
           :loading? false}}))
 
 
-(rf/reg-event-db
+(rf/reg-event-fx
   :noop
   (fn noop-handler
-    [db _]
-    db))
+    [_ _]
+    {}))
 
 ;; -- Response processing events --------------------------------
 
@@ -64,13 +66,12 @@
   :good-response
   (fn good-response-handler
     [{db :db} [_ options result]]
-    (println options)
-    (println result)
-    {:dispatch [:success-alert (let [msg (:message options)] (if msg msg result))]
-     :db (assoc (if (:db-key options)
-                  (assoc db (:db-key options) result)
-                  db)
-          :loading? false)}))
+    {:dispatch-n [[:success-alert (let [msg (:alert-message options)] (if msg msg result)) (let [alert-key (:alert-key options)] (if alert-key alert-key :maine))]
+                  (when (:event options) [(:event options) result])]
+    :db (assoc (if (:db-key options)
+                (assoc db (:db-key options) result)
+                db)
+        :loading? false)}))
 
 (rf/reg-event-fx
   :bad-response
@@ -79,7 +80,7 @@
     (if (= (:status result) 401)
       {:dispatch [:open-modal :login-modal]
        :db (assoc db :username nil)}
-      {:dispatch [:fail-alert (:status-text result)]
+      {:dispatch [:fail-alert (get-in result [:response :error]) :main]
        :db (assoc db :loading? false)})))
 
 ;; -- Alert events -----------------------------------------------
@@ -87,14 +88,14 @@
 (rf/reg-event-db
   :success-alert
   (fn success-alert-handler
-    [db [_ text]]
-    (assoc db :alert {:type "success" :message text})))
+    [db [_ text key]]
+    (assoc-in db [:alert key] {:type "success" :message text})))
 
 (rf/reg-event-db
   :fail-alert
   (fn fail-alert-handler
-    [db [_ text]]
-    (assoc db :alert {:type "danger" :message text})))
+    [db [_ text key]]
+    (assoc-in db [:alert key] {:type "danger" :message text})))
 
 ;; -- Form events -----------------------------------------------
 
@@ -150,25 +151,24 @@
   [(rf/inject-cofx :storage/get {:name :username})]
   (fn load-username-handler
     [{db :db username :storage/get} _]
-    {:db (assoc db :username username)}))
+    {:db (assoc-in db [:auth :username] username)}))
 
 (rf/reg-event-fx
   :save-auth
   (fn save-auth-handler
-    [{db :db} [_ result]]
+    [_ [_ result]]
     {:cookie/set {:name "token"
                   :value (:token result)
-                  :on-success [:close-modal]
-                  :on-failure [:bad-response]}
-    :storage/set {:name :username :value (:username result)}
-    :db (assoc db :username (:username result))}))
+                  :on-success [:noop]
+                  :on-failure [:noop]}
+    :storage/set {:name :username :value (:username result)}}))
 
 (rf/reg-event-fx
   :login
   (fn login-handler
     [{db :db} _]
-    {:dispatch [:http-post {:url (createurl ["login"])
-                            :on-success [:save-auth]}]
+    {:dispatch [:http-post {:url (createurl ["auth" "login"])
+                            :response-options {:message "Login successful" :db-key :auth :event :save-auth}}]
      :db db}))
 
 (rf/reg-event-fx
@@ -177,9 +177,9 @@
     [{db :db} [_ result]]
     {:cookie/remove {:name "token"
                      :on-success [:noop]
-                     :on-failure [:bad-response]}
+                     :on-failure [:noop]}
     :storage/remove {:name :username}
-    :db (assoc db :username nil)}))
+    :db (assoc db :auth nil)}))
 
 ;; -- Resource operations -----------------------------------------
 
@@ -187,23 +187,23 @@
   :get-resources
   (fn get-resources
     [{db :db} [_ _]]
-    {:dispatch [:http-get {:url (createurl ["resources"])
-                           :result-db-key [:resources]}]
+    {:dispatch [:http-get {:url (createurl ["e" "resources"])
+                           :response-options {:db-key [:resources]}}]
      :db db}))
 
 (rf/reg-event-fx
   :get-installer
   (fn get-installer-handler
     [{db :db} [_ installer-id]]
-    {:dispatch [:http-get {:url (createurl ["installers" installer-id])
-                           :result-db-key [:installers (keyword installer-id)]}]
+    {:dispatch [:http-get {:url (createurl ["e" "installers" installer-id])
+                           :response-options {:db-key [:installers (keyword installer-id)]}}]
      :db db}))
 
 (rf/reg-event-fx
   :create-installer-metadata
   (fn create-installer-metadata-handler
     [{db :db} [_ installer-id]]
-    {:dispatch [:http-post {:url (createurl ["installers" installer-id "metadata"])
+    {:dispatch [:http-post {:url (createurl ["e" "installers" installer-id "metadata"])
                             :response-format :raw
                             :on-success [:get-installer installer-id]}]
      :db db}))
@@ -212,15 +212,15 @@
   :get-installers
   (fn get-installers
     [{db :db} [_ _]]
-    {:dispatch [:http-get {:url (createurl ["installers"])
-                           :result-db-key [:installers]}]
+    {:dispatch [:http-get {:url (createurl ["e" "installers"])
+                           :response-options {:db-key [:installers]}}]
      :db db}))
 
 (rf/reg-event-fx
   :remove-installer
   (fn remove-installer-handler
     [{db :db} [_ installer-id]]
-    {:dispatch [:http-delete {:url (createurl ["installers" installer-id])
+    {:dispatch [:http-delete {:url (createurl ["e" "installers" installer-id])
                               :response-format :raw
                               :on-success [:set-active-page [:installers-page] [:get-installers]]}]
       :db db}))
@@ -229,23 +229,23 @@
   :get-apps
   (fn get-apps
     [{db :db} [_ _]]
-    {:dispatch [:http-get {:url (createurl ["apps"])
-                           :result-db-key [:apps]}]
+    {:dispatch [:http-get {:url (createurl ["e" "apps"])
+                           :response-options {:db-key [:apps]}}]
      :db db}))
 
 (rf/reg-event-fx
   :get-app
   (fn get-app-handler
     [{db :db} [_ app-id]]
-    {:dispatch [:http-get {:url (createurl ["apps" app-id])
-                           :result-db-key [:apps (keyword app-id)]}]
+    {:dispatch [:http-get {:url (createurl ["e" "apps" app-id])
+                           :response-options {:db-key [:apps (keyword app-id)]}}]
      :db db}))
 
 (rf/reg-event-fx
   :create-app
   (fn create-app-handler
     [{db :db} [_ _]]
-    {:dispatch [:http-post {:url (createurl ["apps"])
+    {:dispatch [:http-post {:url (createurl ["e" "apps"])
                             :on-success [:set-active-page [:apps-page] [:get-apps]]}]
      :db db}))
 
@@ -253,7 +253,7 @@
   :remove-app
   (fn remove-app-handler
     [{db :db} [_ app-id]]
-    {:dispatch [:http-delete {:url (createurl ["apps" app-id])
+    {:dispatch [:http-delete {:url (createurl ["e" "apps" app-id])
                               :response-format :raw
                               :on-success [:set-active-page [:apps-page] [:get-apps]]}]
      :db db}))
@@ -262,7 +262,7 @@
   :app-state
   (fn app-state-handler
     [{db :db} [_ app-id state]]
-    {:dispatch [:http-post {:url (createurl ["apps" app-id "action"])
+    {:dispatch [:http-post {:url (createurl ["e" "apps" app-id "action"])
                             :response-format :raw
                             :on-success [:set-active-page [:app-page app-id] [:get-app app-id]]
                             :post-data {:name state}}]
@@ -280,7 +280,7 @@
                  :headers         [:Authorization (clojure.string/join " " ["Bearer" (:token cookies)])]
                  :format          (ajax/json-request-format)
                  :response-format (ajax/json-response-format {:keywords? true})
-                 :on-success      [:good-response (:result-db-key params)]
+                 :on-success      [:good-response (if (:response-options params) (:response-options params) {})]
                  :on-failure      [:bad-response]}
     :db  (assoc db :loading? true)}))
 
@@ -302,7 +302,6 @@
                                     (ajax/json-response-format {:keywords? true}))
                   :on-success      [:good-response (if (:response-options params) (:response-options params) {})]
                   :on-failure      [:bad-response]}
-     :dispatch [:close-modal]
      :db  (assoc db :loading? true)}))
 
 (rf/reg-event-fx
