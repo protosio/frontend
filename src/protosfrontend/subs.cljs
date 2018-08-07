@@ -109,7 +109,7 @@
 
 (rf/reg-sub
   :loading?
-  (fn form-data-sub
+  (fn loading-sub
     [db _]
       (:loading? db)))
 

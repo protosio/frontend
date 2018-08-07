@@ -7,8 +7,7 @@
         [com.smxemail.re-frame-cookie-fx]
         [com.degel.re-frame.storage]
         [clairvoyant.core :refer-macros [trace-forms]]
-        [re-frame-tracer.core :refer [tracer]]
-        [vimsical.re-frame.fx.track :as track]))
+        [re-frame-tracer.core :refer [tracer]]))
 
 
 (trace-forms {:tracer (tracer :color "green")}
@@ -50,9 +49,8 @@
           :form-data {}
           :init-wizard {:step 1}
           :alert nil
-          :auth nil
+          :auth {}
           :loading? false}}))
-
 
 (rf/reg-event-fx
   :noop
@@ -66,22 +64,19 @@
   :good-response
   (fn good-response-handler
     [{db :db} [_ options result]]
-    {:dispatch-n [[:success-alert (let [msg (:alert-message options)] (if msg msg result)) (let [alert-key (:alert-key options)] (if alert-key alert-key :maine))]
+    {:dispatch-n [[:success-alert (let [msg (:alert-message options)] (if msg msg result)) (let [alert-key (:alert-key options)] (if alert-key alert-key :main))]
                   (when (:event options) [(:event options) result])]
     :db (assoc (if (:db-key options)
-                (assoc db (:db-key options) result)
+                (assoc-in db (:db-key options) result)
                 db)
         :loading? false)}))
 
 (rf/reg-event-fx
   :bad-response
   (fn bad-response-handler
-    [{db :db} [_ result]]
-    (if (= (:status result) 401)
-      {:dispatch [:open-modal :login-modal]
-       :db (assoc db :username nil)}
-      {:dispatch [:fail-alert (get-in result [:response :error]) :main]
-       :db (assoc db :loading? false)})))
+    [{db :db} [_ options result]]
+      {:dispatch [:fail-alert (get-in result [:response :error]) (let [alert-key (:alert-key options)] (if alert-key alert-key :main))]
+       :db (assoc db :loading? false)}))
 
 ;; -- Alert events -----------------------------------------------
 
@@ -281,7 +276,7 @@
                  :format          (ajax/json-request-format)
                  :response-format (ajax/json-response-format {:keywords? true})
                  :on-success      [:good-response (if (:response-options params) (:response-options params) {})]
-                 :on-failure      [:bad-response]}
+                 :on-failure      [:bad-response (if (:response-options params) (:response-options params) {})]}
     :db  (assoc db :loading? true)}))
 
 (rf/reg-event-fx
@@ -301,7 +296,7 @@
                                     (ajax/raw-response-format)
                                     (ajax/json-response-format {:keywords? true}))
                   :on-success      [:good-response (if (:response-options params) (:response-options params) {})]
-                  :on-failure      [:bad-response]}
+                  :on-failure      [:bad-response (if (:response-options params) (:response-options params) {})]}
      :db  (assoc db :loading? true)}))
 
 (rf/reg-event-fx
@@ -314,9 +309,8 @@
                   :headers         [:Authorization (clojure.string/join " " ["Bearer" (:token cookies)])]
                   :format          (ajax/url-request-format)
                   :response-format (ajax/raw-response-format)
-                  :on-success      (:on-success params)
-                  :on-failure      [:bad-response]}
-     :dispatch [:close-modal]
+                  :on-success      [:good-response (if (:response-options params) (:response-options params) {})]
+                  :on-failure      [:bad-response (if (:response-options params) (:response-options params) {})]}
      :db  (assoc db :loading? true)}))
 
 )

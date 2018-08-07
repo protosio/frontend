@@ -44,4 +44,29 @@
           :alert
           :init-step2)))
 
+;; -- DNS provider list --------------------------------
+
+(rf/reg-sub
+  :dns-providers
+  (fn dns-providers-sub
+    [db _]
+      ; (vec (map :name (-> db
+      ;                     :init-wizard
+      ;                     :step2
+      ;                     :dns-provider-list)))
+      (vec (map (fn [itm] {:id (get itm 0) :name (get-in itm [1 :name])}) (-> db
+                                                                              :init-wizard
+                                                                              :step2
+                                                                              :dns-provider-list)))))
+
+(rf/reg-sub
+  :selected-dns-provider
+  (fn selected-dns-provider-sub
+    [db _]
+      (-> db
+          :form-data
+          :init-wizard
+          :step2
+          :selected-dns-provider)))
+
 )

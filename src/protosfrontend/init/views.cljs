@@ -20,19 +20,18 @@
           [:div {:class "col-12"}
             [:div {:class (str "alert alert-" (:type alert-data)) :role "alert"} (:message alert-data)]]]])))
 
-(defn submit-button [text dispatch-value]
-  (let [loading? @(rf/subscribe [:loading?])]
+(defn submit-button [text dispatch-value disabled? loading?]
     [:button {:type "button"
-              :on-click #(rf/dispatch dispatch-value)
-              :class (str "btn btn-rounded btn-outline-primary submit-btn mr-2" (when loading? " disabled"))}
-              text (when loading? [:i {:class "fa fa-spin fa-spinner"}])]))
+              :on-click #(rf/dispatch [dispatch-value])
+              :class (str "btn btn-rounded btn-outline-primary submit-btn mr-2" (when disabled? " disabled"))}
+              text (when loading? [:i {:class "fa fa-spin fa-spinner"}])])
 
-(defn navigation-buttons [button-text event]
+(defn navigation-buttons [button-text event disabled? loading?]
   [:div {:class "form-group"}
     [:div {:class "form-row text-center"}
       [:div {:class "col-12"}
         [:button {:type "button" :class "btn btn-icons btn-rounded btn-outline-primary mr-2" :on-click #(rf/dispatch [:decrement-init-step])} [:i {:class "mdi mdi-arrow-left"}]]
-        [submit-button button-text [event]]
+        [submit-button button-text event disabled? loading?]
         [:button {:type "button" :class "btn btn-icons btn-rounded btn-outline-primary" :on-click #(rf/dispatch [:increment-init-step])} [:i {:class "mdi mdi-arrow-right"}]]]]])
 
 (defn input-field [properties]
@@ -43,12 +42,11 @@
         [:span {:class "input-group-text"}
           [:i {:class "mdi mdi-check-circle-outline"}]]]]])
 
-(defn single-select-list [properties]
+(defn single-select-list [properties items]
   [:div {:class "form-group"}
       [:ul.list-group properties
-        [:div.list-group-item {:key :foo} "foo"]
-        [:div.list-group-item {:key :bar} "bar"]
-        [:div.list-group-item {:key :baz} "baz"]]])
+      (for [item items]
+        [:div.list-group-item {:key (:id item)} (:name item)])]])
 
 (defn step1 []
   [:div {:class "col-lg-4 mx-auto"}
@@ -62,17 +60,23 @@
           [input-field {:field :password :id :init-wizard.step1.confirmpassword :class "form-control" :placeholder "Confirm password"}]
           [input-field {:field :text :id :init-wizard.step1.domain :class "form-control" :placeholder "Domain"}]]
         (form-events [:init-form-step1])]
-      [navigation-buttons "Register" :register-user-domain]
+      (let [loading? @(rf/subscribe [:loading?])]
+          [navigation-buttons "Register" :register-user-domain loading? loading?])
       [alert :alert-init1]]])
 
 (defn step2 []
   [:div {:class "col-lg-4 mx-auto"}
     [:h2 {:class "text-center mb-4"} "Domain provider"]
     [:div {:class "auto-form-wrapper"}
+      [:h5 {:class "mb-4"} "Select a DNS provider"]
+      (let [dns-providers @(rf/subscribe [:dns-providers])]
+      (if-not (empty? dns-providers)
       [bind-fields
-        (single-select-list {:field :single-select :id :list-selection})
-        (form-events [:init-form-step2])]
-      [navigation-buttons "Install" :install-dns-provider]
+        (single-select-list {:field :single-select :id :init-wizard.step2.selected-dns-provider} dns-providers)
+        (form-events [:init-form-step2])]))
+      (let [loading? @(rf/subscribe [:loading?])
+           disabled? (or (not @(rf/subscribe [:selected-dns-provider])) loading?)]
+        [navigation-buttons "Download" :download-dns-provider disabled? loading?])
       [alert :alert-init2]]])
 
 (defn init-wizard []
