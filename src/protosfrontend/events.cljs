@@ -78,6 +78,14 @@
       {:dispatch [:fail-alert (get-in result [:response :error]) (let [alert-key (:alert-key options)] (if alert-key alert-key :main))]
        :db (assoc db :loading? false)}))
 
+(rf/reg-event-fx
+  :request-finished
+  (fn request-finished-handler
+    [{db :db} [_ event result]]
+    {:dispatch (conj event result)
+     :db (assoc db :loading? false)}))
+
+
 ;; -- Alert events -----------------------------------------------
 
 (rf/reg-event-db
@@ -95,10 +103,16 @@
 ;; -- Form events -----------------------------------------------
 
 (rf/reg-event-db
+  :set-form-value
+  (fn set-form-value-handler
+    [db [_ path value]]
+    (assoc-in db path value)))
+
+(rf/reg-event-db
   :update-form-data
   (fn update-form-data-handler
-    [db [_ keys value]]
-    (assoc-in db (cons :form-data keys) value)))
+    [db [_ path value]]
+    (assoc-in db path value)))
 
 (rf/reg-event-db
   :reset-form-data
@@ -106,11 +120,6 @@
     [db [_ _]]
     (assoc db :form-data {})))
 
-(rf/reg-event-db
-  :set-form-value
-  (fn set-form-value-handler
-    [db [_ path value]]
-    (assoc-in db (into [:form-data] path) value)))
 
 ;; -- Modal events -----------------------------------------------
 
@@ -275,8 +284,8 @@
                  :headers         [:Authorization (clojure.string/join " " ["Bearer" (:token cookies)])]
                  :format          (ajax/json-request-format)
                  :response-format (ajax/json-response-format {:keywords? true})
-                 :on-success      [:good-response (if (:response-options params) (:response-options params) {})]
-                 :on-failure      [:bad-response (if (:response-options params) (:response-options params) {})]}
+                 :on-success [:request-finished (:on-success params)]
+                 :on-failure [:request-finished (:on-failure params)]}
     :db  (assoc db :loading? true)}))
 
 (rf/reg-event-fx
@@ -295,8 +304,8 @@
                   :response-format (if (= (:response-format params) :raw)
                                     (ajax/raw-response-format)
                                     (ajax/json-response-format {:keywords? true}))
-                  :on-success      [:good-response (if (:response-options params) (:response-options params) {})]
-                  :on-failure      [:bad-response (if (:response-options params) (:response-options params) {})]}
+                  :on-success [:request-finished (:on-success params)]
+                  :on-failure [:request-finished (:on-failure params)]}
      :db  (assoc db :loading? true)}))
 
 (rf/reg-event-fx
@@ -309,8 +318,8 @@
                   :headers         [:Authorization (clojure.string/join " " ["Bearer" (:token cookies)])]
                   :format          (ajax/url-request-format)
                   :response-format (ajax/raw-response-format)
-                  :on-success      [:good-response (if (:response-options params) (:response-options params) {})]
-                  :on-failure      [:bad-response (if (:response-options params) (:response-options params) {})]}
+                  :on-success [:request-finished (:on-success params)]
+                  :on-failure [:request-finished (:on-failure params)]}
      :db  (assoc db :loading? true)}))
 
 )

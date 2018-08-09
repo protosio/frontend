@@ -100,10 +100,9 @@
 
 (rf/reg-sub
   :form-field-value
-  :<- [:form-data]
   (fn form-field-value-sub
-    [doc [_ path]]
-      (get-in doc path)))
+    [db [_ path]]
+      (get-in db path)))
 
 ;; -- Loading subs -----------------------------------------------
 

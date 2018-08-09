@@ -35,7 +35,7 @@
         [:button {:type "button" :class "btn btn-icons btn-rounded btn-outline-primary" :on-click #(rf/dispatch [:increment-init-step])} [:i {:class "mdi mdi-arrow-right"}]]]]])
 
 (defn input-field [properties]
-  [:div {:class "form-group"}
+  ^{:key (:id properties)} [:div {:class "form-group"}
     [:div {:class "input-group"}
       [:input properties]
       [:div {:class "input-group-append"}
@@ -54,11 +54,11 @@
     [:div {:class "auto-form-wrapper"}
       [bind-fields
         [:div
-          [input-field {:field :text :id :init-wizard.step1.username :class "form-control" :placeholder "Username"}]
-          [input-field {:field :text :id :init-wizard.step1.name :class "form-control" :placeholder "Name"}]
-          [input-field {:field :password :id :init-wizard.step1.password :class "form-control" :placeholder "Password"}]
-          [input-field {:field :password :id :init-wizard.step1.confirmpassword :class "form-control" :placeholder "Confirm password"}]
-          [input-field {:field :text :id :init-wizard.step1.domain :class "form-control" :placeholder "Domain"}]]
+          [input-field {:field :text :id :init-wizard.step1.form.username :class "form-control" :placeholder "Username"}]
+          [input-field {:field :text :id :init-wizard.step1.form.name :class "form-control" :placeholder "Name"}]
+          [input-field {:field :password :id :init-wizard.step1.form.password :class "form-control" :placeholder "Password"}]
+          [input-field {:field :password :id :init-wizard.step1.form.confirmpassword :class "form-control" :placeholder "Confirm password"}]
+          [input-field {:field :text :id :init-wizard.step1.form.domain :class "form-control" :placeholder "Domain"}]]
         (form-events [:init-form-step1])]
       (let [loading? @(rf/subscribe [:loading?])]
           [navigation-buttons "Register" :register-user-domain loading? loading?])
@@ -70,13 +70,24 @@
     [:div {:class "auto-form-wrapper"}
       [:h5 {:class "mb-4"} "Select a DNS provider"]
       (let [dns-providers @(rf/subscribe [:dns-providers])]
-      (if-not (empty? dns-providers)
-      [bind-fields
-        (single-select-list {:field :single-select :id :init-wizard.step2.selected-dns-provider} dns-providers)
-        (form-events [:init-form-step2])]))
+        (if-not (empty? dns-providers)
+          [bind-fields
+            (single-select-list {:field :single-select :id :init-wizard.step2.selected-dns-provider} dns-providers)
+            (form-events [:init-form-step2])]))
+      (let [dns-params @(rf/subscribe [:dns-provider-params])]
+        (if-not (empty? dns-params)
+          [:div
+          [:div {:class "border-top my-3"}]
+          [bind-fields
+            (into [:div ] (for [field dns-params]
+                               [input-field {:field :text :id (keyword (str "init-wizard.step2.form." field)) :class "form-control" :placeholder field}]))
+            (form-events [:init-form-step2])]]))
       (let [loading? @(rf/subscribe [:loading?])
-           disabled? (or (not @(rf/subscribe [:selected-dns-provider])) loading?)]
-        [navigation-buttons "Download" :download-dns-provider disabled? loading?])
+           disabled? (or (not @(rf/subscribe [:selected-dns-provider])) loading?)
+           dns-params @(rf/subscribe [:dns-provider-params])]
+        (if (empty? dns-params)
+          [navigation-buttons "Download" :download-dns-provider disabled? loading?]
+          [navigation-buttons "Run" :run-dns-provider disabled? loading?]))
       [alert :alert-init2]]])
 
 (defn init-wizard []
