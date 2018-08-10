@@ -22,7 +22,7 @@
 
 (defn submit-button [text dispatch-value disabled? loading?]
     [:button {:type "button"
-              :on-click #(rf/dispatch [dispatch-value])
+              :on-click #(rf/dispatch dispatch-value)
               :class (str "btn btn-rounded btn-outline-primary submit-btn mr-2" (when disabled? " disabled"))}
               text (when loading? [:i {:class "fa fa-spin fa-spinner"}])])
 
@@ -61,7 +61,7 @@
           [input-field {:field :text :id :init-wizard.step1.form.domain :class "form-control" :placeholder "Domain"}]]
         (form-events [:init-form-step1])]
       (let [loading? @(rf/subscribe [:loading?])]
-          [navigation-buttons "Register" :register-user-domain loading? loading?])
+          [navigation-buttons "Register" [:register-user-domain] loading? loading?])
       [alert :alert-init1]]])
 
 (defn step2 []
@@ -72,7 +72,7 @@
       (let [dns-providers @(rf/subscribe [:dns-providers])]
         (if-not (empty? dns-providers)
           [bind-fields
-            (single-select-list {:field :single-select :id :init-wizard.step2.selected-dns-provider} dns-providers)
+            (single-select-list {:field :single-select :id :init-wizard.step2.selected-provider} dns-providers)
             (form-events [:init-form-step2])]))
       (let [dns-params @(rf/subscribe [:dns-provider-params])]
         (if-not (empty? dns-params)
@@ -83,11 +83,11 @@
                                [input-field {:field :text :id (keyword (str "init-wizard.step2.form." field)) :class "form-control" :placeholder field}]))
             (form-events [:init-form-step2])]]))
       (let [loading? @(rf/subscribe [:loading?])
-           disabled? (or (not @(rf/subscribe [:selected-dns-provider])) loading?)
+           disabled? (or (not @(rf/subscribe [:selected-provider :step2])) loading?)
            dns-params @(rf/subscribe [:dns-provider-params])]
         (if (empty? dns-params)
-          [navigation-buttons "Download" :download-dns-provider disabled? loading?]
-          [navigation-buttons "Run" :run-dns-provider disabled? loading?]))
+          [navigation-buttons "Download" [:download-dns-provider] disabled? loading?]
+          [navigation-buttons "Run" [:create-app-during-init :step2] disabled? loading?]))
       [alert :alert-init2]]])
 
 (defn init-wizard []

@@ -6,7 +6,7 @@
 
 (trace-forms {:tracer (tracer :color "blue")}
 
-;; -- Init subs -----------------------------------------------
+;; -- Init common subs -----------------------------------------------
 
 (rf/reg-sub
   :init-step
@@ -14,7 +14,14 @@
     [db _]
       (get-in db [:init-wizard :step])))
 
-
+(rf/reg-sub
+  :selected-provider
+  (fn selected-provider-sub
+    [db [_ step]]
+      (-> db
+          :init-wizard
+          step
+          :selected-provider)))
 
 ;; -- Data subs for init step1 --------------------------------
 
@@ -60,16 +67,7 @@
                 (-> db
                     :init-wizard
                     :step2
-                    :dns-provider-list)))))
-
-(rf/reg-sub
-  :selected-dns-provider
-  (fn selected-dns-provider-sub
-    [db _]
-      (-> db
-          :init-wizard
-          :step2
-          :selected-dns-provider)))
+                    :provider-list)))))
 
 (rf/reg-sub
   :dns-provider-params
