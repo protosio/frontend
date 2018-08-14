@@ -301,9 +301,7 @@
                                       post-data
                                       (:form-data db)))
                   :format          (ajax/json-request-format)
-                  :response-format (if (= (:response-format params) :raw)
-                                    (ajax/raw-response-format)
-                                    (ajax/json-response-format {:keywords? true}))
+                  :response-format (ajax/json-response-format {:keywords? true})
                   :on-success [:request-finished (:on-success params)]
                   :on-failure [:request-finished (:on-failure params)]}
      :db  (assoc db :loading? true)}))

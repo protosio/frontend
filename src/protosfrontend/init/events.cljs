@@ -110,11 +110,12 @@
     (let [installer-id (get-in db [:init-wizard step :selected-provider])
           installer-params (get-in db [:init-wizard step :form])
           installers (get-in db [:init-wizard :step2 :provider-list])
-          name (:name (installer-id installers))]
+          name (:name (installer-id installers))
+          version (last (sort (:versions (get installers installer-id))))]
     {:dispatch [:http-post {:url (pe/createurl ["e" "apps"])
                             :on-success [:create-app-during-init-success step]
                             :on-failure [:init-failure step]
-                            :post-data {:installer-id installer-id :name name :installer-params installer-params}}]})))
+                            :post-data {:installer-id installer-id :installer-version version :name name :installer-params installer-params}}]})))
 
 (rf/reg-event-fx
   :create-app-during-init-success
@@ -152,6 +153,7 @@
   :get-installer-success
   (fn get-installer-success-handler
     [{db :db} [_ result]]
-    {:db (assoc-in db [:init-wizard :step2 :installer-run-params] (get-in result [:metadata :params]))}))
+    (let [version (last (sort (keys (:versions result))))]
+    {:db (assoc-in db [:init-wizard :step2 :installer-run-params] (get-in result [:versions version :params]))})))
 
 )
