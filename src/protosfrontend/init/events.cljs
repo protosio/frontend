@@ -35,11 +35,14 @@
 (rf/reg-event-fx
   :step-action
   (fn step-action-handler
-  [_ [_ step]]
+  [{db :db} [_ step]]
   (let [event (condp = step
                 2         [:get-dns-providers]
-                3         [:get-cert-providers])]
-    {:dispatch event})))
+                3         [:get-cert-providers])
+        installer-downloaded (get-in db [:init-wizard step :downloaded])]
+    (if installer-downloaded
+      {}
+      {:dispatch event}))))
 
 (rf/reg-event-fx
   :init-failure
