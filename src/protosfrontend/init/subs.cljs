@@ -40,7 +40,7 @@
     [db [_ step]]
       (-> db
           :init-wizard
-          :step
+          step
           :installer-run-params)))
 
 (rf/reg-sub
