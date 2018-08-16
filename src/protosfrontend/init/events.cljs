@@ -31,14 +31,14 @@
           {:dispatch [:step-action final-step]
            :db (assoc-in db [:init-wizard :step] final-step)})))
 
-
 (rf/reg-event-fx
   :step-action
   (fn step-action-handler
   [{db :db} [_ step]]
   (let [event (condp = step
                 2         [:get-dns-providers]
-                3         [:get-cert-providers])
+                3         [:get-cert-providers]
+                [:noop])
         installer-downloaded (get-in db [:init-wizard step :downloaded])]
     (if installer-downloaded
       {}
@@ -203,5 +203,25 @@
     [{db :db} [_ installer-id result]]
     {:dispatch [:get-installer-init :step3 installer-id]
      :db (assoc-in db [:init-wizard :step3 :alert] {:type "success" :message "SSL certificate provider downloaded successfully"})}))
+
+;; -- Create DNS and TLS certificate (step4) -----------------------
+
+(rf/reg-event-fx
+  :create-init-resources
+  (fn create-init-resources-handler
+    [_ _]
+    {:dispatch [:http-post {:url (pe/createurl ["e" "protos" "resources"])
+                            :on-success [:create-init-resources-success]
+                            :on-failure [:init-failure :step4]
+                            :post-data {}}]}))
+
+(rf/reg-event-fx
+  :create-init-resources-success
+  (fn create-init-resources-success-handler
+    [{db :db} [_ result]]
+    {:dispatch [:some-timer]
+     :db (-> db
+             (assoc-in [:init-wizard :step4 :alert] {:type "success" :message "Successfully requested resource creation"})
+             (assoc-in [:init-wizard :step4 :resources] result))}))
 
 )

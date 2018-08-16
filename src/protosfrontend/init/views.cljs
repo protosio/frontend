@@ -117,6 +117,19 @@
           [navigation-buttons "Run" [:create-app-during-init :step3] disabled? loading?]))
       [alert [:alert-init :step3]]]])
 
+(defn step4 []
+  [:div {:class "col-lg-4 mx-auto"}
+    [:h2 {:class "text-center mb-4"} "Protos DNS and TLS resources"]
+    [:div {:class "auto-form-wrapper"}
+      [:h5 {:class "mb-4"} "Resource status"]
+      (let [resources @(rf/subscribe [:init-resources])]
+        [:ul {:class "list-arrow"}
+          (for [[id rsc] resources]
+            [:li {:key id} (str (:type rsc) " has status: " (:status rsc))])])
+      (let [loading? @(rf/subscribe [:loading?])]
+          [navigation-buttons "Create resurces" [:create-init-resources] loading? loading?])
+      [alert [:alert-init :step4]]]])
+
 (defn init-wizard []
   [:div {:class "container-scroller"}
     [:div {:class "container-fluid page-body-wrapper full-page-wrapper auth-page"}
@@ -127,5 +140,5 @@
             1         [step1]
             2         [step2]
             3         [step3]
-            4         [step2]
+            4         [step4]
             ))]]]])

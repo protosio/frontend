@@ -64,4 +64,15 @@
           step
           :alert)))
 
+;; -- Step 4 subs -----------------------------------------------
+
+(rf/reg-sub
+  :init-resources
+  (fn init-resources-sub
+    [db _]
+      (-> db
+          :init-wizard
+          :step4
+          :resources)))
+
 )
