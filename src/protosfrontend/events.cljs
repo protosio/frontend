@@ -6,6 +6,7 @@
         [day8.re-frame.http-fx]
         [com.smxemail.re-frame-cookie-fx]
         [com.degel.re-frame.storage]
+        [district0x.re-frame.interval-fx]
         [clairvoyant.core :refer-macros [trace-forms]]
         [re-frame-tracer.core :refer [tracer]]))
 
@@ -57,6 +58,22 @@
   (fn noop-handler
     [_ _]
     {}))
+
+;; -- Timer events --------------------------------
+
+(rf/reg-event-fx
+  :start-timer
+  (fn start-timer-handler
+    [_ [_ id freq event]]
+    {:dispatch-interval {:id        id
+                         :ms        freq
+                         :dispatch  event}}))
+
+(rf/reg-event-fx
+  :stop-timer
+  (fn stop-timer-handler
+    [_ [_ id]]
+    {:clear-interval {:id id}}))
 
 ;; -- Response processing events --------------------------------
 
