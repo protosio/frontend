@@ -50,6 +50,9 @@
     [{db :db} [_ step result]]
     {:db (assoc-in db [:init-wizard step :alert] {:type "danger" :message (get-in result [:response :error])})}))
 
+
+
+
 ;; -- Common operations step 2 & 3 ----------------------------------------
 
 (rf/reg-event-fx
@@ -219,9 +222,27 @@
   :create-init-resources-success
   (fn create-init-resources-success-handler
     [{db :db} [_ result]]
-    {:dispatch [:some-timer]
+    {:dispatch-n (vec (for [id (keys result)]
+                           [:start-timer id 5000 [:retrieve-init-resource id]]))
      :db (-> db
              (assoc-in [:init-wizard :step4 :alert] {:type "success" :message "Successfully requested resource creation"})
              (assoc-in [:init-wizard :step4 :resources] result))}))
+
+(rf/reg-event-fx
+  :retrieve-init-resource
+  (fn retrieve-init-resource-handler
+    [_ [_ id]]
+    {:dispatch [:http-get {:url (pe/createurl ["e" "resources" (name id)])
+                           :on-success [:retrieve-init-resource-success id]
+                           :on-failure [:init-failure :step4]}]}))
+
+(rf/reg-event-fx
+  :retrieve-init-resource-success
+  (fn retrieve-init-resource-success-handler
+    [{db :db} [_ id result]]
+    {:dispatch (if (= "created" (:status result))
+               [:stop-timer id]
+               [])
+     :db (assoc-in db [:init-wizard :step4 :resources id] result)}))
 
 )
