@@ -242,7 +242,7 @@
     [{db :db} [_ id result]]
     {:dispatch (if (= "created" (:status result))
                [:stop-timer id]
-               [])
+               [:noop])
      :db (assoc-in db [:init-wizard :step4 :resources id] result)}))
 
 )

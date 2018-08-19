@@ -1,7 +1,11 @@
 (ns init.views
   (:require
     [re-frame.core :as rf]
-    [reagent-forms.core :refer [bind-fields]]))
+    [reagent-forms.core :refer [bind-fields]]
+    [clairvoyant.core :refer-macros [trace-forms]]
+    [re-frame-tracer.core :refer [tracer]]))
+
+(trace-forms {:tracer (tracer :color "brown")}
 
 (defn form-events
   [dbpath]
@@ -120,15 +124,22 @@
 (defn step4 []
   [:div {:class "col-lg-4 mx-auto"}
     [:h2 {:class "text-center mb-4"} "Protos DNS and TLS resources"]
+    (let [resources @(rf/subscribe [:init-resources])
+          loading? @(rf/subscribe [:loading?])
+          resources-created (if (= (count resources) 0)
+                                false
+                                (every? true? (for [[k v] resources]
+                                                   (= (:status v) "created"))))]
     [:div {:class "auto-form-wrapper"}
       [:h5 {:class "mb-4"} "Resource status"]
-      (let [resources @(rf/subscribe [:init-resources])]
+
         [:ul {:class "list-arrow"}
           (for [[id rsc] resources]
-            [:li {:key id} (str (:type rsc) " has status: " (:status rsc))])])
-      (let [loading? @(rf/subscribe [:loading?])]
+            [:li {:key id} (str (:type rsc) " has status: " (:status rsc))])]
+        (if resources-created
+          [navigation-buttons "Finish" [:restart-and-redirect] loading? loading?]
           [navigation-buttons "Create resurces" [:create-init-resources] loading? loading?])
-      [alert [:alert-init :step4]]]])
+      [alert [:alert-init :step4]]])])
 
 (defn init-wizard []
   [:div {:class "container-scroller"}
@@ -142,3 +153,5 @@
             3         [step3]
             4         [step4]
             ))]]]])
+
+)
