@@ -15,10 +15,12 @@
 
 (rf/reg-event-fx
   :login-success
-  (fn register-user-domain-success-handler
+  (fn login-success-handler
     [{db :db} [_ result]]
-    {:dispatch [:save-auth result]
+    {:dispatch-n [[:save-auth result]
+                  [:set-active-page (:previous-page db)]]
      :db (-> db
+             (assoc-in [:previous-page] nil)
              (assoc-in [:auth] result)
              (assoc-in [:login :alert] {:type "success" :message "Login successful"}))}))
 
