@@ -51,8 +51,6 @@
     {:db (assoc-in db [:init-wizard step :alert] {:type "danger" :message (get-in result [:response :error])})}))
 
 
-
-
 ;; -- Common operations step 2 & 3 ----------------------------------------
 
 (rf/reg-event-fx

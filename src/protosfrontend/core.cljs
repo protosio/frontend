@@ -12,7 +12,9 @@
             [auth.subs]
             [auth.events]
             [init.subs]
-            [init.events])
+            [init.events]
+            [dashboard.subs]
+            [dashboard.events])
   (:import goog.History))
 
 (enable-console-print!)
