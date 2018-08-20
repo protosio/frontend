@@ -68,10 +68,10 @@
 (rf/reg-event-fx
   :get-apps
   (fn get-apps
-    [{db :db} [_ _]]
+    [{db :db} _]
     {:dispatch [:http-get {:url (pe/createurl ["e" "apps"])
-                           :response-options {:db-key [:apps]}}]
-     :db db}))
+                           :on-success [:save-response [:apps]]
+                           :on-failure [:dashboard-failure]}]}))
 
 (rf/reg-event-fx
   :get-app
@@ -113,9 +113,9 @@
 (rf/reg-event-fx
   :get-resources
   (fn get-resources
-    [{db :db} [_ _]]
+    [{db :db} _]
     {:dispatch [:http-get {:url (pe/createurl ["e" "resources"])
-                           :response-options {:db-key [:resources]}}]
-     :db db}))
+                           :on-success [:save-response [:resources]]
+                           :on-failure [:dashboard-failure]}]}))
 
 )
