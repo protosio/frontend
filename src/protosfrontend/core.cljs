@@ -9,6 +9,8 @@
             [protosfrontend.events :as e]
             [protosfrontend.subs]
             [protosfrontend.views :as v]
+            [auth.subs]
+            [auth.events]
             [init.subs]
             [init.events])
   (:import goog.History))
@@ -45,6 +47,9 @@
 
 (secretary/defroute "/init" []
   (rf/dispatch [:set-active-page [:init-page]]))
+
+  (secretary/defroute "/login" []
+    (rf/dispatch [:set-active-page [:login-page]]))
 
 ;; -------------------------
 ;; History

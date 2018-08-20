@@ -6,6 +6,7 @@
         [viewcomponents.installer :as installer]
         [viewcomponents.resource :as resource]
         [init.views :as initviews]
+        [auth.views :as authviews]
         [re-frame.core :as rf]
         [baking-soda.core :as b]
         [free-form.re-frame :as free-form]
@@ -14,9 +15,6 @@
         [re-frame-tracer.core :refer [tracer]]))
 
 (trace-forms {:tracer (tracer :color "brown")}
-
-;;-------------------------
-;; Page components
 
 ;;-- Modal components -----------------------
 
@@ -107,6 +105,10 @@
   [:div {:class "init-page"}
     [initviews/init-wizard]])
 
+(defn login-page []
+  [:div {:class "login-page"}
+    [authviews/login-form]])
+
 (defn dashboard-page []
   [:div "Dashboard placeholder"])
 
@@ -117,6 +119,7 @@
       [current-modal]
       (condp = active-page
       :init-page         [init-page]
+      :login-page        [login-page]
       :dashboard-page    [regular-page dashboard-page]
       :installer-page    [regular-page #(apply installer/installer-page params)]
       :installers-page   [regular-page installer/installers-page]

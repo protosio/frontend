@@ -165,43 +165,6 @@
       :dispatch update-event}
      {:db (assoc db :active-page active-page)})))
 
-;; -- Authentication -----------------------------------------------
-
-(rf/reg-event-fx
-  :load-username
-  [(rf/inject-cofx :storage/get {:name :username})]
-  (fn load-username-handler
-    [{db :db username :storage/get} _]
-    {:db (assoc-in db [:auth :username] username)}))
-
-(rf/reg-event-fx
-  :save-auth
-  (fn save-auth-handler
-    [_ [_ result]]
-    {:cookie/set {:name "token"
-                  :value (:token result)
-                  :on-success [:noop]
-                  :on-failure [:noop]}
-    :storage/set {:name :username :value (:username result)}}))
-
-(rf/reg-event-fx
-  :login
-  (fn login-handler
-    [{db :db} _]
-    {:dispatch [:http-post {:url (createurl ["auth" "login"])
-                            :response-options {:message "Login successful" :db-key :auth :event :save-auth}}]
-     :db db}))
-
-(rf/reg-event-fx
-  :logout
-  (fn logout-handler
-    [{db :db} [_ result]]
-    {:cookie/remove {:name "token"
-                     :on-success [:noop]
-                     :on-failure [:noop]}
-    :storage/remove {:name :username}
-    :db (assoc db :auth nil)}))
-
 ;; -- Resource operations -----------------------------------------
 
 (rf/reg-event-fx
