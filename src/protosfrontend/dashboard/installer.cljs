@@ -30,7 +30,9 @@
         [:div {:class "col-lg-12 grid-margin stretch-card"}
             [:div {:class "card"}
                 (let [installer @(rf/subscribe [:installer id])
-                      metadata (get-in installer [:metadata])]
+                      versions (keys (:versions installer))
+                      selected-version (last (sort versions))
+                      metadata (get-in installer [:versions selected-version])]
                 [:div {:class "card-body"}
                     [:h4 {:class "card-title"} (:name installer)]
                     [:div.installer-details
@@ -43,6 +45,10 @@
                               [:tr
                                [:th "Name"]
                                [:td (:name installer)]]
+                              [:tr
+                               [:th "Versions"]
+                               [:td (for [version versions]
+                                         [:button {:type "button" :key version :class (str "btn btn-sm btn-rounded submit-btn mr-1 "  (if (= selected-version version) "btn-inverse-dark" "btn-outline-dark"))} version])]]
                               [:tr
                                [:th "Description"]
                                [:td (-> metadata :description)]]
