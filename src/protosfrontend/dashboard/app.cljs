@@ -1,4 +1,4 @@
-(ns viewcomponents.app
+(ns dashboard.app
     (:require
       [re-frame.core :as rf]
       [baking-soda.core :as b]))

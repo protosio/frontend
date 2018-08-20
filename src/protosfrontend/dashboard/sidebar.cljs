@@ -1,4 +1,4 @@
-(ns viewcomponents.sidebar)
+(ns dashboard.sidebar)
 
 (defn sidebar []
     [:nav {:class "sidebar sidebar-offcanvas", :id "sidebar"}

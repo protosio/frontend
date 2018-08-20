@@ -1,4 +1,4 @@
-(ns viewcomponents.navbar
+(ns dashboard.navbar
   (:require
     [re-frame.core :as rf]
     [baking-soda.core :as b]))

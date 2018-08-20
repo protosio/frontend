@@ -1,10 +1,10 @@
 (ns protosfrontend.views
     (:require
-        [viewcomponents.sidebar :as sidebar]
-        [viewcomponents.navbar :as navbar]
-        [viewcomponents.app :as app]
-        [viewcomponents.installer :as installer]
-        [viewcomponents.resource :as resource]
+        [dashboard.sidebar :as sidebar]
+        [dashboard.navbar :as navbar]
+        [dashboard.app :as app]
+        [dashboard.installer :as installer]
+        [dashboard.resource :as resource]
         [init.views :as initviews]
         [auth.views :as authviews]
         [re-frame.core :as rf]

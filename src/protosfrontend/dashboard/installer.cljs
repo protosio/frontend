@@ -1,4 +1,4 @@
-(ns viewcomponents.installer
+(ns dashboard.installer
     (:require
       [re-frame.core :as rf]
       [baking-soda.core :as b]))

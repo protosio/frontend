@@ -1,4 +1,4 @@
-(ns viewcomponents.resource
+(ns dashboard.resource
     (:require
       [re-frame.core :as rf]
       [baking-soda.core :as b]))
