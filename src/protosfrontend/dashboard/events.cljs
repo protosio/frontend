@@ -34,8 +34,8 @@
   (fn get-installer-handler
     [{db :db} [_ installer-id]]
     {:dispatch [:http-get {:url (pe/createurl ["e" "installers" installer-id])
-                           :response-options {:db-key [:installers (keyword installer-id)]}}]
-     :db db}))
+                           :on-success [:save-response [:installers (keyword installer-id)]]
+                           :on-failure [:dashboard-failure]}]}))
 
 (rf/reg-event-fx
   :create-installer-metadata
@@ -67,7 +67,7 @@
 
 (rf/reg-event-fx
   :get-apps
-  (fn get-apps
+  (fn get-apps-handler
     [{db :db} _]
     {:dispatch [:http-get {:url (pe/createurl ["e" "apps"])
                            :on-success [:save-response [:apps]]
@@ -78,8 +78,8 @@
   (fn get-app-handler
     [{db :db} [_ app-id]]
     {:dispatch [:http-get {:url (pe/createurl ["e" "apps" app-id])
-                           :response-options {:db-key [:apps (keyword app-id)]}}]
-     :db db}))
+                           :on-success [:save-response [:apps (keyword app-id)]]
+                           :on-failure [:dashboard-failure]}]}))
 
 (rf/reg-event-fx
   :create-app
