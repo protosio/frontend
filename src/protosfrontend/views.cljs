@@ -126,7 +126,6 @@
       :app-page          [regular-page #(apply app/app-page params)]
       :apps-page         [regular-page app/apps-page]
       :resources-page    [regular-page resource/resources-page]
-      :resource-page     [regular-page #(apply resource/resource-page params)]
-      )]))
+      :resource-page     [regular-page #(apply resource/resource-page params)])]))
 
 )
