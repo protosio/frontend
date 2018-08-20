@@ -99,9 +99,17 @@
   :request-finished
   (fn request-finished-handler
     [{db :db} [_ event result]]
-    {:dispatch (conj event result)
+    {:dispatch (if (= (:status result) 401)
+                   [:redirect-login]
+                   (conj event result))
      :db (assoc db :loading? false)}))
 
+(rf/reg-event-fx
+  :redirect-login
+  (fn redirect-login-handler
+    [{db :db} _]
+    {:dispatch [:set-active-page [:login-page]]
+     :db (assoc db :previous-page (:active-page db))}))
 
 ;; -- Alert events -----------------------------------------------
 
