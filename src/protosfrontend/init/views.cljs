@@ -1,20 +1,12 @@
 (ns init.views
   (:require
     [re-frame.core :as rf]
+    [protosfrontend.util :as util]
     [reagent-forms.core :refer [bind-fields]]
     [clairvoyant.core :refer-macros [trace-forms]]
     [re-frame-tracer.core :refer [tracer]]))
 
 (trace-forms {:tracer (tracer :color "brown")}
-
-(defn form-events
-  [dbpath]
-  {:get (fn [path] @(rf/subscribe [:form-field-value path]))
-   :save! (fn [path value] (rf/dispatch [:set-form-value path value]))
-   :update! (fn [path save-fn value]
-              (rf/dispatch [:set-form-value path
-                              (save-fn @(rf/subscribe [:form-field-value path]) value)]))
-   :doc (fn [] @(rf/subscribe dbpath))})
 
 (defn alert [alert-sub]
   (let [alert-data @(rf/subscribe alert-sub)]
@@ -63,7 +55,7 @@
           [input-field {:field :password :id :init-wizard.step1.form.password :class "form-control" :placeholder "Password"}]
           [input-field {:field :password :id :init-wizard.step1.form.confirmpassword :class "form-control" :placeholder "Confirm password"}]
           [input-field {:field :text :id :init-wizard.step1.form.domain :class "form-control" :placeholder "Domain"}]]
-        (form-events [:init-form :step1])]
+        (util/form-events [:init-form :step1])]
       (let [loading? @(rf/subscribe [:loading?])]
           [navigation-buttons "Register" [:register-user-domain] loading? loading?])
       [alert [:alert-init :step1]]]])
@@ -77,7 +69,7 @@
         (if-not (empty? dns-providers)
           [bind-fields
             (single-select-list {:field :single-select :id :init-wizard.step2.selected-provider} dns-providers)
-            (form-events [:init-form :step2])]))
+            (util/form-events [:init-form :step2])]))
       (let [dns-params @(rf/subscribe [:provider-params :step2])]
         (if-not (empty? dns-params)
           [:div
@@ -85,7 +77,7 @@
           [bind-fields
             (into [:div ] (for [field dns-params]
                                [input-field {:field :text :id (keyword (str "init-wizard.step2.form." field)) :class "form-control" :placeholder field}]))
-            (form-events [:init-form :step2])]]))
+            (util/form-events [:init-form :step2])]]))
       (let [loading? @(rf/subscribe [:loading?])
            disabled? (or (not @(rf/subscribe [:selected-provider :step2])) loading?)
            dns-params @(rf/subscribe [:provider-params :step2])]
@@ -103,7 +95,7 @@
         (if-not (empty? providers)
           [bind-fields
             (single-select-list {:field :single-select :id :init-wizard.step3.selected-provider} providers)
-            (form-events [:init-form :step3])]))
+            (util/form-events [:init-form :step3])]))
       (let [params @(rf/subscribe [:provider-params :step3])]
         (if-not (empty? params)
           [:div
@@ -111,7 +103,7 @@
           [bind-fields
             (into [:div ] (for [field params]
                                [input-field {:field :text :id (keyword (str "init-wizard.step3.form." field)) :class "form-control" :placeholder field}]))
-            (form-events [:init-form :step3])]]))
+            (util/form-events [:init-form :step3])]]))
       (let [loading? @(rf/subscribe [:loading?])
            disabled? (or (not @(rf/subscribe [:selected-provider :step3])) loading?)
            installer-downloaded @(rf/subscribe [:init-installer-downloaded :step3])
