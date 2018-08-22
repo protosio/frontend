@@ -1,6 +1,33 @@
 (ns dashboard.installer
     (:require
+      [reagent.core :as r]
+      [protosfrontend.util :as util]
+      [reagent-forms.core :refer [bind-fields]]
       [re-frame.core :as rf]))
+
+(defonce page-choice (r/atom "details"))
+
+(defn alert [alert-sub]
+  (let [alert-data @(rf/subscribe alert-sub)]
+    (when alert-data
+      [:div {:class "form-group"}
+        [:div {:class "form-row text-center"}
+          [:div {:class "col-12"}
+            [:div {:class (str "alert alert-" (:type alert-data)) :role "alert"} (:message alert-data)]]]])))
+
+(defn submit-button [text dispatch-value disabled? loading?]
+    [:button {:type "button"
+              :on-click #(rf/dispatch dispatch-value)
+              :class (str "btn btn-rounded btn-outline-primary submit-btn mr-2" (when disabled? " disabled"))}
+              text (when loading? [:i {:class "fa fa-spin fa-spinner"}])])
+
+(defn input-field [properties]
+  ^{:key (:id properties)} [:div {:class "form-group"}
+    [:div {:class "input-group"}
+      [:input properties]
+      [:div {:class "input-group-append"}
+        [:span {:class "input-group-text"}
+          [:i {:class "mdi mdi-check-circle-outline"}]]]]])
 
 (defn installer-list []
   [:div {:class "col-lg-12 grid-margin stretch-card"}
@@ -24,37 +51,68 @@
     [:div {:class "row"}
         [installer-list]])
 
-(defn installer-page [id]
+(defn installer-details
+  [installer]
+  (let [versions (keys (:versions installer))
+        selected-version (last (sort versions))
+        metadata (get-in installer [:versions selected-version])]
+  [:div.installer-details
+    [:div {:class "form-group"}
+      [:div.table-responsive
+          [:table {:class "table table-striped table-bordered"}
+           [:tbody
+            [:tr
+              [:th "ID"]
+              [:td (:id installer)]]
+            [:tr
+             [:th "Name"]
+             [:td (:name installer)]]
+            [:tr
+             [:th "Versions"]
+             [:td (for [version versions]
+                       [:button {:type "button" :key version :class (str "btn btn-sm btn-rounded submit-btn mr-1 "  (if (= selected-version version) "btn-inverse-dark" "btn-outline-dark"))} version])]]
+            [:tr
+             [:th "Description"]
+             [:td (-> metadata :description)]]
+            [:tr
+             [:th "Provides"]
+             [:td (clojure.string/join  " " (-> metadata :provides))]]]]]]
+    [:div {:class "col-12"}
+      [:button {:type "button" :class "btn btn-rounded btn-rounded btn-outline-danger mr-1" :on-click #(rf/dispatch [:remove-installer (:id installer)])} "Delete"]
+      [:button {:type "button" :class "btn btn-rounded btn-rounded btn-outline-primary mr-1" :on-click #(reset! page-choice "create-app")} "Create app"]]]))
+
+(defn create-app
+  [installer]
+  [:div.create-app
+    [:div {:class "auto-form-wrapper"}
+      [bind-fields
+        [:div {:class "col-9"}
+          [input-field {:field :text :id :create-app.form.name :class "form-control" :placeholder "Name"}]]
+        (util/form-events [:create-app-form])]
+        (let [versions (keys (:versions installer))
+              selected-version (last (sort versions))
+              metadata (get-in installer [:versions selected-version])]
+          (if-not (empty? (:params metadata))
+            [:div.installer-params {:class "col-9"}
+              [:div {:class "border-top my-3"}]
+              [bind-fields
+                (into [:div ] (for [field (:params metadata)]
+                                   [input-field {:field :text :id (keyword (str "create-app.form." field)) :class "form-control" :placeholder field}]))
+                (util/form-events [:init-form :step2])]]))
+      (let [loading? @(rf/subscribe [:loading?])]
+        [:div {:class "col-12"}
+          [:button {:type "button" :class "btn btn-rounded btn-rounded btn-outline-danger mr-1" :on-click #(reset! page-choice "details")} "Cancel"]
+          [submit-button "Create" [:create-app] loading? loading?]])
+      [alert [:alert-dashboard]]]])
+
+(defn installer-page
+    [id]
     [:div {:class "row"}
         [:div {:class "col-lg-12 grid-margin stretch-card"}
             [:div {:class "card"}
-                (let [installer @(rf/subscribe [:installer id])
-                      versions (keys (:versions installer))
-                      selected-version (last (sort versions))
-                      metadata (get-in installer [:versions selected-version])]
-                [:div {:class "card-body"}
-                  [:h2 {:class "card-title"} (:name installer)]
-                    [:div {:class "form-group"}
-                        [:div.installer-details
-                            [:div.table-responsive
-                                [:table {:class "table table-striped table-bordered"}
-                                 [:tbody
-                                  [:tr
-                                    [:th "ID"]
-                                    [:td (:id installer)]]
-                                  [:tr
-                                   [:th "Name"]
-                                   [:td (:name installer)]]
-                                  [:tr
-                                   [:th "Versions"]
-                                   [:td (for [version versions]
-                                             [:button {:type "button" :key version :class (str "btn btn-sm btn-rounded submit-btn mr-1 "  (if (= selected-version version) "btn-inverse-dark" "btn-outline-dark"))} version])]]
-                                  [:tr
-                                   [:th "Description"]
-                                   [:td (-> metadata :description)]]
-                                  [:tr
-                                   [:th "Provides"]
-                                   [:td (clojure.string/join  " " (-> metadata :provides))]]]]]]]
-                        [:div {:class "col-12"}
-                          [:button {:type "button" :class "btn btn-rounded btn-rounded btn-outline-danger mr-1" :on-click #(rf/dispatch [:remove-installer id])} "Delete"]
-                          [:button {:type "button" :class "btn btn-rounded btn-rounded btn-outline-primary mr-1" :on-click #(rf/dispatch [:remove-installer id])} "Create app"]]])]]])
+                (let [installer @(rf/subscribe [:installer id])]
+                  [:div {:class "card-body"}
+                    [:h2 {:class "card-title"} (:name installer)]
+                    (if (= @page-choice "details")
+                      [installer-details installer]
+                      [create-app installer])])]]])

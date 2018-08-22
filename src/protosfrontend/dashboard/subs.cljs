@@ -39,4 +39,16 @@
     (-> db
         :resources)))
 
+(rf/reg-sub
+  :create-app-form
+  (fn create-app-form-sub
+    [db _]
+    (get-in db [:create-app :form])))
+
+(rf/reg-sub
+  :alert-dashboard
+  (fn alert-dashboard-sub
+    [db _]
+    (get-in db [:dashboard :alert])))
+
 )
