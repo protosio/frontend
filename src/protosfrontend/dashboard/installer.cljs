@@ -15,12 +15,6 @@
           [:div {:class "col-12"}
             [:div {:class (str "alert alert-" (:type alert-data)) :role "alert"} (:message alert-data)]]]])))
 
-(defn submit-button [text dispatch-value disabled? loading?]
-    [:button {:type "button"
-              :on-click #(rf/dispatch dispatch-value)
-              :class (str "btn btn-rounded btn-outline-primary submit-btn mr-2" (when disabled? " disabled"))}
-              text (when loading? [:i {:class "fa fa-spin fa-spinner"}])])
-
 (defn input-field [properties]
   ^{:key (:id properties)} [:div {:class "form-group"}
     [:div {:class "input-group"}
@@ -102,7 +96,7 @@
       (let [loading? @(rf/subscribe [:loading?])]
         [:div {:class "col-12"}
           [:button {:type "button" :class "btn btn-rounded btn-rounded btn-outline-danger mr-1" :on-click #(reset! page-choice "details")} "Cancel"]
-          [submit-button "Create" [:create-app] loading? loading?]])
+          [util/submit-button-spinner "Create" [:create-app] "primary" loading? loading?]])
       [alert [:alert-dashboard]]]])
 
 (defn installer-page
