@@ -16,18 +16,12 @@
           [:div {:class "col-12"}
             [:div {:class (str "alert alert-" (:type alert-data)) :role "alert"} (:message alert-data)]]]])))
 
-(defn submit-button [text dispatch-value disabled? loading?]
-    [:button {:type "button"
-              :on-click #(rf/dispatch dispatch-value)
-              :class (str "btn btn-rounded btn-outline-primary submit-btn mr-2" (when disabled? " disabled"))}
-              text (when loading? [:i {:class "fa fa-spin fa-spinner"}])])
-
 (defn navigation-buttons [button-text event disabled? loading?]
   [:div {:class "form-group"}
     [:div {:class "form-row text-center"}
       [:div {:class "col-12"}
         [:button {:type "button" :class "btn btn-icons btn-rounded btn-outline-primary mr-2" :on-click #(rf/dispatch [:decrement-init-step])} [:i {:class "mdi mdi-arrow-left"}]]
-        [submit-button button-text event disabled? loading?]
+        [util/submit-button-spinner button-text event "primary" disabled? loading?]
         [:button {:type "button" :class "btn btn-icons btn-rounded btn-outline-primary" :on-click #(rf/dispatch [:increment-init-step])} [:i {:class "mdi mdi-arrow-right"}]]]]])
 
 (defn input-field [properties]
