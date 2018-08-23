@@ -19,7 +19,7 @@
   :dashboard-failure
   (fn dashboard-failure-handler
     [{db :db} [_ result]]
-    {:db (assoc-in db [:alert] {:type "danger" :message (get-in result [:response :error])})}))
+    {:db (assoc-in db [:dashboard :alert] {:type "danger" :message (get-in result [:response :error])})}))
 
 (rf/reg-event-db
   :save-response
@@ -43,8 +43,7 @@
     [{db :db} [_ installer-id]]
     {:dispatch [:http-post {:url (pe/createurl ["e" "installers" installer-id "metadata"])
                             :response-format :raw
-                            :on-success [:get-installer installer-id]}]
-     :db db}))
+                            :on-success [:get-installer installer-id]}]}))
 
 (rf/reg-event-fx
   :get-installers
@@ -60,8 +59,7 @@
     [{db :db} [_ installer-id]]
     {:dispatch [:http-delete {:url (pe/createurl ["e" "installers" installer-id])
                               :response-format :raw
-                              :on-success [:set-active-page [:installers-page] [:get-installers]]}]
-      :db db}))
+                              :on-success [:set-active-page [:installers-page] [:get-installers]]}]}))
 
 ;; -- Apps -----------------------------------------------------
 
@@ -86,27 +84,30 @@
   (fn create-app-handler
     [{db :db} [_ _]]
     {:dispatch [:http-post {:url (pe/createurl ["e" "apps"])
-                            :on-success [:set-active-page [:apps-page] [:get-apps]]}]
-     :db db}))
+                            :on-success [:set-active-page [:apps-page] [:get-apps]]}]}))
 
 (rf/reg-event-fx
   :remove-app
   (fn remove-app-handler
     [{db :db} [_ app-id]]
     {:dispatch [:http-delete {:url (pe/createurl ["e" "apps" app-id])
-                              :response-format :raw
-                              :on-success [:set-active-page [:apps-page] [:get-apps]]}]
-     :db db}))
+                              :on-success [:set-active-page [:apps-page] [:get-apps]]}]}))
 
 (rf/reg-event-fx
   :app-state
   (fn app-state-handler
     [{db :db} [_ app-id state]]
     {:dispatch [:http-post {:url (pe/createurl ["e" "apps" app-id "action"])
-                            :response-format :raw
-                            :on-success [:set-active-page [:app-page app-id] [:get-app app-id]]
-                            :post-data {:name state}}]
-     :db db}))
+                            :on-success [:app-state-success app-id state]
+                            :on-failure [:dashboard-failure]
+                            :post-data {:name state}}]}))
+
+(rf/reg-event-fx
+  :app-state-success
+  (fn app-state-success-handler
+    [{db :db} [_ app-id state]]
+    {:dispatch [:get-app app-id]
+     :db (assoc-in db [:dashboard :alert] {:type "success" :message (str "App " app-id " set to state " state)})}))
 
 ;; -- Resources ------------------------------------------------
 
