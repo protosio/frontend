@@ -82,9 +82,18 @@
 (rf/reg-event-fx
   :create-app
   (fn create-app-handler
-    [{db :db} [_ _]]
+    [{db :db} [_ installer-id selected-version]]
     {:dispatch [:http-post {:url (pe/createurl ["e" "apps"])
-                            :on-success [:set-active-page [:apps-page] [:get-apps]]}]}))
+                            :on-success [:create-app-success]
+                            :on-failure [:dashboard-failure]
+                            :post-data {:installer-id installer-id :installer-version selected-version :name (get-in db [:create-app :form :name]) :installer-params (get-in db [:create-app :form :installer-params])}}]}))
+
+(rf/reg-event-fx
+  :create-app-success
+  (fn create-app-success-handler
+    [{db :db} [_ result]]
+    {:dispatch [:set-active-page [:apps-page] [:get-apps]]
+     :db (assoc-in db [:dashboard :alert] {:type "success" :message (str "App created")})}))
 
 (rf/reg-event-fx
   :remove-app

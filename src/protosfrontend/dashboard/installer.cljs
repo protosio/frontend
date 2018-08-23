@@ -76,27 +76,26 @@
       [:button {:type "button" :class "btn btn-rounded btn-rounded btn-outline-primary mr-1" :on-click #(reset! page-choice "create-app")} "Create app"]]]))
 
 (defn create-app
-  [installer]
+  [installer selected-version]
   [:div.create-app
     [:div {:class "auto-form-wrapper"}
       [bind-fields
         [:div {:class "col-9"}
           [input-field {:field :text :id :create-app.form.name :class "form-control" :placeholder "Name"}]]
         (util/form-events [:create-app-form])]
-        (let [versions (keys (:versions installer))
-              selected-version (last (sort versions))
-              metadata (get-in installer [:versions selected-version])]
+        (let [metadata (get-in installer [:versions selected-version])]
           (if-not (empty? (:params metadata))
             [:div.installer-params {:class "col-9"}
               [:div {:class "border-top my-3"}]
               [bind-fields
                 (into [:div ] (for [field (:params metadata)]
-                                   [input-field {:field :text :id (keyword (str "create-app.form." field)) :class "form-control" :placeholder field}]))
-                (util/form-events [:init-form :step2])]]))
+                                   [input-field {:field :text :id (keyword (str "create-app.form.installer-params." field)) :class "form-control" :placeholder field}]))
+                (util/form-events [:create-app-form])]]))
       (let [loading? @(rf/subscribe [:loading?])]
+        [:div {:class "form-group"}
         [:div {:class "col-12"}
           [:button {:type "button" :class "btn btn-rounded btn-rounded btn-outline-danger mr-1" :on-click #(reset! page-choice "details")} "Cancel"]
-          [util/submit-button-spinner "Create" [:create-app] "primary" loading? loading?]])
+          [util/submit-button-spinner "Create" [:create-app (:id installer) selected-version] "primary" loading? loading?]]])
       [alert [:alert-dashboard]]]])
 
 (defn installer-page
@@ -104,9 +103,11 @@
     [:div {:class "row"}
         [:div {:class "col-lg-12 grid-margin stretch-card"}
             [:div {:class "card"}
-                (let [installer @(rf/subscribe [:installer id])]
+                (let [installer @(rf/subscribe [:installer id])
+                      versions (keys (:versions installer))
+                      selected-version (last (sort versions))]
                   [:div {:class "card-body"}
                     [:h2 {:class "card-title"} (:name installer)]
                     (if (= @page-choice "details")
                       [installer-details installer]
-                      [create-app installer])])]]])
+                      [create-app installer selected-version])])]]])
