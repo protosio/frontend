@@ -48,7 +48,7 @@
                                    :closure-defines {"clairvoyant.core.devmode" true}
                                    :source-map-timestamp true}}
                        {:id "min"
-                        :source-paths ["src"]
+                        :source-paths ["src/protosfrontend"]
                         :compiler {:output-to "resources/public/js/compiled/protosfrontend.js"
                                    :main protosfrontend.core
                                    :optimizations :advanced
