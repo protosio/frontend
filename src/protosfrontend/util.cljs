@@ -10,3 +10,15 @@
               (rf/dispatch [:set-form-value path
                               (save-fn @(rf/subscribe [:form-field-value path]) value)]))
    :doc (fn [] @(rf/subscribe dbpath))})
+
+(defn submit-button [text dispatch-value style disabled?]
+    [:button {:type "button"
+              :on-click #(rf/dispatch dispatch-value)
+              :class (str "btn btn-rounded btn-outline-" style " submit-btn mr-2" (when disabled? " disabled"))}
+              text])
+
+(defn submit-button-spinner [text dispatch-value style disabled? loading?]
+    [:button {:type "button"
+              :on-click #(rf/dispatch dispatch-value)
+              :class (str "btn btn-rounded btn-outline-" style " submit-btn mr-2" (when disabled? " disabled"))}
+              text (when loading? [:i {:class "fa fa-spin fa-spinner"}])])
