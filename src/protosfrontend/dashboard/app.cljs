@@ -1,8 +1,16 @@
 (ns dashboard.app
     (:require
       [re-frame.core :as rf]
+      [protosfrontend.util :as util]
       [baking-soda.core :as b]))
 
+(defn alert [alert-sub]
+  (let [alert-data @(rf/subscribe alert-sub)]
+    (when alert-data
+      [:div {:class "form-group"}
+        [:div {:class "form-row text-center"}
+          [:div {:class "col-12"}
+            [:div {:class (str "alert alert-" (:type alert-data)) :role "alert"} (:message alert-data)]]]])))
 
 (defn app-list []
   [:div {:class "col-lg-12 grid-margin stretch-card"}
@@ -29,35 +37,36 @@
         [app-list]])
 
 (defn app-page [id]
-    [:div {:class "row"}
-        [:div {:class "col-lg-12 grid-margin stretch-card"}
-            [:div {:class "card"}
-                (let [apps @(rf/subscribe [:apps])
-                      app (get apps (keyword id))
-                      app-id (:id app)]
-                [:div {:class "card-body"}
-                    [:h4 {:class "card-title"} (:name app)]
-                    [:div.app-details
-                        [:div.table-responsive
-                            [:table {:class "table table-striped table-bordered"}
-                             [:tbody
-                              [:tr
-                                [:th "ID"]
-                                [:td (:id app)]]
-                              [:tr
-                                [:th "Name"]
-                                [:td (:name app)]]
-                              [:tr
-                                [:th "Installer ID"]
-                                [:td (:installer-id app)]]
-                              [:tr
-                               [:th "Status"]
-                               [:td (:status app)]]]]]]
-                        [b/Button {:color "danger"
-                                    :on-click #(rf/dispatch [:remove-app app-id])} "Remove"]
-                        [b/Button {:color "primary"
-                                    :on-click #(rf/dispatch [:app-state app-id "stop"])} "Stop"]
-                        [b/Button {:color "success"
-                                    :on-click #(rf/dispatch [:app-state app-id "start"])} "Start"]
-                        [b/Button {:color "primary"
-                                    :on-click #(rf/dispatch [:get-app app-id])} "Refresh"]])]]])
+  [:div {:class "row"}
+    [:div {:class "col-lg-12 grid-margin stretch-card"}
+      [:div {:class "card"}
+        (let [apps @(rf/subscribe [:apps])
+              app (get apps (keyword id))
+              app-id (:id app)
+              loading? @(rf/subscribe [:loading?])]
+        [:div {:class "card-body"}
+          [:h4 {:class "card-title"} (:name app) (when loading? [:i {:class "fa fa-spin fa-spinner"}])]
+          [:div {:class "form-group"}
+          [:div.app-details
+              [:div.table-responsive
+                  [:table {:class "table table-striped table-bordered"}
+                   [:tbody
+                    [:tr
+                      [:th "ID"]
+                      [:td (:id app)]]
+                    [:tr
+                      [:th "Name"]
+                      [:td (:name app)]]
+                    [:tr
+                      [:th "Installer ID"]
+                      [:td (:installer-id app)]]
+                    [:tr
+                     [:th "Status"]
+                     [:td (:status app)]]]]]]]
+          [:div {:class "form-group"}
+          [:div {:class "col-12"}
+              [util/submit-button "Start" [:app-state app-id "start"] "success" loading?]
+              [util/submit-button "Stop" [:app-state app-id "stop"] "primary" loading?]
+              [util/submit-button "Refresh" [:get-app app-id] "primary" loading?]
+              [util/submit-button "Remove" [:remove-app app-id] "danger" loading?]]]
+          [alert [:alert-dashboard]]])]]])
