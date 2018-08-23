@@ -216,7 +216,7 @@
                   :uri             (:url params)
                   :headers         [:Authorization (clojure.string/join " " ["Bearer" (:token cookies)])]
                   :format          (ajax/url-request-format)
-                  :response-format (ajax/raw-response-format)
+                  :response-format (ajax/json-response-format {:keywords? true})
                   :on-success [:request-finished (:on-success params)]
                   :on-failure [:request-finished (:on-failure params)]}
      :db  (assoc db :loading? true)}))

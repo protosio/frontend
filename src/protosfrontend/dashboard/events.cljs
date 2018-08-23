@@ -91,7 +91,15 @@
   (fn remove-app-handler
     [{db :db} [_ app-id]]
     {:dispatch [:http-delete {:url (pe/createurl ["e" "apps" app-id])
-                              :on-success [:set-active-page [:apps-page] [:get-apps]]}]}))
+                              :on-success [:remove-app-success app-id]
+                              :on-failure [:dashboard-failure]}]}))
+
+(rf/reg-event-fx
+  :remove-app-success
+  (fn remove-app-success-handler
+    [{db :db} [_ app-id]]
+    {:dispatch [:set-active-page [:apps-page] [:get-apps]]
+     :db (assoc-in db [:dashboard :alert] {:type "success" :message (str "App " app-id " removed")})}))
 
 (rf/reg-event-fx
   :app-state
