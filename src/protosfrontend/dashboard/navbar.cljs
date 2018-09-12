@@ -9,7 +9,7 @@
       [:li {:class "nav-item dropdown d-none d-xl-inline-block"}
         [:a {:class "nav-link dropdown-toggle", :id "UserDropdown", :href "#", :data-toggle "dropdown", :aria-expanded "false"}
           [:span {:class "profile-text"} (str "Hello, " username " !")]
-          [:img {:class "img-xs rounded-circle", :src "images/faces/face1.jpg", :alt "Profile image"}]]
+          [:img {:class "img-xs rounded-circle", :src "images/faces/generic.png", :alt "Profile image"}]]
         [:div {:class "dropdown-menu dropdown-menu-right navbar-dropdown", :aria-labelledby "UserDropdown"}
           [:a {:class "dropdown-item mt-2"} "Manage Account"]
           [:a {:class "dropdown-item"} "Change Password"]
