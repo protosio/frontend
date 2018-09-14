@@ -19,25 +19,13 @@
 ;; ---------------------------------------
 ;; Pages
 
-; (defn regular-page [inner]
-;    [:div {:class "flex-fill"}
-;       [navbar/menu]
-
-;       [:div {:class "my-3 my-md-5"}
-;         [sidebar/sidebar]
-;         [:div {:class "main-panel"}
-;           [:div {:class "content-wrapper"}
-;             [inner]]]]])
-
-(defn regular-page [inner title]
+(defn regular-page [inner title active-page]
   [:div
-    [header/top]
-
+    [header/top "Alex G" "Admin" active-page]
     [:div.my-3.my-md-5
       (if title
         [:div.container [:div.page-header [:h1.page-title title]]])
-      [inner]]
-  ])
+      [inner]]])
 
 (defn init-page []
   [:div {:class "init-page"}
@@ -57,11 +45,11 @@
       (condp = active-page
       :init-page         [init-page]
       :login-page        [login-page]
-      :dashboard-page    [regular-page dashboard-page "Dashboard"]
+      :dashboard-page    [regular-page dashboard-page "Dashboard" active-page]
       :installer-page    [regular-page #(apply installer/installer-page params)]
-      :installers-page   [regular-page installer/installers-page]
+      :installers-page   [regular-page installer/installers-page "Installers" active-page]
       :app-page          [regular-page #(apply app/app-page params)]
-      :apps-page         [regular-page app/apps-page]
+      :apps-page         [regular-page app/apps-page "Apps" active-page]
       :resources-page    [regular-page resource/resources-page]
       :resource-page     [regular-page #(apply resource/resource-page params)])]))
 
