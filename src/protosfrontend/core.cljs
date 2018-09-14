@@ -13,6 +13,7 @@
             [auth.events]
             [init.subs]
             [init.events]
+            [components.header]
             [dashboard.subs]
             [dashboard.events])
   (:import goog.History))
@@ -69,7 +70,7 @@
 
 (defn mount-root []
   (rf/dispatch-sync [:initialize [:dashboard-page]])
-  (reagent/render [v/current-page] (.getElementById js/document "protos")))
+  (reagent/render [v/current-page] (.getElementById js/document "page")))
 
 (defn init! []
   (hook-browser-navigation!)

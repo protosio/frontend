@@ -1,7 +1,6 @@
 (ns dashboard.resource
     (:require
-      [re-frame.core :as rf]
-      [baking-soda.core :as b]))
+      [re-frame.core :as rf]))
 
 (defn resource-list []
   [:div {:class "col-lg-12 grid-margin stretch-card"}

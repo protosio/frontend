@@ -1,8 +1,7 @@
 (ns dashboard.app
     (:require
       [re-frame.core :as rf]
-      [protosfrontend.util :as util]
-      [baking-soda.core :as b]))
+      [protosfrontend.util :as util]))
 
 (defn alert [alert-sub]
   (let [alert-data @(rf/subscribe alert-sub)]
