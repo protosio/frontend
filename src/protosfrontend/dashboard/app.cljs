@@ -44,7 +44,7 @@
                   [:div {:class "small text-muted"} "Application started"]
                   [:div "5 minutes ago"]]
                 [:td {:class "text-center"}
-                  [:i {:class "payment payment-visa"}]]
+                  [:i {:class "tech tech-docker"}]]
                 [:td
                   [:div status]]
                 [:td
