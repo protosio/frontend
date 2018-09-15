@@ -49,17 +49,17 @@
                   [:div status]]
                 [:td
                   [:div {:class "item-action dropdown"}
-                    [:a {:href "javascript:void(0)", :data-toggle "dropdown", :class "icon"}
+                    [:a {:href "javascript:void(0)" :data-toggle "dropdown" :class "icon"}
                       [:i {:class "fe fe-more-vertical"}]]
                     [:div {:class "dropdown-menu dropdown-menu-right"}
-                      [:a {:href "javascript:void(0)", :class "dropdown-item"}
+                      [:a {:href "javascript:void(0)" :class "dropdown-item"}
                         [:i {:class "dropdown-icon fe fe-tag"}]" Action "]
-                      [:a {:href "javascript:void(0)", :class "dropdown-item"}
+                      [:a {:href "javascript:void(0)" :class "dropdown-item"}
                         [:i {:class "dropdown-icon fe fe-edit-2"}]" Another action "]
-                      [:a {:href "javascript:void(0)", :class "dropdown-item"}
+                      [:a {:href "javascript:void(0)" :class "dropdown-item"}
                         [:i {:class "dropdown-icon fe fe-message-square"}]" Something else here"]
                       [:div {:class "dropdown-divider"}]
-                      [:a {:href "javascript:void(0)", :class "dropdown-item"}
+                      [:a {:href "javascript:void(0)" :class "dropdown-item"}
                         [:i {:class "dropdown-icon fe fe-link"}]" Separated link"]]]]]))]]]]]]])
 
 (defn app-page [id]
