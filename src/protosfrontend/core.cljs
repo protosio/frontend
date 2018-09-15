@@ -14,6 +14,7 @@
             [init.subs]
             [init.events]
             [components.header]
+            [components.cards]
             [dashboard.subs]
             [dashboard.events])
   (:import goog.History))
