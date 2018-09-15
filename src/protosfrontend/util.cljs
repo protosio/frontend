@@ -14,11 +14,11 @@
 (defn submit-button [text dispatch-value style disabled?]
     [:button {:type "button"
               :on-click #(rf/dispatch dispatch-value)
-              :class (str "btn btn-rounded btn-outline-" style " submit-btn mr-2" (when disabled? " disabled"))}
+              :class (str "btn btn-outline-" style " submit-btn mr-2" (when disabled? " disabled"))}
               text])
 
 (defn submit-button-spinner [text dispatch-value style disabled? loading?]
     [:button {:type "button"
               :on-click #(rf/dispatch dispatch-value)
-              :class (str "btn btn-rounded btn-outline-" style " submit-btn mr-2" (when disabled? " disabled"))}
+              :class (str "btn btn-outline-" style " submit-btn mr-2" (when disabled? " disabled"))}
               text (when loading? [:i {:class "fa fa-spin fa-spinner"}])])
