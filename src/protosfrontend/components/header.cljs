@@ -22,13 +22,6 @@
         [:a.dropdown-item {:href "#"}
          [:i.dropdown-icon.fe.fe-settings]
          "Settings"]
-        [:a.dropdown-item {:href "#"}
-         [:span.float-right [:span.badge.badge-primary "6"]]
-         [:i.dropdown-icon.fe.fe-mail]
-         "Inbox"]
-        [:a.dropdown-item {:href "#"}
-         [:i.dropdown-icon.fe.fe-send]
-         "Message"]
         [:div.dropdown-divider]
         [:a.dropdown-item {:href "#"}
          [:i.dropdown-icon.fe.fe-log-out]
