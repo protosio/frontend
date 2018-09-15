@@ -11,7 +11,7 @@
      [:div.d-flex.order-lg-2.ml-auto
       [:div.dropdown
        [:a.nav-link.pr-0.leading-none {:data-toggle "dropdown", :href "#"}
-        [:span.avatar {:style {:background-image "url(images/generic.png)"}}]
+        [:span.avatar {:style {:background-image "url(images/user-generic.png)"}}]
         [:span.ml-2.d-none.d-lg-block
          [:span.text-default name]
          [:small.text-muted.d-block.mt-1 role]]]
