@@ -1,6 +1,7 @@
 (ns protosfrontend.views
     (:require
         [components.header :as header]
+        [components.cards :as cards]
         [dashboard.sidebar :as sidebar]
         [dashboard.navbar :as navbar]
         [dashboard.app :as app]
@@ -23,9 +24,7 @@
   [:div
     [header/top "Alex G" "Admin" active-page]
     [:div.my-3.my-md-5
-      (if title
-        [:div.container [:div.page-header [:h1.page-title title]]])
-      [inner]]])
+      [inner title]]])
 
 (defn init-page []
   [:div {:class "init-page"}
@@ -35,9 +34,14 @@
   [:div {:class "login-page"}
     [authviews/login-form]])
 
-(defn dashboard-page []
-  [:div "Dashboard placeholder"])
-
+(defn dashboard-page [title]
+  [:div {:class "container"}
+    (if title
+      [:div.page-header [:h1.page-title title]])
+    [:div {:class "row row-cards"}
+      [:div {:class "col-6 col-sm-4 col-lg-2"} [cards/stats "Apps" 3]]
+      [:div {:class "col-6 col-sm-4 col-lg-2"} [cards/stats "Resources" 7]]
+      [:div {:class "col-6 col-sm-4 col-lg-2"} [cards/stats "Providers" 2]]]])
 
 (defn current-page []
   (let [[active-page & params]  @(rf/subscribe [:active-page])]
