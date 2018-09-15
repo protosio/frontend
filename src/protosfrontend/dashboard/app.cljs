@@ -53,14 +53,11 @@
                       [:i {:class "fe fe-more-vertical"}]]
                     [:div {:class "dropdown-menu dropdown-menu-right"}
                       [:a {:href "javascript:void(0)" :class "dropdown-item"}
-                        [:i {:class "dropdown-icon fe fe-tag"}]" Action "]
+                        [:i {:class "dropdown-icon fe fe-play"}] " Start"]
                       [:a {:href "javascript:void(0)" :class "dropdown-item"}
-                        [:i {:class "dropdown-icon fe fe-edit-2"}]" Another action "]
+                        [:i {:class "dropdown-icon fe fe-stop-circle"}] " Stop"]
                       [:a {:href "javascript:void(0)" :class "dropdown-item"}
-                        [:i {:class "dropdown-icon fe fe-message-square"}]" Something else here"]
-                      [:div {:class "dropdown-divider"}]
-                      [:a {:href "javascript:void(0)" :class "dropdown-item"}
-                        [:i {:class "dropdown-icon fe fe-link"}]" Separated link"]]]]]))]]]]]]])
+                        [:i {:class "dropdown-icon fe fe-trash"}] " Remove"]]]]]))]]]]]]])
 
 (defn app-page [id]
   [:div {:class "row"}
