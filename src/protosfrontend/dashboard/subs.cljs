@@ -14,6 +14,14 @@
         :apps)))
 
 (rf/reg-sub
+  :app
+  (fn app-sub
+    [db [_ id]]
+    (-> db
+        :apps
+        id)))
+
+(rf/reg-sub
   :installers
   (fn installers-sub
     [db _]
