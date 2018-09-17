@@ -35,7 +35,7 @@
               [:tr {:key id}
                 [:td {:class "text-center"}
                   [:div {:class "avatar d-block" :style {:background-image "url(images/app-generic.png)"}}
-                    [:span {:class "avatar-status bg-green"}]]]
+                    [:span {:class (str "avatar-status bg-" (util/app-status-color status))}]]]
                 [:td
                   [:a {:href (str "/#/apps/" id)} name]
                   [:div {:class "small text-muted"} (str "ID: " id)]]
@@ -67,7 +67,7 @@
         [:div {:class "card"}
           [:div {:class "card-header"}
             [:div {:class "avatar d-block mr-3" :style {:background-image "url(images/app-generic.png)"}}
-              [:span {:class "avatar-status bg-green"}]]
+              [:span {:class (str "avatar-status bg-" (util/app-status-color (:status app)))}]]
             [:h3 {:class "card-title"} (:name app) (when loading? [:i {:class "fa fa-spin fa-circle-o-notch"}])]
             [:div {:class "card-options"}
               [:div {:class "btn-list"}
