@@ -31,10 +31,10 @@
                   [:i {:class "icon-settings"}]]]]
             [:tbody
             (let [apps @(rf/subscribe [:apps])]
-              (for [{name :name, id :id, status :status} (vals apps)]
+              (for [{name :name id :id status :status} (vals apps)]
               [:tr {:key id}
                 [:td {:class "text-center"}
-                  [:div {:class "avatar d-block" :style {:background-image "url(images/app-generic.png)"}}
+                  [:div {:class "avatar d-block bg-white" :style {:background-image "url(images/app-generic.svg)" :background-size "60%"}}
                     [:span {:class (str "avatar-status bg-" (util/app-status-color status))}]]]
                 [:td
                   [:a {:href (str "/#/apps/" id)} name]
@@ -66,7 +66,7 @@
               loading? @(rf/subscribe [:loading?])]
         [:div {:class "card"}
           [:div {:class "card-header"}
-            [:div {:class "avatar d-block mr-3" :style {:background-image "url(images/app-generic.png)"}}
+            [:div {:class "avatar d-block bg-white mr-3" :style {:background-image "url(images/app-generic.svg)" :background-size "60%"}}
               [:span {:class (str "avatar-status bg-" (util/app-status-color (:status app)))}]]
             [:h3 {:class "card-title"} (:name app) (when loading? [:i {:class "fa fa-spin fa-circle-o-notch"}])]
             [:div {:class "card-options"}
