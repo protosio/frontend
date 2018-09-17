@@ -54,7 +54,7 @@
       :installers-page   [regular-page installer/installers-page "Installers" active-page]
       :app-page          [regular-page #(apply app/app-page params)]
       :apps-page         [regular-page app/apps-page "Apps" active-page]
-      :resources-page    [regular-page resource/resources-page]
+      :resources-page    [regular-page resource/resources-page "Resources" active-page]
       :resource-page     [regular-page #(apply resource/resource-page params)])]))
 
 )
