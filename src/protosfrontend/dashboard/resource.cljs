@@ -1,6 +1,14 @@
 (ns dashboard.resource
     (:require
-      [re-frame.core :as rf]))
+      [re-frame.core :as rf]
+      [protosfrontend.util :as util]))
+
+(defn alert [alert-sub]
+  (let [alert-data @(rf/subscribe alert-sub)]
+    (when alert-data
+      [:div {:class (str "card-alert alert alert-" (:type alert-data) " alert-dismissible mb-0")}
+        [:button {:type "button" :class "close" :data-dismiss "alert"}]
+        (:message alert-data)])))
 
 (defn resources-page [title]
   [:div {:class "container"}
@@ -31,8 +39,8 @@
                     [:div [:span {:class "tag"} type]]]
                   [:td
                   (if (= status "created")
-                    [:div [:span {:class "tag tag-green"} status]]
-                    [:div [:span {:class "tag tag-yellow"} status]])]
+                    [:div [:span {:class "status-icon bg-green"}] status]
+                    [:div [:span {:class "status-icon bg-yellow"}] status])]
                   [:td
                     [:div {:class "item-action dropdown"}
                       [:a {:href "javascript:void(0)" :data-toggle "dropdown" :class "icon"}
@@ -42,26 +50,31 @@
                           [:i {:class "dropdown-icon fe fe-trash"}] " Remove"]]]]]))]]]]]]])
 
 (defn resource-page [id]
-    [:div {:class "row"}
-        [:div {:class "col-lg-12 grid-margin stretch-card"}
-            [:div {:class "card"}
-            (let [resources @(rf/subscribe [:resources])
-                  resource (get resources (keyword id))
-                  resource-id (:id resources)]
-                [:div {:class "card-body"}
-                  [:h4 {:class "card-title"} (:id resource)]
-                  [:div.resource-details
-                    [:div.row
-                    [:div.col-md-12
-                      [:div.table-responsive
-                        [:table {:class "table table-striped table-bordered"}
-                          [:tbody
-                          [:tr
-                            [:th "Type"]
-                            [:td (:type resource)]]
-                          [:tr
-                            [:th "App"]
-                            [:td (:app resource)]]
-                          [:tr
-                            [:th "Status"]
-                            [:td (:status resource)]]]]]]]]])]]])
+  [:div {:class "container"}
+    [:div {:class "row row-cards row-deck"}
+      [:div {:class "col-12"}
+        (let [resource @(rf/subscribe [:resource (keyword id)])
+              loading? @(rf/subscribe [:loading?])]
+        [:div {:class "card"}
+          [:div {:class "card-header"}
+            [:div {:class "avatar d-block bg-white mr-3" :style {:background-image "url(images/resource-generic.svg)" :background-size "80%"}}]
+            [:h3 {:class "card-title"} id (when loading? [:i {:class "fa fa-spin fa-circle-o-notch"}])]
+            [:div {:class "card-options"}
+              [:div {:class "btn-list"}
+                [util/submit-button "Remove" [:remove-app id] "danger btn-sm" loading?]]]]
+          [alert [:alert-dashboard]]
+          [:div {:class "card-body"}
+            [:div {:class "row mb-1"}
+              [:div {:class "col-2"} [:strong "ID:"]]
+              [:div {:class "col-5"} id]]
+            [:div {:class "row mb-1"}
+              [:div {:class "col-2"} [:strong "Type:"]]
+              [:div {:class "col-5"} [:div [:span {:class "tag"} (:type resource)]]]]
+            [:div {:class "row mb-1"}
+              [:div {:class "col-2"} [:strong "Status:"]]
+            (if (= (:status resource) "created")
+              [:div {:class "col-5"} [:span {:class "status-icon bg-green"}] (:status resource)]
+              [:div {:class "col-5"} [:span {:class "status-icon bg-yellow"}] (:status resource)])]
+            [:div {:class "row mb-1"}
+              [:div {:class "col-2"} [:strong "Value:"]]
+              [:div {:class "col-5"} (:value resource)]]]])]]])
