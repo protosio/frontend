@@ -71,10 +71,10 @@
             [:h3 {:class "card-title"} (:name app) (when loading? [:i {:class "fa fa-spin fa-circle-o-notch"}])]
             [:div {:class "card-options"}
               [:div {:class "btn-list"}
-                [util/submit-button "Start" [:app-state id "start"] "success btn-sm" loading?]
-                [util/submit-button "Stop" [:app-state id "stop"] "primary btn-sm" loading?]
+                [util/submit-button "Start" [:app-state id "start"] "outline-success btn-sm" loading?]
+                [util/submit-button "Stop" [:app-state id "stop"] "outline-primary btn-sm" loading?]
                 [util/submit-button "Remove" [:remove-app id] "danger btn-sm" loading?]
-                [util/submit-button [:i {:class "fe fe-refresh-ccw"}] [:get-app id] "primary btn-sm btn-icon" loading?]]]]
+                [util/submit-button [:i {:class "fe fe-refresh-ccw"}] [:get-app id] "outline-primary btn-sm btn-icon" loading?]]]]
           [alert [:alert-dashboard]]
           [:div {:class "card-body"}
             [:div {:class "row"}
