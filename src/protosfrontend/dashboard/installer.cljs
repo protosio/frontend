@@ -80,11 +80,11 @@
         metadata (get-in installer [:versions selected-version])]
   [:div {:class "card-body"}
     [:div {:class "row mb-1"}
-      [:div {:class "col-2"} [:strong "ID:"]]
-      [:div {:class "col-5"} (:id installer)]]
-    [:div {:class "row mb-1"}
       [:div {:class "col-2"} [:strong "Description:"]]
       [:div {:class "col-5"} (-> metadata :description)]]
+    [:div {:class "row mb-1"}
+      [:div {:class "col-2"} [:strong "ID:"]]
+      [:div {:class "col-5"} (:id installer)]]
     [:div {:class "row mb-1"}
       [:div {:class "col-2"} [:strong "Versions:"]]
       [:div {:class "col-5"} (for [version versions]
