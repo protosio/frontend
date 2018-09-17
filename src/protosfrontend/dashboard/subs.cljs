@@ -48,6 +48,14 @@
         :resources)))
 
 (rf/reg-sub
+  :resource
+  (fn resource-sub
+    [db [_ id]]
+    (-> db
+        :resources
+        id)))
+
+(rf/reg-sub
   :create-app-form
   (fn create-app-form-sub
     [db _]
