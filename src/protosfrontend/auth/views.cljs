@@ -38,6 +38,7 @@
           [:div {:class "card-header"}
             [:div {:class "mx-auto p-1"}
               [:img {:src "images/protos-logo.svg" :class "h-7" :alt "protos logo"}]]]
+          [alert [:alert-login]]
           [:div {:class "card-body p-6"}
             [bind-fields
               [:div {:class "auto-form-wrapper"}
@@ -50,7 +51,6 @@
               (form-events [:init-form :step1])]
             (let [loading? @(rf/subscribe [:loading?])]
             [:div {:class "form-footer"}
-              [submit-button "Login" [:login] loading? loading?]])]
-          [alert [:alert-login]]]]]])
+              [submit-button "Login" [:login] loading? loading?]])]]]]])
 
 )
