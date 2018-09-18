@@ -71,7 +71,7 @@
 
 (defn mount-root []
   (rf/dispatch-sync [:initialize [:dashboard-page]])
-  (reagent/render [v/current-page] (.getElementById js/document "page")))
+  (reagent/render [v/current-page] (.getElementById js/document "protos")))
 
 (defn init! []
   (hook-browser-navigation!)
