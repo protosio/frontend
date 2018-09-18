@@ -21,32 +21,32 @@
 ;; Pages
 
 (defn regular-page [inner title active-page]
-  [:div
+  [:div {:class "page-main"}
     [header/top "Alex G" "Admin" active-page]
     [:div.my-3.my-md-5
       [inner title]]])
 
 (defn init-page []
-  [:div {:class "init-page"}
+  [:div {:class "page-single"}
     [initviews/init-wizard]])
 
 (defn login-page []
-  [:div {:class "login-page"}
+  [:div {:class "page-single"}
     [authviews/login-form]])
 
 (defn dashboard-page [title]
-  [:div {:class "container"}
-    (if title
-      [:div.page-header [:h1.page-title title]])
-    [:div {:class "row row-cards"}
-      [:div {:class "col-6 col-sm-4 col-lg-2"} [cards/stats "Apps" 3]]
-      [:div {:class "col-6 col-sm-4 col-lg-2"} [cards/stats "Resources" 7]]
-      [:div {:class "col-6 col-sm-4 col-lg-2"} [cards/stats "Providers" 2]]]])
+  [:div {:class "page-main"}]
+    [:div {:class "container"}
+      (if title
+        [:div.page-header [:h1.page-title title]])
+      [:div {:class "row row-cards"}
+        [:div {:class "col-6 col-sm-4 col-lg-2"} [cards/stats "Apps" 3]]
+        [:div {:class "col-6 col-sm-4 col-lg-2"} [cards/stats "Resources" 7]]
+        [:div {:class "col-6 col-sm-4 col-lg-2"} [cards/stats "Providers" 2]]]])
 
 (defn current-page []
   (let [[active-page & params]  @(rf/subscribe [:active-page])]
-    [:div {:class "page-main"}
-      (condp = active-page
+    (condp = active-page
       :init-page         [init-page]
       :login-page        [login-page]
       :dashboard-page    [regular-page dashboard-page "Dashboard" active-page]
@@ -55,6 +55,6 @@
       :app-page          [regular-page #(apply app/app-page params)]
       :apps-page         [regular-page app/apps-page "Apps" active-page]
       :resources-page    [regular-page resource/resources-page "Resources" active-page]
-      :resource-page     [regular-page #(apply resource/resource-page params)])]))
+      :resource-page     [regular-page #(apply resource/resource-page params)])))
 
 )
