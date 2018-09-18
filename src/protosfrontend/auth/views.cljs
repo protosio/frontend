@@ -35,9 +35,10 @@
     [:div {:class "row"}
       [:div {:class "col col-login mx-auto"}
         [:form {:class "card align-middle"}
+          [:div {:class "card-header"}
+            [:div {:class "mx-auto p-1"}
+              [:img {:src "images/protos-logo.svg" :class "h-7" :alt "protos logo"}]]]
           [:div {:class "card-body p-6"}
-            [:div {:class "text-center mb-6"}
-              [:img {:src "images/protos-logo.svg" :class "h-7" :alt "protos logo"}]]
             [bind-fields
               [:div {:class "auto-form-wrapper"}
                 [:div {:class "form-group"}
