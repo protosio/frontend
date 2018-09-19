@@ -5,6 +5,7 @@
         [dashboard.sidebar :as sidebar]
         [dashboard.navbar :as navbar]
         [dashboard.app :as app]
+        [dashboard.store :as store]
         [dashboard.installer :as installer]
         [dashboard.resource :as resource]
         [init.views :as initviews]
@@ -47,14 +48,16 @@
 (defn current-page []
   (let [[active-page & params]  @(rf/subscribe [:active-page])]
     (condp = active-page
-      :init-page         [init-page]
-      :login-page        [login-page]
-      :dashboard-page    [regular-page dashboard-page "Dashboard" active-page]
-      :installer-page    [regular-page #(apply installer/installer-page params)]
-      :installers-page   [regular-page installer/installers-page "Installers" active-page]
-      :app-page          [regular-page #(apply app/app-page params)]
-      :apps-page         [regular-page app/apps-page "Apps" active-page]
-      :resources-page    [regular-page resource/resources-page "Resources" active-page]
-      :resource-page     [regular-page #(apply resource/resource-page params)])))
+      :init-page            [init-page]
+      :login-page           [login-page]
+      :dashboard-page       [regular-page dashboard-page "Dashboard" active-page]
+      :installer-page       [regular-page #(apply installer/installer-page params)]
+      :installers-page      [regular-page installer/installers-page "Installers" active-page]
+      :app-page             [regular-page #(apply app/app-page params)]
+      :apps-page            [regular-page app/apps-page "Apps" active-page]
+      :store-page           [regular-page store/store-page "Store" active-page]
+      :store-installer-page [regular-page #(apply store/store-installer-page params)]
+      :resources-page       [regular-page resource/resources-page "Resources" active-page]
+      :resource-page        [regular-page #(apply resource/resource-page params)])))
 
 )

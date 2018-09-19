@@ -35,6 +35,13 @@
   (let [id (:id params)]
    (rf/dispatch [:set-active-page [:app-page id] [:get-app id]])))
 
+(secretary/defroute "/store" []
+  (rf/dispatch [:set-active-page [:store-page] [:get-appstore-all]]))
+
+(secretary/defroute "/store/:id" {:as params}
+  (let [id (:id params)]
+   (rf/dispatch [:set-active-page [:store-installer-page id]])))
+
 (secretary/defroute "/installers" []
   (rf/dispatch [:set-active-page [:installers-page] [:get-installers]]))
 

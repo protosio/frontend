@@ -45,6 +45,7 @@
     {:dispatch [:load-username]
      :db {:apps {}
           :installers {}
+          :store {}
           :active-page active-page
           :modal-data {:show-modal false}
           :form-data {}
