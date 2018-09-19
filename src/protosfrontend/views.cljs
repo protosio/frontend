@@ -4,6 +4,7 @@
         [components.cards :as cards]
         [dashboard.sidebar :as sidebar]
         [dashboard.navbar :as navbar]
+        [dashboard.home :as home]
         [dashboard.app :as app]
         [dashboard.store :as store]
         [dashboard.installer :as installer]
@@ -35,22 +36,12 @@
   [:div {:class "page-single"}
     [authviews/login-form]])
 
-(defn dashboard-page [title]
-  [:div {:class "page-main"}]
-    [:div {:class "container"}
-      (if title
-        [:div.page-header [:h1.page-title title]])
-      [:div {:class "row row-cards"}
-        [:div {:class "col-6 col-sm-4 col-lg-2"} [cards/stats "Apps" 3]]
-        [:div {:class "col-6 col-sm-4 col-lg-2"} [cards/stats "Resources" 7]]
-        [:div {:class "col-6 col-sm-4 col-lg-2"} [cards/stats "Providers" 2]]]])
-
 (defn current-page []
   (let [[active-page & params]  @(rf/subscribe [:active-page])]
     (condp = active-page
       :init-page            [init-page]
       :login-page           [login-page]
-      :dashboard-page       [regular-page dashboard-page "Dashboard" active-page]
+      :dashboard-page       [regular-page home/home-page "Dashboard" active-page]
       :installer-page       [regular-page #(apply installer/installer-page params)]
       :installers-page      [regular-page installer/installers-page "Installers" active-page]
       :app-page             [regular-page #(apply app/app-page params)]
