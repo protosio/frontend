@@ -26,7 +26,7 @@
 (secretary/set-config! :prefix "#")
 
 (secretary/defroute "/" []
-  (rf/dispatch [:set-active-page [:dashboard-page]]))
+  (rf/dispatch [:set-active-page [:dashboard-page] [:get-apps]]))
 
 (secretary/defroute "/apps" []
   (rf/dispatch [:set-active-page [:apps-page] [:get-apps]]))
