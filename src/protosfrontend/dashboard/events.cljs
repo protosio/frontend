@@ -136,4 +136,40 @@
                            :on-success [:save-response [:resources]]
                            :on-failure [:dashboard-failure]}]}))
 
+;; -- App store ------------------------------------------------
+
+(rf/reg-event-fx
+  :get-appstore-all
+  (fn get-appstore-all-handler
+    [_ _]
+    {:dispatch [:http-get {:url (pe/createurl ["e" "store" "search"])
+                           :on-success [:get-appstore-all-success]
+                           :on-failure [:dashboard-failure]}]}))
+
+(rf/reg-event-fx
+  :get-appstore-all-success
+  (fn get-appstore-all-success-handler
+    [{db :db} [_ result]]
+    {:db (-> db
+             (assoc-in [:store :installers] result))}))
+
+
+(rf/reg-event-fx
+  :download-installer
+  (fn download-installer-handler
+    [{db :db} [_ id]]
+    (let [installer (get-in db [:store :installers (keyword id)])
+          name (:name installer)
+          version (last (sort (:versions installer)))]
+    {:dispatch [:http-post {:url (pe/createurl ["e" "store" "download"])
+                            :on-success [:download-installer-success]
+                            :on-failure [:dashboard-failure]
+                            :post-data {:id id :version version :name name}}]})))
+
+(rf/reg-event-db
+  :download-installer-success
+  (fn download-installer-success-handler
+    [db _]
+    (assoc-in db [:dashboard :alert] {:type "success" :message "Installer  downloaded successfully"})))
+
 )

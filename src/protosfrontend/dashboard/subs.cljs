@@ -35,6 +35,20 @@
     (get-in db [:installers (keyword installer-id)])))
 
 (rf/reg-sub
+  :store-installers
+  (fn store-installers-sub
+    [db _]
+    (-> db
+        :store
+        :installers)))
+
+(rf/reg-sub
+  :store-installer
+  (fn store-installers-sub
+    [db [_ installer-id]]
+    (get-in db [:store :installers (keyword installer-id)])))
+
+(rf/reg-sub
   :installer-params
   (fn installer-params-sub
     [db [_ installer-id]]
