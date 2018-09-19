@@ -29,3 +29,6 @@
    "missing container" "red"
    "stopped"           "red"
    "blue"))
+
+(defn trunc [s n]
+  (str (subs s 0 (min (count s) n)) "..."))
