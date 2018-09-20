@@ -136,6 +136,20 @@
                            :on-success [:save-response [:resources]]
                            :on-failure [:dashboard-failure]}]}))
 
+(rf/reg-event-fx
+  :remove-resource
+  (fn remove-resource-handler
+    [{db :db} [_ id]]
+    {:dispatch [:http-delete {:url (pe/createurl ["e" "resources" id])
+                              :on-success [:remove-app-success]
+                              :on-failure [:dashboard-failure]}]}))
+
+(rf/reg-event-fx
+  :remove-resource-success
+  (fn remove-app-success-handler
+    [{db :db} _]
+    {:dispatch [:set-active-page [:resources-page] [:get-resources]]}))
+
 ;; -- App store ------------------------------------------------
 
 (rf/reg-event-fx

@@ -61,7 +61,7 @@
             [:h3 {:class "card-title"} id (when loading? [:i {:class "fa fa-spin fa-circle-o-notch"}])]
             [:div {:class "card-options"}
               [:div {:class "btn-list"}
-                [util/submit-button "Remove" [:remove-app id] "danger btn-sm" loading?]]]]
+                [util/submit-button "Remove" [:remove-resource id] "danger btn-sm" loading?]]]]
           [alert [:alert-dashboard]]
           [:div {:class "card-body"}
             [:div {:class "row mb-1"}
