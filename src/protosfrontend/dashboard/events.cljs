@@ -141,12 +141,12 @@
   (fn remove-resource-handler
     [{db :db} [_ id]]
     {:dispatch [:http-delete {:url (pe/createurl ["e" "resources" id])
-                              :on-success [:remove-app-success]
+                              :on-success [:remove-resource-success]
                               :on-failure [:dashboard-failure]}]}))
 
 (rf/reg-event-fx
   :remove-resource-success
-  (fn remove-app-success-handler
+  (fn remove-resource-success-handler
     [{db :db} _]
     {:dispatch [:set-active-page [:resources-page] [:get-resources]]}))
 
