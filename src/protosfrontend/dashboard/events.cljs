@@ -157,12 +157,19 @@
   (fn get-appstore-all-handler
     [_ _]
     {:dispatch [:http-get {:url (pe/createurl ["e" "store" "search"])
-                           :on-success [:get-appstore-all-success]
+                           :on-success [:save-appstore-installers]
                            :on-failure [:dashboard-failure]}]}))
 
 (rf/reg-event-fx
-  :get-appstore-all-success
-  (fn get-appstore-all-success-handler
+  :search-appstore
+  (fn search-appstore-handler
+    [{db :db} _]
+    {:dispatch [:http-get {:url (str (pe/createurl ["e" "store" "search"]) "?general=" (get-in db [:store :filter]))
+                           :on-success [:save-appstore-installers]
+                           :on-failure [:dashboard-failure]}]}))
+(rf/reg-event-fx
+  :save-appstore-installers
+  (fn save-appstore-installers-handler
     [{db :db} [_ result]]
     {:db (-> db
              (assoc-in [:store :installers] result))}))

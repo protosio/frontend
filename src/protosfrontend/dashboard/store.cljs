@@ -1,7 +1,10 @@
 (ns dashboard.store
   (:require
     [re-frame.core :as rf]
-    [protosfrontend.util :as util]))
+    [protosfrontend.util :as util]
+    [components.buttons :as buttons]
+    [reagent-forms.core :refer [bind-fields]]
+    [cljsjs.lunrjs]))
 
 
 (defn alert [alert-sub]
@@ -21,13 +24,16 @@
       [:div {:class "col-sm-3"}
         [:div.card
           [:div.card-body
-            [:form
-              {:action ""}
-              [:div.form-group
-                [:label.form-label "Filter"]
-                [:input.form-control {:type "text"}]]
+            [:div {:class "auto-form-wrapper"}
+              [bind-fields
+                [:div
+                [:div {:class "form-group"}
+                  [:label {:class "form-label"} "Filter"]
+                  [:input {:field :text :id :store.filter :class "form-control" :placeholder "term"}]]]
+                (util/form-events [:store-filter-form])]
               [:div.form-footer.text-right
-                [:button.btn.btn-primary {:type "submit"} "Filter"]]]]]]
+              (let [loading? @(rf/subscribe [:loading?])]
+                [buttons/submit-button-spinner "Filter" [:search-appstore] "outline-primary btn-sm mr-2" loading? loading?])]]]]]
       ;; Application cards
       [:div {:class "col-sm-9"}
         [:div {:class "row"}

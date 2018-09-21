@@ -49,6 +49,12 @@
     (get-in db [:store :installers (keyword installer-id)])))
 
 (rf/reg-sub
+  :store-filter-form
+  (fn store-filter-form-sub
+    [db _]
+    (get-in db [:store :filter])))
+
+(rf/reg-sub
   :installer-params
   (fn installer-params-sub
     [db [_ installer-id]]
