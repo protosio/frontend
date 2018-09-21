@@ -17,41 +17,41 @@
 
 (defn installers-page [title]
   [:div {:class "container"}
-      (if title
-        [:div.page-header [:h1.page-title title]])
-      [:div {:class "row row-cards row-deck"}
-        [:div {:class "col-12"}
-         [:div {:class "card"}
-          [:div {:class "table-responsive"}
-            [:table {:class "table table-hover table-outline table-vcenter text-nowrap card-table"}
-              [:thead
-                [:tr
-                  [:th {:class "text-center w-1"}
-                    [:i {:class "icon-people"}]]
-                  [:th "Name"]
-                  [:th {:class "text-center"} "Runtime"]
-                  [:th {:class "text-center"}
-                    [:i {:class "icon-settings"}]]]]
-              [:tbody
-              (let [installers @(rf/subscribe [:installers])]
-                (for [{name :name id :id} (vals installers)]
-                [:tr {:key id}
-                  [:td {:class "text-center"}
-                    [:div {:class "avatar d-block bg-white" :style {:background-image "url(images/installer-generic.svg)" :background-size "80%"}}]]
-                  [:td
-                    [:a {:href (str "/#/installers/" id)} name]
-                    [:div {:class "small text-muted"} (str "ID: " id)]]
-                  [:td {:class "text-center"}
-                    [:i {:class "tech tech-docker"}]]
-                  [:td
-                    [:div {:class "item-action dropdown"}
-                      [:a {:href "javascript:void(0)" :data-toggle "dropdown" :class "icon"}
-                        [:i {:class "fe fe-more-vertical"}]]
-                      [:div {:class "dropdown-menu dropdown-menu-right"}
-                        [:a {:href "javascript:void(0)" :class "dropdown-item"}
-                          [:i {:class "dropdown-icon fe fe-stop-circle"}] " Create app"]
-                        [:a {:href "javascript:void(0)" :class "dropdown-item"}
-                          [:i {:class "dropdown-icon fe fe-trash"}] " Remove"]]]]]))]]]]]]])
+    (if title
+      [:div.page-header [:h1.page-title title]])
+    [:div {:class "row row-cards row-deck"}
+      [:div {:class "col-12"}
+       [:div {:class "card"}
+        [:div {:class "table-responsive"}
+          [:table {:class "table table-hover table-outline table-vcenter text-nowrap card-table"}
+            [:thead
+              [:tr
+                [:th {:class "text-center w-1"}
+                  [:i {:class "icon-people"}]]
+                [:th "Name"]
+                [:th {:class "text-center"} "Runtime"]
+                [:th {:class "text-center"}
+                  [:i {:class "icon-settings"}]]]]
+            [:tbody
+            (let [installers @(rf/subscribe [:installers])]
+              (for [{name :name id :id} (vals installers)]
+              [:tr {:key id}
+                [:td {:class "text-center"}
+                  [:div {:class "avatar d-block bg-white" :style {:background-image "url(images/installer-generic.svg)" :background-size "80%"}}]]
+                [:td
+                  [:a {:href (str "/#/installers/" id)} name]
+                  [:div {:class "small text-muted"} (str "ID: " id)]]
+                [:td {:class "text-center"}
+                  [:i {:class "tech tech-docker"}]]
+                [:td
+                  [:div {:class "item-action dropdown"}
+                    [:a {:href "javascript:void(0)" :data-toggle "dropdown" :class "icon"}
+                      [:i {:class "fe fe-more-vertical"}]]
+                    [:div {:class "dropdown-menu dropdown-menu-right"}
+                      [:a {:href "javascript:void(0)" :class "dropdown-item"}
+                        [:i {:class "dropdown-icon fe fe-stop-circle"}] " Create app"]
+                      [:a {:href "javascript:void(0)" :class "dropdown-item"}
+                        [:i {:class "dropdown-icon fe fe-trash"}] " Remove"]]]]]))]]]]]]])
 
 (defn create-app [installer selected-version]
   [:div {:class "card-body"}
