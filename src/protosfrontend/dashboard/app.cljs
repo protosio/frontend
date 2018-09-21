@@ -1,7 +1,8 @@
 (ns dashboard.app
     (:require
       [re-frame.core :as rf]
-      [protosfrontend.util :as util]))
+      [protosfrontend.util :as util]
+      [components.buttons :as buttons]))
 
 (defn alert [alert-sub]
   (let [alert-data @(rf/subscribe alert-sub)]
@@ -71,10 +72,10 @@
             [:h3 {:class "card-title"} (:name app) (when loading? [:i {:class "fa fa-spin fa-circle-o-notch"}])]
             [:div {:class "card-options"}
               [:div {:class "btn-list"}
-                [util/submit-button "Start" [:app-state id "start"] "outline-success btn-sm" loading?]
-                [util/submit-button "Stop" [:app-state id "stop"] "outline-primary btn-sm" loading?]
-                [util/submit-button "Remove" [:remove-app id] "danger btn-sm" loading?]
-                [util/submit-button [:i {:class "fe fe-refresh-ccw"}] [:get-app id] "outline-primary btn-sm btn-icon" loading?]]]]
+                [buttons/submit-button "Start" [:app-state id "start"] "outline-success btn-sm" loading?]
+                [buttons/submit-button "Stop" [:app-state id "stop"] "outline-primary btn-sm" loading?]
+                [buttons/submit-button "Remove" [:remove-app id] "danger btn-sm" loading?]
+                [buttons/submit-button [:i {:class "fe fe-refresh-ccw"}] [:get-app id] "outline-primary btn-sm btn-icon" loading?]]]]
           [alert [:alert-dashboard]]
           [:div {:class "card-body"}
             [:div {:class "row"}

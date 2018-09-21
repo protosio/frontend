@@ -2,6 +2,7 @@
   (:require
     [re-frame.core :as rf]
     [protosfrontend.util :as util]
+    [components.buttons :as buttons]
     [reagent-forms.core :refer [bind-fields]]
     [clairvoyant.core :refer-macros [trace-forms]]
     [re-frame-tracer.core :refer [tracer]]))
@@ -25,7 +26,7 @@
     [:div {:class "mx-auto"}
       [:div {:class "col"}
         [:button {:type "button" :class "btn btn-sm btn-icons btn-rounded btn-outline-primary mr-2" :on-click #(rf/dispatch [:decrement-init-step])} [:i {:class "fe fe-arrow-left"}]]
-        [util/submit-button-spinner button-text event "primary btn-sm mr-2" disabled? loading?]
+        [buttons/submit-button-spinner button-text event "primary btn-sm mr-2" disabled? loading?]
         [:button {:type "button" :class "btn btn-sm btn-icons btn-rounded btn-outline-primary" :on-click #(rf/dispatch [:increment-init-step])} [:i {:class "fe fe-arrow-right"}]]]]])
 
 (defn input-field [properties]

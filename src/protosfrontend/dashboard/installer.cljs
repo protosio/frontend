@@ -2,6 +2,7 @@
     (:require
       [reagent.core :as r]
       [protosfrontend.util :as util]
+      [components.buttons :as buttons]
       [reagent-forms.core :refer [bind-fields]]
       [re-frame.core :as rf]))
 
@@ -112,7 +113,7 @@
                 [:button {:type "button" :class "btn btn-outline-primary btn-sm" :on-click #(reset! page-choice "create-app")} "Create app"]
                 [:button {:type "button" :class "btn btn-danger btn-sm" :on-click #(rf/dispatch [:remove-installer (:id installer)])} "Remove"]]
               [:div {:class "btn-list"}
-                [util/submit-button "Create" [:create-app (:id installer) selected-version] "primary btn-sm" loading?]
+                [buttons/submit-button "Create" [:create-app (:id installer) selected-version] "primary btn-sm" loading?]
                 [:button {:type "button" :class "btn btn-outline-danger btn-sm" :on-click #(reset! page-choice "details")} "Cancel"]]
               )]]
           [alert [:alert-dashboard]]
