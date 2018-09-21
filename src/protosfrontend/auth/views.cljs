@@ -1,6 +1,7 @@
 (ns auth.views
     (:require
         [re-frame.core :as rf]
+        [components.buttons :as buttons]
         [reagent-forms.core :refer [bind-fields]]
         [clairvoyant.core :refer-macros [trace-forms]]
         [re-frame-tracer.core :refer [tracer]]))
@@ -24,12 +25,6 @@
         [:button {:type "button" :class "close" :data-dismiss "alert"}]
         (:message alert-data)])))
 
-(defn submit-button [text dispatch-value disabled? loading?]
-    [:button {:type "button"
-              :on-click #(rf/dispatch dispatch-value)
-              :class (str "btn btn-primary btn-block" (when disabled? " disabled"))}
-              text (when loading? [:i {:class "fa fa-spin fa-spinner"}])])
-
 (defn login-form []
   [:div {:class "container"}
     [:div {:class "row"}
@@ -51,6 +46,6 @@
               (form-events [:init-form :step1])]
             (let [loading? @(rf/subscribe [:loading?])]
             [:div {:class "form-footer"}
-              [submit-button "Login" [:login] loading? loading?]])]]]]])
+              [buttons/submit-button-spinner "Login" [:login] "primary btn-block" loading? loading?]])]]]]])
 
 )
