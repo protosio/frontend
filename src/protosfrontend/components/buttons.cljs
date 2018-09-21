@@ -12,4 +12,4 @@
   [:button {:type "button"
             :on-click #(rf/dispatch dispatch-value)
             :class (str "btn btn-" style (when disabled? " disabled"))}
-            (if loading? [:i {:class "fa fa-spin fa-spinner"}] text)])
+            (if loading? [:i {:class "fa fa-spin fa-circle-o-notch"}] text)])
