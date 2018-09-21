@@ -16,14 +16,14 @@
          [:span.text-default name]
          [:small.text-muted.d-block.mt-1 role]]]
        [:div.dropdown-menu.dropdown-menu-right.dropdown-menu-arrow
-        [:a.dropdown-item {:href "#"}
+        [:a.dropdown-item {:href "#/"}
          [:i.dropdown-icon.fe.fe-user]
          "Profile"]
-        [:a.dropdown-item {:href "#"}
+        [:a.dropdown-item {:href "#/"}
          [:i.dropdown-icon.fe.fe-settings]
          "Settings"]
         [:div.dropdown-divider]
-        [:a.dropdown-item {:href "#"}
+        [:a.dropdown-item {:href "#/" :on-click #(rf/dispatch [:logout])}
          [:i.dropdown-icon.fe.fe-log-out]
          "Sign out"]]]]
      [:a.header-toggler.d-lg-none.ml-3.ml-lg-0
