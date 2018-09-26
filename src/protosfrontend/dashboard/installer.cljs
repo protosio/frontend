@@ -108,14 +108,13 @@
             [:div {:class "avatar d-block bg-white mr-3" :style {:background-image "url(images/installer-generic.svg)" :background-size "80%"}}]
             [:h3 {:class "card-title"} (:name installer) (when loading? [:i {:class "fa fa-spin fa-circle-o-notch"}])]
             [:div {:class "card-options"}
-              (if (= @page-choice "details")
+            (if (= @page-choice "details")
               [:div {:class "btn-list"}
                 [:button {:type "button" :class "btn btn-outline-primary btn-sm" :on-click #(reset! page-choice "create-app")} "Create app"]
                 [:button {:type "button" :class "btn btn-danger btn-sm" :on-click #(rf/dispatch [:remove-installer (:id installer)])} "Remove"]]
               [:div {:class "btn-list"}
                 [buttons/submit-button "Create" [:create-app (:id installer) selected-version] "primary btn-sm" loading?]
-                [:button {:type "button" :class "btn btn-outline-danger btn-sm" :on-click #(reset! page-choice "details")} "Cancel"]]
-              )]]
+                [:button {:type "button" :class "btn btn-outline-danger btn-sm" :on-click #(reset! page-choice "details")} "Cancel"]])]]
           [alert [:alert-dashboard]]
           (if (= @page-choice "details")
             [installer-details installer]

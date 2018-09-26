@@ -1,11 +1,10 @@
 (ns dashboard.store
   (:require
+    [reagent.core :as r]
     [re-frame.core :as rf]
     [protosfrontend.util :as util]
     [components.buttons :as buttons]
-    [reagent-forms.core :refer [bind-fields]]
-    [cljsjs.lunrjs]))
-
+    [reagent-forms.core :refer [bind-fields]]))
 
 (defn alert [alert-sub]
   (let [alert-data @(rf/subscribe alert-sub)]
@@ -45,41 +44,70 @@
                 [:img {:class "d-flex mr-3 rounded" :src "images/installer-generic.svg" :alt "installer image" :width "25%"}]
                 [:div
                   [:h6.m-0 [:a {:href (str "/#/store/" (subs (str id) 1))} name]]
-                  [:small.text-muted (util/trunc description 60)]]]]]))]]]])
+                  [:small.text-muted (util/trunc "test description" 60)]]]]]))]]]])
 
-(defn installer-details [id installer]
-  (let [versions (:versions installer)
-        selected-version (last (sort versions))]
+
+(defn install-app [name metadata]
   [:div {:class "card-body"}
-    [:div {:class "row mb-1"}
-      [:div {:class "col-2"} [:strong "Description:"]]
-      [:div {:class "col-5"} (:description installer)]]
-    [:div {:class "row mb-1"}
-      [:div {:class "col-2"} [:strong "ID:"]]
-      [:div {:class "col-5"} id]]
-    [:div {:class "row mb-1"}
-      [:div {:class "col-2"} [:strong "Versions:"]]
-      [:div {:class "col-5"} (for [version versions]
-                                  [:button {:type "button" :key version :class (str "btn btn-sm mr-1 "  (if (= selected-version version) "btn-primary" "btn-secondary"))} version])]]
-    [:div {:class "row mb-1"}
-      [:div {:class "col-2"} [:strong "Provides:"]]
-      [:div {:class "col-5"} (for [type (:provides installer)]
-                                  [:span {:key type :class "tag"} type])]]]))
+    [:div {:class "row justify-content-center"}
+      [:div {:class "auto-form-wrapper col-md-6"}
+        [bind-fields
+          [:div
+          [:div {:class "form-group"}
+            [:label {:class "form-label"} "Application name"]
+            [:input {:field :text :id :create-app.form.name :class "form-control" :placeholder name}]]]
+          (util/form-events [:create-app-form])]]]
+  (if-not (empty? (:params metadata))
+    [:div {:class "row justify-content-center"}
+      [:div {:class "auto-form-wrapper col-md-6"}
+        [:div {:class "border-top my-3"}]
+        [bind-fields
+          (into [:div ] (for [field (:params metadata)]
+                             [:div {:key field :class "form-group"}
+                               [:label {:class "form-label"} field]
+                               [:input {:field :text :id (keyword (str "create-app.form.installer-params." field)) :class "form-control" :placeholder field}]]))
+          (util/form-events [:create-app-form])]]])])
+
+(defn installer-details [id name version metadata]
+  (fn []
+    [:div {:class "card-body"}
+      [:div {:class "row mb-1"}
+        [:div {:class "col-2"} [:strong "Description:"]]
+        [:div {:class "col-5"} (:description metadata)]]
+      [:div {:class "row mb-1"}
+        [:div {:class "col-2"} [:strong "ID:"]]
+        [:div {:class "col-5"} id]]
+      [:div {:class "row mb-1"}
+        [:div {:class "col-2"} [:strong "Provides:"]]
+        [:div {:class "col-5"} (for [type (:provides metadata)]
+                                    [:span {:key type :class "tag"} type])]]]))
 
 (defn store-installer-page [id]
-  [:div {:class "container"}
-    [alert [:alert-dashboard]]
-    [:div {:class "row row-cards row-deck"}
-      [:div {:class "col-12"}
-        (let [installer @(rf/subscribe [:store-installer id])
-              versions (:versions installer)
-              selected-version (last (sort versions))
-              loading? @(rf/subscribe [:loading?])]
-        [:div {:class "card"}
-          [:div {:class "card-header"}
-            [:div {:class "avatar d-block bg-white mr-3" :style {:background-image "url(images/installer-generic.svg)" :background-size "80%"}}]
-            [:h3 {:class "card-title"} (:name installer) (when loading? [:i {:class "fa fa-spin fa-circle-o-notch"}])]
-            [:div {:class "card-options"}
-              [:div {:class "btn-list"}
-                [:button {:type "button" :class "btn btn-primary btn-sm" :on-click #(rf/dispatch [:download-installer id])} "Download"]]]]
-          [installer-details id installer]])]]])
+  (let [installer @(rf/subscribe [:store-installer id])
+        versions (keys (:versions installer))
+        selected-version (r/atom (last (sort versions)))
+        loading? @(rf/subscribe [:loading?])
+        page-choice (r/atom "details")]
+    (fn []
+      [:div {:class "container"}
+        [alert [:alert-dashboard]]
+        [:div {:class "row row-cards row-deck"}
+          [:div {:class "col-12"}
+            [:div {:class "card"}
+              [:div {:class "card-header"}
+                [:div {:class "avatar d-block bg-white mr-3" :style {:background-image "url(images/installer-generic.svg)" :background-size "80%"}}]
+                [:h3 {:class "card-title"} (:name installer) (when loading? [:i {:class "fa fa-spin fa-circle-o-notch"}])]
+                [:form
+                  [:select {:class "btn btn-secondary dropdown-toggle ml-2" :value @selected-version :on-change #(reset! selected-version (-> % .-target .-value))}
+                  (for [version versions]
+                    [:option {:key version :value version} version])]]
+                [:div {:class "card-options"}
+                  (if (= @page-choice "details")
+                  [:div {:class "btn-list"}
+                    [:button {:type "button" :class "btn btn-outline-primary btn-sm" :on-click #(reset! page-choice "create-app")} "Install app"]]
+                  [:div {:class "btn-list"}
+                    [buttons/submit-button "Install" [:create-app (:id installer) selected-version] "primary btn-sm" loading?]
+                    [:button {:type "button" :class "btn btn-outline-danger btn-sm" :on-click #(reset! page-choice "details")} "Cancel"]])]]
+            (if (= @page-choice "details")
+              [installer-details id (:name installer) @selected-version (get-in installer [:versions @selected-version])]
+              [install-app (:name installer) (get-in installer [:versions @selected-version])])]]]])))
