@@ -69,26 +69,26 @@
           (util/form-events [:create-app-form])]]])])
 
 (defn installer-details [id name version metadata]
-  (fn []
-    [:div {:class "card-body"}
-      [:div {:class "row mb-1"}
-        [:div {:class "col-2"} [:strong "Description:"]]
-        [:div {:class "col-5"} (:description metadata)]]
-      [:div {:class "row mb-1"}
-        [:div {:class "col-2"} [:strong "ID:"]]
-        [:div {:class "col-5"} id]]
-      [:div {:class "row mb-1"}
-        [:div {:class "col-2"} [:strong "Provides:"]]
-        [:div {:class "col-5"} (for [type (:provides metadata)]
-                                    [:span {:key type :class "tag"} type])]]]))
+  [:div {:class "card-body"}
+    [:div {:class "row mb-1"}
+      [:div {:class "col-2"} [:strong "Description:"]]
+      [:div {:class "col-5"} (:description metadata)]]
+    [:div {:class "row mb-1"}
+      [:div {:class "col-2"} [:strong "ID:"]]
+      [:div {:class "col-5"} id]]
+    [:div {:class "row mb-1"}
+      [:div {:class "col-2"} [:strong "Provides:"]]
+      [:div {:class "col-5"} (for [type (:provides metadata)]
+                                  [:span {:key type :class "tag"} type])]]])
 
 (defn store-installer-page [id]
   (let [installer @(rf/subscribe [:store-installer id])
         versions (keys (:versions installer))
         selected-version (r/atom (last (sort versions)))
+        metadata (get-in installer [:versions @selected-version])
         loading? @(rf/subscribe [:loading?])
         page-choice (r/atom "details")]
-    (fn []
+    (fn store-installer-renderer []
       [:div {:class "container"}
         [alert [:alert-dashboard]]
         [:div {:class "row row-cards row-deck"}
@@ -109,5 +109,5 @@
                     [buttons/submit-button "Install" [:create-app (:id installer) selected-version] "primary btn-sm" loading?]
                     [:button {:type "button" :class "btn btn-outline-danger btn-sm" :on-click #(reset! page-choice "details")} "Cancel"]])]]
             (if (= @page-choice "details")
-              [installer-details id (:name installer) @selected-version (get-in installer [:versions @selected-version])]
-              [install-app (:name installer) (get-in installer [:versions @selected-version])])]]]])))
+              [installer-details id (:name installer) @selected-version metadata]
+              [install-app (:name installer) metadata])]]]])))
