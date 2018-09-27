@@ -42,12 +42,8 @@
   (let [id (:id params)]
    (rf/dispatch [:set-active-page [:store-installer-page id]])))
 
-(secretary/defroute "/installers" []
-  (rf/dispatch [:set-active-page [:installers-page] [:get-installers]]))
-
-(secretary/defroute "/installers/:id" {:as params}
-  (let [id (:id params)]
-   (rf/dispatch [:set-active-page [:installer-page id] [:get-installer id]])))
+(secretary/defroute "/tasks" []
+  (rf/dispatch [:set-active-page [:tasks-page] [:get-tasks]]))
 
 (secretary/defroute "/resources" []
   (rf/dispatch [:set-active-page [:resources-page] [:get-resources]]))

@@ -61,11 +61,16 @@
     (get-in db [:installers (keyword installer-id) :metadata :params])))
 
 (rf/reg-sub
+  :tasks
+  (fn tasks-sub
+    [db _]
+    (:tasks db)))
+
+(rf/reg-sub
   :resources
   (fn resources-sub
     [db _]
-    (-> db
-        :resources)))
+    (:resources db)))
 
 (rf/reg-sub
   :resource

@@ -27,6 +27,16 @@
     [db [_ path result]]
     (assoc-in db path result)))
 
+;; -- Tasks ----------------------------------------------------
+
+(rf/reg-event-fx
+  :get-tasks
+  (fn get-tasks-handler
+    [{db :db} _]
+    {:dispatch [:http-get {:url (pe/createurl ["e" "tasks"])
+                           :on-success [:save-response [:tasks]]
+                           :on-failure [:dashboard-failure]}]}))
+
 ;; -- Installers -----------------------------------------------
 
 (rf/reg-event-fx
@@ -93,7 +103,9 @@
   (fn create-app-success-handler
     [{db :db} [_ result]]
     {:dispatch [:set-active-page [:apps-page] [:get-apps]]
-     :db (assoc-in db [:dashboard :alert] {:type "success" :message (str "App created")})}))
+     :db (-> db
+             (assoc-in [:dashboard :alert] {:type "success" :message (str "Requested app creation")})
+             (assoc-in [:tasks (:id result)] result))}))
 
 (rf/reg-event-fx
   :remove-app

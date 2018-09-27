@@ -45,11 +45,9 @@
             [:li {:class "nav-item"}
               [:a {:href "#/store", :class (str "nav-link " (if (= active-page :store-page) "active"))} [:i {:class "fe fe-shopping-bag" }] " Store"]]
             [:li {:class "nav-item"}
-              [:a {:href "#/installers", :class (str "nav-link " (if (= active-page :installers-page) "active"))} [:i {:class "fe fe-package" }] " Installers"]]
+              [:a {:href "#/tasks", :class (str "nav-link " (if (= active-page :tasks-page) "active"))} [:i {:class "fe fe-check-circle" }] " Tasks"]]
             [:li {:class "nav-item"}
-              [:a {:href "#/resources", :class (str "nav-link " (if (= active-page :resources-page) "active"))} [:i {:class "fe fe-git-merge" }] " Resources"]]
-            [:li {:class "nav-item"}
-              [:a {:href "#/providers", :class (str "nav-link " (if (= active-page :providers-page) "active"))} [:i {:class "fe fe-life-buoy" }] " Providers"]]]]]]])
+              [:a {:href "#/resources", :class (str "nav-link " (if (= active-page :resources-page) "active"))} [:i {:class "fe fe-git-merge" }] " Resources"]]]]]]])
 
 (defn top [name role active-page]
   [:div
