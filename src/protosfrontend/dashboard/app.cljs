@@ -25,7 +25,7 @@
                 [:th {:class "text-center w-1"}
                   [:i {:class "icon-people"}]]
                 [:th "Name"]
-                [:th "Last activity"]
+                [:th "Tasks"]
                 [:th {:class "text-center"} "Runtime"]
                 [:th "Status"]
                 [:th {:class "text-center"}

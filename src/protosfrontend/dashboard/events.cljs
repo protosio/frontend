@@ -37,6 +37,14 @@
                            :on-success [:save-response [:tasks]]
                            :on-failure [:dashboard-failure]}]}))
 
+(rf/reg-event-fx
+  :get-task
+  (fn get-task-handler
+    [{db :db} [_ task-id]]
+    {:dispatch [:http-get {:url (pe/createurl ["e" "tasks" task-id])
+                           :on-success [:save-response [:tasks (keyword task-id)]]
+                           :on-failure [:dashboard-failure]}]}))
+
 ;; -- Installers -----------------------------------------------
 
 (rf/reg-event-fx

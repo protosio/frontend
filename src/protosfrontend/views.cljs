@@ -42,6 +42,7 @@
       :init-page            [init-page]
       :login-page           [login-page]
       :dashboard-page       [regular-page home/home-page "Dashboard" active-page]
+      :task-page            [regular-page #(apply task/task-page params)]
       :tasks-page           [regular-page task/tasks-page "Tasks" active-page]
       :app-page             [regular-page #(apply app/app-page params)]
       :apps-page            [regular-page app/apps-page "Apps" active-page]

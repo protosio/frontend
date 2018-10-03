@@ -47,3 +47,23 @@
                   [:div started-at]]
                 [:td
                   [:div finished-at]]]))]]]]]]])
+
+(defn task-page [id]
+  [:div {:class "container"}
+    [:div {:class "row row-cards row-deck"}
+      [:div {:class "col-12"}
+        (let [task @(rf/subscribe [:task (keyword id)])
+              loading? @(rf/subscribe [:loading?])]
+        [:div {:class "card"}
+          [:div {:class "card-header"}
+            [:div {:class "avatar d-block bg-white mr-3" :style {:background-image "url(images/task-generic.svg)" :background-size "80%"}}]
+            [:h3 {:class "card-title"} id (when loading? [:i {:class "fa fa-spin fa-circle-o-notch"}])]]
+          [alert [:alert-dashboard]]
+          [:div {:class "card-body"}
+            [:div {:class "row"}
+              [:div {:class "col-2"} [:strong "ID:"]]
+              [:div {:class "col-5"} id]]
+            [:div {:class "row"}
+              [:div {:class "col-2"} [:strong "Status:"]]
+              [:div {:class "col-5"} (:status task)]]]])]]])
+

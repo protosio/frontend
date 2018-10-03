@@ -67,6 +67,14 @@
     (:tasks db)))
 
 (rf/reg-sub
+  :task
+  (fn task-sub
+    [db [_ id]]
+    (-> db
+        :tasks
+        id)))
+
+(rf/reg-sub
   :resources
   (fn resources-sub
     [db _]

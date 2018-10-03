@@ -106,7 +106,7 @@
                   [:div {:class "btn-list"}
                     [:button {:type "button" :class "btn btn-outline-primary btn-sm" :on-click #(reset! page-choice "create-app")} "Install app"]]
                   [:div {:class "btn-list"}
-                    [buttons/submit-button "Install" [:create-app (:id installer) selected-version] "primary btn-sm" loading?]
+                    [buttons/submit-button "Install" [:create-app (:id installer) @selected-version] "primary btn-sm" loading?]
                     [:button {:type "button" :class "btn btn-outline-danger btn-sm" :on-click #(reset! page-choice "details")} "Cancel"]])]]
             (if (= @page-choice "details")
               [installer-details id (:name installer) @selected-version metadata]

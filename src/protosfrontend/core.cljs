@@ -45,6 +45,10 @@
 (secretary/defroute "/tasks" []
   (rf/dispatch [:set-active-page [:tasks-page] [:get-tasks]]))
 
+(secretary/defroute "/tasks/:id" {:as params}
+  (let [id (:id params)]
+   (rf/dispatch [:set-active-page [:task-page id] [:get-task id]])))
+
 (secretary/defroute "/resources" []
   (rf/dispatch [:set-active-page [:resources-page] [:get-resources]]))
 
