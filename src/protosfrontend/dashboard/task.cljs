@@ -27,22 +27,30 @@
                 [:th {:class "text-center w-1"}
                   [:i {:class "icon-people"}]]
                 [:th "ID"]
-                [:th "State"]
+                [:th {:class "text-center"} "Status"]
                 [:th "Progress"]
                 [:th "Started at"]
                 [:th "Finished at"]]]
             [:tbody
             (let [tasks @(rf/subscribe [:tasks])]
-              (for [{id :id state :state progress :progress started-at :started-at finished-at :finised-at} (vals tasks)]
+              (for [{id :id status :status progress :progress started-at :started-at finished-at :finished-at} (vals tasks)]
               [:tr {:key id}
                 [:td {:class "text-center"}
                   [:div {:class "avatar d-block bg-white" :style {:background-image "url(images/task-generic.svg)" :background-size "80%"}}]]
                 [:td
                   [:a {:href (str "/#/tasks/" id)} id]]
+                [:td {:class "text-center"}
+                  [:div status]]
                 [:td
-                  [:div state]]
-                [:td
-                  [:div progress]]
+                  [:div.clearfix
+                   [:div {:class "float-left"} [:strong (str (:percentage progress) "%")]]]
+                  [:div {:class "progress progress-xs"}
+                   [:div {:class "progress-bar bg-green"
+                          :aria-valuemax "100",
+                          :aria-valuemin "0",
+                          :aria-valuenow (:percentage progress),
+                          :style {:width (str (:percentage progress) "%")},
+                          :role "progressbar"}]]]
                 [:td
                   [:div started-at]]
                 [:td
