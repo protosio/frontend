@@ -19,7 +19,12 @@
   :dashboard-failure
   (fn dashboard-failure-handler
     [{db :db} [_ result]]
-    {:db (assoc-in db [:dashboard :alert] {:type "danger" :message (get-in result [:response :error])})}))
+    {:db (assoc-in db [:dashboard :alert] {:type "danger" :message (let [err (get-in result [:response :error])
+                                                                         err-status (:status-text result)
+                                                                         parse-status (get-in result [:parse-error :status-text])]
+                                                                         (if err
+                                                                          err
+                                                                          (str err-status "(" parse-status ")")))})}))
 
 (rf/reg-event-db
   :save-response
