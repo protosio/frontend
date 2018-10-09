@@ -2,8 +2,6 @@
     (:require
         [components.header :as header]
         [components.cards :as cards]
-        [dashboard.sidebar :as sidebar]
-        [dashboard.navbar :as navbar]
         [dashboard.home :as home]
         [dashboard.app :as app]
         [dashboard.store :as store]
