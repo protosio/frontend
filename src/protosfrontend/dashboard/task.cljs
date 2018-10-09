@@ -40,7 +40,7 @@
                 [:td
                   [:a {:href (str "/#/tasks/" id)} id]]
                 [:td {:class "text-center"}
-                  [:div status]]
+                  [:span {:class (str "status-icon bg-" (util/task-status-color status))}] (str " " status)]
                 [:td
                   [:div.clearfix
                    [:div {:class "float-left"} [:strong (str (:percentage progress) "%")]]]
