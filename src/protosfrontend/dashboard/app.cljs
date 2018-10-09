@@ -8,7 +8,8 @@
 (defn apps-page [title]
   [:div {:class "container"}
     (if title
-      [:div.page-header [:h1.page-title title]])
+      [:div {:class "page-header"}
+        [:h1 {:class "page-title" :on-click #(rf/dispatch [:get-apps])} title ]])
     [alerts/for-list-page [:alert-dashboard]]
     [:div {:class "row row-cards row-deck"}
       [:div {:class "col-12"}
@@ -64,7 +65,7 @@
           [:div {:class "card-header"}
             [:div {:class "avatar d-block bg-white mr-3" :style {:background-image "url(images/app-generic.svg)" :background-size "80%"}}
               [:span {:class (str "avatar-status bg-" (util/app-status-color (:status app)))}]]
-            [:h3 {:class "card-title"} (:name app) (when loading? [:i {:class "fa fa-spin fa-circle-o-notch"}])]
+            [:h3 {:class "card-title" :on-click #(rf/dispatch [:get-app id])} (:name app)]
             [:div {:class "card-options"}
               [:div {:class "btn-list"}
                 [buttons/submit-button "Start" [:app-state id "start"] "outline-success btn-sm" loading?]

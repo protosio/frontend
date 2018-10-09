@@ -10,7 +10,8 @@
 (defn tasks-page [title]
   [:div {:class "container"}
     (if title
-      [:div.page-header [:h1.page-title title]])
+      [:div {:class "page-header"}
+        [:h1 {:class "page-title" :on-click #(rf/dispatch [:get-tasks])} title]])
     [alerts/for-list-page [:alert-dashboard]]
     [:div {:class "row row-cards row-deck"}
       [:div {:class "col-12"}
@@ -60,7 +61,7 @@
         [:div {:class "card"}
           [:div {:class "card-header"}
             [:div {:class "avatar d-block bg-white mr-3" :style {:background-image "url(images/task-generic.svg)" :background-size "80%"}}]
-            [:h3 {:class "card-title"} id (when loading? [:i {:class "fa fa-spin fa-circle-o-notch"}])]]
+            [:h3 {:class "card-title" :on-click #(rf/dispatch [:get-task id])} id]]
           [alerts/for-card [:alert-dashboard]]
           [:div {:class "card-body"}
             [:div {:class "row"}

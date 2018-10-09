@@ -8,7 +8,8 @@
 (defn resources-page [title]
   [:div {:class "container"}
     (if title
-      [:div.page-header [:h1.page-title title]])
+      [:div {:class "page-header"}
+        [:h1 {:class "page-title" :on-click #(rf/dispatch [:get-resources])} title]])
     [alerts/for-list-page [:alert-dashboard]]
     [:div {:class "row row-cards row-deck"}
       [:div {:class "col-12"}
@@ -54,7 +55,7 @@
         [:div {:class "card"}
           [:div {:class "card-header"}
             [:div {:class "avatar d-block bg-white mr-3" :style {:background-image "url(images/resource-generic.svg)" :background-size "80%"}}]
-            [:h3 {:class "card-title"} id (when loading? [:i {:class "fa fa-spin fa-circle-o-notch"}])]
+            [:h3 {:class "card-title" :on-click #(rf/dispatch [:get-resource id])} id]
             [:div {:class "card-options"}
               [:div {:class "btn-list"}
                 [buttons/submit-button "Remove" [:remove-resource id] "danger btn-sm" loading?]]]]
