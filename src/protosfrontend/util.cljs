@@ -28,7 +28,9 @@
    "warning"))
 
 (defn shorten-time [time]
-  (timeformat/unparse (timeformat/formatters :date-hour-minute-second-fraction) (timeformat/parse (timeformat/formatter "yyyy-MM-dd'T'HH:mm:ss'.'SSS'Z'") time)))
+  (if time
+    (timeformat/unparse (timeformat/formatters :date-hour-minute-second-fraction) (timeformat/parse (timeformat/formatter "yyyy-MM-dd'T'HH:mm:ss'.'SSS'Z'") time))
+    "n/a"))
 
 (defn trunc [s n]
   (str (subs s 0 (min (count s) n)) "..."))
