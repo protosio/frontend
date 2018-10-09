@@ -1,10 +1,11 @@
 (ns auth.views
-    (:require
-        [re-frame.core :as rf]
-        [components.buttons :as buttons]
-        [reagent-forms.core :refer [bind-fields]]
-        [clairvoyant.core :refer-macros [trace-forms]]
-        [re-frame-tracer.core :refer [tracer]]))
+  (:require
+      [re-frame.core :as rf]
+      [components.buttons :as buttons]
+      [components.alerts :as alerts]
+      [reagent-forms.core :refer [bind-fields]]
+      [clairvoyant.core :refer-macros [trace-forms]]
+      [re-frame-tracer.core :refer [tracer]]))
 
 (trace-forms {:tracer (tracer :color "brown")}
 
@@ -17,14 +18,6 @@
                               (save-fn @(rf/subscribe [:form-field-value path]) value)]))
    :doc (fn [] @(rf/subscribe dbpath))})
 
-(defn alert
-  [alert-sub]
-  (let [alert-data @(rf/subscribe alert-sub)]
-    (when alert-data
-      [:div {:class (str "card-alert alert alert-" (:type alert-data) " alert-dismissible mb-0")}
-        [:button {:type "button" :class "close" :data-dismiss "alert"}]
-        (:message alert-data)])))
-
 (defn login-form []
   [:div {:class "container"}
     [:div {:class "row"}
@@ -33,7 +26,7 @@
           [:div {:class "card-header"}
             [:div {:class "mx-auto p-1"}
               [:img {:src "images/protos-logo.svg" :class "h-7" :alt "protos logo"}]]]
-          [alert [:alert-login]]
+          [alerts/for-card [:alert-login]]
           [:div {:class "card-body p-6"}
             [bind-fields
               [:div {:class "auto-form-wrapper"}

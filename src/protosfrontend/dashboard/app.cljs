@@ -2,19 +2,14 @@
     (:require
       [re-frame.core :as rf]
       [protosfrontend.util :as util]
+      [components.alerts :as alerts]
       [components.buttons :as buttons]))
-
-(defn alert [alert-sub]
-  (let [alert-data @(rf/subscribe alert-sub)]
-    (when alert-data
-      [:div {:class (str "card-alert alert alert-" (:type alert-data) " alert-dismissible mb-0")}
-        [:button {:type "button" :class "close" :data-dismiss "alert"}]
-        (:message alert-data)])))
 
 (defn apps-page [title]
   [:div {:class "container"}
     (if title
       [:div.page-header [:h1.page-title title]])
+    [alerts/for-list-page [:alert-dashboard]]
     [:div {:class "row row-cards row-deck"}
       [:div {:class "col-12"}
        [:div {:class "card"}
@@ -76,7 +71,7 @@
                 [buttons/submit-button "Stop" [:app-state id "stop"] "outline-primary btn-sm" loading?]
                 [buttons/submit-button "Remove" [:remove-app id] "danger btn-sm" loading?]
                 [buttons/submit-button [:i {:class "fe fe-refresh-ccw"}] [:get-app id] "outline-primary btn-sm btn-icon" loading?]]]]
-          [alert [:alert-dashboard]]
+          [alerts/for-card [:alert-dashboard]]
           [:div {:class "card-body"}
             [:div {:class "row"}
               [:div {:class "col-2"} [:strong "ID:"]]

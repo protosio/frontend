@@ -3,22 +3,17 @@
       [reagent.core :as r]
       [protosfrontend.util :as util]
       [components.buttons :as buttons]
+      [components.alerts :as alerts]
       [reagent-forms.core :refer [bind-fields]]
       [re-frame.core :as rf]))
 
 (defonce page-choice (r/atom "details"))
 
-(defn alert [alert-sub]
-  (let [alert-data @(rf/subscribe alert-sub)]
-    (when alert-data
-      [:div {:class (str "card-alert alert alert-" (:type alert-data) " alert-dismissible mb-0")}
-        [:button {:type "button" :class "close" :data-dismiss "alert"}]
-        (:message alert-data)])))
-
 (defn installers-page [title]
   [:div {:class "container"}
     (if title
       [:div.page-header [:h1.page-title title]])
+    [alerts/for-list-page [:alert-dashboard]]
     [:div {:class "row row-cards row-deck"}
       [:div {:class "col-12"}
        [:div {:class "card"}
@@ -115,7 +110,7 @@
               [:div {:class "btn-list"}
                 [buttons/submit-button "Create" [:create-app (:id installer) selected-version] "primary btn-sm" loading?]
                 [:button {:type "button" :class "btn btn-outline-danger btn-sm" :on-click #(reset! page-choice "details")} "Cancel"]])]]
-          [alert [:alert-dashboard]]
+          [alerts/for-card [:alert-dashboard]]
           (if (= @page-choice "details")
             [installer-details installer]
             [create-app installer selected-version])])]]])

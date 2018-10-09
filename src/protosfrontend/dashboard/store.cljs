@@ -4,20 +4,14 @@
     [re-frame.core :as rf]
     [protosfrontend.util :as util]
     [components.buttons :as buttons]
+    [components.alerts :as alerts]
     [reagent-forms.core :refer [bind-fields]]))
-
-(defn alert [alert-sub]
-  (let [alert-data @(rf/subscribe alert-sub)]
-    (when alert-data
-      [:div {:class (str "card-alert alert alert-" (:type alert-data) " alert-dismissible mb-2")}
-        [:button {:type "button" :class "close" :data-dismiss "alert"}]
-        (:message alert-data)])))
 
 (defn store-page [title]
   [:div {:class "container"}
   (if title
     [:div.page-header [:h1.page-title title]])
-    [alert [:alert-dashboard]]
+    [alerts/for-list-page [:alert-dashboard]]
     [:div {:class "row row-cards row-deck"}
       ;; Filter card
       [:div {:class "col-sm-3"}
@@ -90,7 +84,7 @@
         page-choice (r/atom "details")]
     (fn store-installer-renderer []
       [:div {:class "container"}
-        [alert [:alert-dashboard]]
+        [alerts/for-card [:alert-dashboard]]
         [:div {:class "row row-cards row-deck"}
           [:div {:class "col-12"}
             [:div {:class "card"}

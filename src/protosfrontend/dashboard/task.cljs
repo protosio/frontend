@@ -3,20 +3,15 @@
       [reagent.core :as r]
       [protosfrontend.util :as util]
       [components.buttons :as buttons]
+      [components.alerts :as alerts]
       [reagent-forms.core :refer [bind-fields]]
       [re-frame.core :as rf]))
-
-(defn alert [alert-sub]
-  (let [alert-data @(rf/subscribe alert-sub)]
-    (when alert-data
-      [:div {:class (str "card-alert alert alert-" (:type alert-data) " alert-dismissible mb-0")}
-        [:button {:type "button" :class "close" :data-dismiss "alert"}]
-        (:message alert-data)])))
 
 (defn tasks-page [title]
   [:div {:class "container"}
     (if title
       [:div.page-header [:h1.page-title title]])
+    [alerts/for-list-page [:alert-dashboard]]
     [:div {:class "row row-cards row-deck"}
       [:div {:class "col-12"}
        [:div {:class "card"}
@@ -66,7 +61,7 @@
           [:div {:class "card-header"}
             [:div {:class "avatar d-block bg-white mr-3" :style {:background-image "url(images/task-generic.svg)" :background-size "80%"}}]
             [:h3 {:class "card-title"} id (when loading? [:i {:class "fa fa-spin fa-circle-o-notch"}])]]
-          [alert [:alert-dashboard]]
+          [alerts/for-card [:alert-dashboard]]
           [:div {:class "card-body"}
             [:div {:class "row"}
               [:div {:class "col-2"} [:strong "ID:"]]

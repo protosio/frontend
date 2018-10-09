@@ -1,54 +1,49 @@
 (ns dashboard.resource
-    (:require
-      [re-frame.core :as rf]
-      [components.buttons :as buttons]
-      [protosfrontend.util :as util]))
-
-(defn alert [alert-sub]
-  (let [alert-data @(rf/subscribe alert-sub)]
-    (when alert-data
-      [:div {:class (str "card-alert alert alert-" (:type alert-data) " alert-dismissible mb-0")}
-        [:button {:type "button" :class "close" :data-dismiss "alert"}]
-        (:message alert-data)])))
+  (:require
+    [re-frame.core :as rf]
+    [components.buttons :as buttons]
+    [components.alerts :as alerts]
+    [protosfrontend.util :as util]))
 
 (defn resources-page [title]
   [:div {:class "container"}
-      (if title
-        [:div.page-header [:h1.page-title title]])
-      [:div {:class "row row-cards row-deck"}
-        [:div {:class "col-12"}
-         [:div {:class "card"}
-          [:div {:class "table-responsive"}
-            [:table {:class "table table-hover table-outline table-vcenter text-nowrap card-table"}
-              [:thead
-                [:tr
-                  [:th {:class "text-center w-1"}
-                    [:i {:class "icon-people"}]]
-                  [:th "ID"]
-                  [:th "Type"]
-                  [:th "Status"]
-                  [:th {:class "text-center"} [:i {:class "icon-settings"}]]]]
-              [:tbody
-            (let [resources @(rf/subscribe [:resources])]
-              (for [{type :type id :id status :status app-id :app} (vals resources)]
-                [:tr {:key id}
-                  [:td {:class "text-center"}
-                    [:div {:class "avatar d-block bg-white" :style {:background-image "url(images/resource-generic.svg)" :background-size "80%"}}]]
-                  [:td
-                    [:a {:href (str "/#/resources/" id)} id]]
-                  [:td
-                    [:div [:span {:class "tag"} type]]]
-                  [:td
-                  (if (= status "created")
-                    [:div [:span {:class "status-icon bg-green"}] status]
-                    [:div [:span {:class "status-icon bg-yellow"}] status])]
-                  [:td
-                    [:div {:class "item-action dropdown"}
-                      [:a {:href "javascript:void(0)" :data-toggle "dropdown" :class "icon"}
-                        [:i {:class "fe fe-more-vertical"}]]
-                      [:div {:class "dropdown-menu dropdown-menu-right"}
-                        [:a {:href "javascript:void(0)" :class "dropdown-item"}
-                          [:i {:class "dropdown-icon fe fe-trash"}] " Remove"]]]]]))]]]]]]])
+    (if title
+      [:div.page-header [:h1.page-title title]])
+    [alerts/for-list-page [:alert-dashboard]]
+    [:div {:class "row row-cards row-deck"}
+      [:div {:class "col-12"}
+       [:div {:class "card"}
+        [:div {:class "table-responsive"}
+          [:table {:class "table table-hover table-outline table-vcenter text-nowrap card-table"}
+            [:thead
+              [:tr
+                [:th {:class "text-center w-1"}
+                  [:i {:class "icon-people"}]]
+                [:th "ID"]
+                [:th "Type"]
+                [:th "Status"]
+                [:th {:class "text-center"} [:i {:class "icon-settings"}]]]]
+            [:tbody
+          (let [resources @(rf/subscribe [:resources])]
+            (for [{type :type id :id status :status app-id :app} (vals resources)]
+              [:tr {:key id}
+                [:td {:class "text-center"}
+                  [:div {:class "avatar d-block bg-white" :style {:background-image "url(images/resource-generic.svg)" :background-size "80%"}}]]
+                [:td
+                  [:a {:href (str "/#/resources/" id)} id]]
+                [:td
+                  [:div [:span {:class "tag"} type]]]
+                [:td
+                (if (= status "created")
+                  [:div [:span {:class "status-icon bg-green"}] status]
+                  [:div [:span {:class "status-icon bg-yellow"}] status])]
+                [:td
+                  [:div {:class "item-action dropdown"}
+                    [:a {:href "javascript:void(0)" :data-toggle "dropdown" :class "icon"}
+                      [:i {:class "fe fe-more-vertical"}]]
+                    [:div {:class "dropdown-menu dropdown-menu-right"}
+                      [:a {:href "javascript:void(0)" :class "dropdown-item"}
+                        [:i {:class "dropdown-icon fe fe-trash"}] " Remove"]]]]]))]]]]]]])
 
 (defn resource-page [id]
   [:div {:class "container"}
@@ -63,7 +58,7 @@
             [:div {:class "card-options"}
               [:div {:class "btn-list"}
                 [buttons/submit-button "Remove" [:remove-resource id] "danger btn-sm" loading?]]]]
-          [alert [:alert-dashboard]]
+          [alerts/for-card [:alert-dashboard]]
           [:div {:class "card-body"}
             [:div {:class "row mb-1"}
               [:div {:class "col-2"} [:strong "ID:"]]

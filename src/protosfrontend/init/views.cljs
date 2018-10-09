@@ -3,6 +3,7 @@
     [re-frame.core :as rf]
     [protosfrontend.util :as util]
     [components.buttons :as buttons]
+    [components.alerts :as alerts]
     [reagent-forms.core :refer [bind-fields]]
     [clairvoyant.core :refer-macros [trace-forms]]
     [re-frame-tracer.core :refer [tracer]]))
@@ -13,13 +14,6 @@
   [:div {:class "card-header"}
     [:div {:class "mx-auto p-1"}
       [:img {:src "images/protos-logo.svg" :class "h-7" :alt "protos logo"}]]])
-
-(defn alert [alert-sub]
-  (let [alert-data @(rf/subscribe alert-sub)]
-    (when alert-data
-      [:div {:class (str "card-alert alert alert-" (:type alert-data) " alert-dismissible mb-0")}
-        [:button {:type "button" :class "close" :data-dismiss "alert"}]
-        (:message alert-data)])))
 
 (defn navigation-buttons [button-text event disabled? loading?]
   [:div {:class "form-row"}
@@ -42,7 +36,7 @@
 (defn step1 []
   [:form {:class "card align-middle"}
     [card-header]
-    [alert [:alert-init :step1]]
+    [alerts/for-card [:alert-init :step1]]
     [:div {:class "card-body p-5"}
       [:h4 {:class "text-center mb-4"} "User & domain"]
       [:div {:class "auto-form-wrapper"}
@@ -61,7 +55,7 @@
 (defn step2 []
   [:form {:class "card align-middle"}
     [card-header]
-    [alert [:alert-init :step2]]
+    [alerts/for-card [:alert-init :step2]]
     [:div {:class "card-body p-5"}
       [:h4 {:class "text-center mb-4"} "Select a DNS provider"]
         [:div {:class "auto-form-wrapper"}
@@ -89,7 +83,7 @@
 (defn step3 []
   [:form {:class "card align-middle"}
     [card-header]
-    [alert [:alert-init :step3]]
+    [alerts/for-card [:alert-init :step3]]
     [:div {:class "card-body p-5"}
       [:h4 {:class "text-center mb-4"} "Select a certificate provider"]
       [:div {:class "auto-form-wrapper"}
@@ -125,7 +119,7 @@
                                                  (= (:status v) "created"))))]
   [:form {:class "card align-middle"}
     [card-header]
-    [alert [:alert-init :step4]]
+    [alerts/for-card [:alert-init :step4]]
     [:div {:class "card-body p-5"}
       [:h4 {:class "text-center mb-4"} "Protos DNS and TLS resources"]
       [:div {:class "auto-form-wrapper"}
