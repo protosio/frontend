@@ -12,6 +12,6 @@
 (defn for-card [alert-sub]
   (let [alert-data @(rf/subscribe alert-sub)]
     (when alert-data
-      [:div {:class (str "card-alert alert alert-" (:type alert-data) " alert-dismissible mb-0")}
+      [:div {:class (str "card-alert alert alert-" (:type alert-data) " alert-dismissible mb-1")}
         [:button {:type "button" :class "close" :data-dismiss "alert"}]
         (:message alert-data)])))
