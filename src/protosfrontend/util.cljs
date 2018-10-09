@@ -18,5 +18,13 @@
    "stopped"           "red"
    "blue"))
 
+(defn task-status-color [status]
+  (condp = status
+   "requested"  "secondary"
+   "inprogress" "warning"
+   "failed"     "danger"
+   "finished"   "success"
+   "warning"))
+
 (defn trunc [s n]
   (str (subs s 0 (min (count s) n)) "..."))
