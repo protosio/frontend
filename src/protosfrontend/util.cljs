@@ -1,6 +1,7 @@
 (ns protosfrontend.util
   (:require
-    [re-frame.core :as rf]))
+    [re-frame.core :as rf]
+    [cljs-time.format :as timeformat]))
 
 (defn form-events
   [dbpath]
@@ -25,6 +26,9 @@
    "failed"     "danger"
    "finished"   "success"
    "warning"))
+
+(defn shorten-time [time]
+  (timeformat/unparse (timeformat/formatters :date-hour-minute-second-fraction) (timeformat/parse (timeformat/formatter "yyyy-MM-dd'T'HH:mm:ss'.'SSS'Z'") time)))
 
 (defn trunc [s n]
   (str (subs s 0 (min (count s) n)) "..."))
