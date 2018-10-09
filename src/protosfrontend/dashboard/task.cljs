@@ -41,10 +41,10 @@
                    [:div {:class "float-left"} [:strong (str (:percentage progress) "%")]]]
                   [:div {:class "progress progress-xs"}
                    [:div {:class "progress-bar bg-green"
-                          :aria-valuemax "100",
-                          :aria-valuemin "0",
-                          :aria-valuenow (:percentage progress),
-                          :style {:width (str (:percentage progress) "%")},
+                          :aria-valuemax "100"
+                          :aria-valuemin "0"
+                          :aria-valuenow (:percentage progress)
+                          :style {:width (str (:percentage progress) "%")}
                           :role "progressbar"}]]]
                 [:td
                   [:div (util/shorten-time started-at)]]
@@ -55,7 +55,7 @@
   [:div {:class "container"}
     [:div {:class "row row-cards row-deck"}
       [:div {:class "col-12"}
-        (let [task @(rf/subscribe [:task (keyword id)])
+        (let [{id :id status :status progress :progress started-at :started-at finished-at :finished-at} @(rf/subscribe [:task (keyword id)])
               loading? @(rf/subscribe [:loading?])]
         [:div {:class "card"}
           [:div {:class "card-header"}
@@ -68,5 +68,25 @@
               [:div {:class "col-5"} id]]
             [:div {:class "row"}
               [:div {:class "col-2"} [:strong "Status:"]]
-              [:div {:class "col-5"} (:status task)]]]])]]])
+              [:div {:class "col-5"} [:span {:class (str "status-icon bg-" (util/task-status-color status))}] (str " " status)]]
+            [:div {:class "row"}
+              [:div {:class "col-2"} [:strong "Progress:"]]
+              [:div {:class "col-5 mb-2"}
+                [:div.clearfix [:div {:class "float-left"} [:strong (str (:percentage progress) "%")]]]
+                [:div {:class "progress progress-xs"}
+                  [:div {:class "progress-bar bg-green"
+                         :aria-valuemax "100",
+                         :aria-valuemin "0",
+                         :aria-valuenow (:percentage progress),
+                         :style {:width (str (:percentage progress) "%")},
+                         :role "progressbar"}]]]]
+            [:div {:class "row"}
+              [:div {:class "col-2"} [:strong "Start time:"]]
+              [:div {:class "col-5"} started-at]]
+            [:div {:class "row"}
+              [:div {:class "col-2"} [:strong "End time:"]]
+              [:div {:class "col-5"} finished-at]]
+            [:div {:class "row"}
+              [:div {:class "col-2"} [:strong "Status message:"]]
+              [:div {:class "col-5"} (:state progress)]]]])]]])
 
