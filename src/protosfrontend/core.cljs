@@ -54,7 +54,7 @@
 
 (secretary/defroute "/resources/:id" {:as params}
   (let [id (:id params)]
-   (rf/dispatch [:set-active-page [:resource-page id]])))
+   (rf/dispatch [:set-active-page [:resource-page id] [:get-resource id]])))
 
 (secretary/defroute "/init" []
   (rf/dispatch [:set-active-page [:init-page]]))

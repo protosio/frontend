@@ -162,6 +162,14 @@
                            :on-failure [:dashboard-failure]}]}))
 
 (rf/reg-event-fx
+  :get-resource
+  (fn get-resource-handler
+    [{db :db} [_ rsc-id]]
+    {:dispatch [:http-get {:url (pe/createurl ["e" "resources" rsc-id])
+                           :on-success [:save-response [:resources (keyword rsc-id)]]
+                           :on-failure [:dashboard-failure]}]}))
+
+(rf/reg-event-fx
   :remove-resource
   (fn remove-resource-handler
     [{db :db} [_ id]]
