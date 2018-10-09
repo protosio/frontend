@@ -8,6 +8,15 @@
     [:div.d-flex
      [:a.header-brand {:href "/"}
       [:img.header-brand-img {:alt "protos logo" :src "images/protos-logo.svg"}]]
+    (let [loading? @(rf/subscribe [:loading?])]
+      (when loading?
+        [:div {:class "sk-wave"}
+          [:div {:class "sk-rect sk-rect1"}]
+          [:div {:class "sk-rect sk-rect2"}]
+          [:div {:class "sk-rect sk-rect3"}]
+          [:div {:class "sk-rect sk-rect4"}]
+          [:div {:class "sk-rect sk-rect5"}]]))
+
      [:div.d-flex.order-lg-2.ml-auto
       [:div.dropdown
        [:a.nav-link.pr-0.leading-none {:data-toggle "dropdown", :href "#"}
