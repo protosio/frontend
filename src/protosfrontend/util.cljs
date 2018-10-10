@@ -1,7 +1,10 @@
 (ns protosfrontend.util
   (:require
-    [re-frame.core :as rf]
-    [cljs-time.format :as timeformat]))
+    [re-frame.core      :as rf]
+    [re-frame.registrar :as reg]
+    [re-frame.router    :as router]
+    [re-frame.loggers   :refer [console]]
+    [cljs-time.format   :as timeformat]))
 
 (defn form-events
   [dbpath]
@@ -34,3 +37,34 @@
 
 (defn trunc [s n]
   (str (subs s 0 (min (count s) n)) "..."))
+;;
+;; Event debouncer
+;;
+
+(def debounced-events (atom {}))
+
+(defn cancel-timeout [id]
+  (js/clearTimeout (:timeout (@debounced-events id)))
+  (swap! debounced-events dissoc id))
+
+(reg/register-handler :fx
+  :dispatch-debounce
+  (fn [dispatches]
+    (let [dispatches (if (sequential? dispatches) dispatches [dispatches])]
+      (doseq [{:keys [id action dispatch timeout]
+               :or   {action :dispatch}}
+              dispatches]
+        (case action
+          :dispatch (do
+                      (cancel-timeout id)
+                      (swap! debounced-events assoc id
+                             {:timeout  (js/setTimeout (fn []
+                                                        (swap! debounced-events dissoc id)
+                                                        (router/dispatch dispatch))
+                                                      timeout)
+                              :dispatch dispatch}))
+          :cancel (cancel-timeout id)
+          :flush (let [ev (get-in @debounced-events [id :dispatch])]
+                   (cancel-timeout id)
+                   (router/dispatch ev))
+          (console :warn "re-frame: ignoring bad :dispatch-debounce action:" action "id:" id))))))
