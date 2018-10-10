@@ -58,6 +58,12 @@
   (js/clearTimeout (:timeout (@debounced-events id)))
   (swap! debounced-events dissoc id))
 
+(defn cancel-all-timeouts []
+  (for [{id val} @debounced-events]
+    (fn []
+      (js/clearTimeout (:timeout val))
+      (swap! debounced-events dissoc id))))
+
 (reg/register-handler :fx
   :dispatch-debounce
   (fn [dispatches]
@@ -75,6 +81,7 @@
                                                       timeout)
                               :dispatch dispatch}))
           :cancel (cancel-timeout id)
+          :cancel-all (cancel-all-timeouts)
           :flush (let [ev (get-in @debounced-events [id :dispatch])]
                    (cancel-timeout id)
                    (router/dispatch ev))
