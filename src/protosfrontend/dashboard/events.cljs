@@ -5,6 +5,7 @@
         [re-frame.core :as rf]
         [day8.re-frame.http-fx]
         [protosfrontend.events :as pe]
+        [protosfrontend.util :as util]
         [com.smxemail.re-frame-cookie-fx]
         [com.degel.re-frame.storage]
         [district0x.re-frame.interval-fx]
@@ -39,7 +40,7 @@
   (fn get-tasks-handler
     [{db :db} _]
     {:dispatch [:http-get {:url (pe/createurl ["e" "tasks"])
-                           :on-success [:save-response [:tasks]]
+                           :on-success [:check-tasks]
                            :on-failure [:dashboard-failure]}]}))
 
 (rf/reg-event-fx
@@ -49,6 +50,18 @@
     {:dispatch [:http-get {:url (pe/createurl ["e" "tasks" task-id])
                            :on-success [:save-response [:tasks (keyword task-id)]]
                            :on-failure [:dashboard-failure]}]}))
+
+(rf/reg-event-fx
+  :check-tasks
+  (fn check-tasks-handler
+    [{db :db} [_ tasks]]
+    (let [tasks-unfinished? (util/tasks-unfinished? tasks)
+          result {:db (assoc db :tasks tasks)}]
+          (if tasks-unfinished?
+            (assoc result :dispatch-debounce {:id :get-tasks-future
+                                              :timeout 2000
+                                              :dispatch [:get-tasks]})
+            result))))
 
 ;; -- Installers -----------------------------------------------
 
