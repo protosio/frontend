@@ -48,7 +48,7 @@
   (fn get-task-handler
     [{db :db} [_ task-id]]
     {:dispatch [:http-get {:url (pe/createurl ["e" "tasks" task-id])
-                           :on-success [:save-response [:tasks (keyword task-id)]]
+                           :on-success [:check-task task-id]
                            :on-failure [:dashboard-failure]}]}))
 
 (rf/reg-event-fx
@@ -61,6 +61,18 @@
             (assoc result :dispatch-debounce {:id :get-tasks-future
                                               :timeout 2000
                                               :dispatch [:get-tasks]})
+            result))))
+
+(rf/reg-event-fx
+  :check-task
+  (fn check-task-handler
+    [{db :db} [_ task-id task]]
+    (let [task-unfinished? (util/task-unfinished? task)
+          result {:db (assoc-in db [:tasks (keyword task-id)] task)}]
+          (if task-unfinished?
+            (assoc result :dispatch-debounce {:id (keyword (str "get-task-" task-id))
+                                              :timeout 2000
+                                              :dispatch [:get-task task-id]})
             result))))
 
 ;; -- Installers -----------------------------------------------
