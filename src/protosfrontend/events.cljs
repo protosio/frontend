@@ -160,14 +160,13 @@
   :set-active-page
   (fn set-active-page-handler
     [{db :db} [_ active-page update-event]]
-    (if update-event
-     {:db (-> db
-              (assoc :active-page active-page)
-              (assoc-in [:dashboard :alert] nil))
-      :dispatch update-event}
-     {:db (-> db
-              (assoc :active-page active-page)
-              (assoc-in [:dashboard :alert] nil))})))
+    (let [res {:db (-> db
+                       (assoc :active-page active-page)
+                       (assoc-in [:dashboard :alert] nil))
+               :dispatch-debounce {:action :cancel-all}}]
+      (if update-event
+        (assoc res :dispatch update-event)
+        res))))
 
 ;; -- HTTP operations ---------------------------------------------
 
