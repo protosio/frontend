@@ -39,9 +39,9 @@
   (str (subs s 0 (min (count s) n)) "..."))
 
 (defn task-unfinished? [task]
-  (if (= "finished" (:status task))
-        false
-        true))
+  (if (some #(= (:status task) %) ["finished" "failed"])
+    false
+    true))
 
 (defn tasks-unfinished? [tasks]
   (if (> (count (filter task-unfinished? (vals tasks))) 0)
