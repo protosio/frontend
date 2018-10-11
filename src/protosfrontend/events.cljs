@@ -138,22 +138,6 @@
     (assoc db :form-data {})))
 
 
-;; -- Modal events -----------------------------------------------
-
-(rf/reg-event-fx
-  :open-modal
-  (fn open-modal-handler
-      [{db :db} [_ modal-type modal-params]]
-      {:dispatch [:update-form-data [:installer-id] modal-params]
-       :db (assoc db :modal-data {:show-modal true :active-modal modal-type :modal-params modal-params})}))
-
-(rf/reg-event-fx
-  :close-modal
-  (fn close-modal-handler
-    [{db :db} [_ modal-type]]
-    {:dispatch [:reset-form-data]
-     :db (assoc db :modal-data {:show-modal false :active-modal modal-type :modal-params nil})}))
-
 ;; -- Activate page -----------------------------------------------
 
 (rf/reg-event-fx
