@@ -26,16 +26,6 @@
 (defn createurl [urlkeys]
     (str "/api/v1/" (string/join "/" (flatten [urlkeys]))))
 
-(defn geturl [[resource & params]]
-    (let [urlp (resource resources)
-          urlreplaced (for [x urlp]
-                        (if (= x :param)
-                          (first params)
-                          x))
-          url (str "/" (string/join "/" urlreplaced))]
-     url))
-
-
 ;; -- Event Handlers -----------------------------------------------
 
 (rf/reg-event-fx
