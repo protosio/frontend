@@ -18,6 +18,7 @@
 
 (def static-data {:pages {:dashboard-page [:get-apps]
                           :tasks-page [:get-tasks]
+                          :task-page [:get-task]
                           :app-page [:get-app]
                           :apps-page [:get-apps]
                           :store-page [:get-appstore-all]
