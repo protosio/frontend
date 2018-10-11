@@ -59,10 +59,8 @@
   (swap! debounced-events dissoc id))
 
 (defn cancel-all-timeouts []
-  (for [{id val} @debounced-events]
-    (fn []
-      (js/clearTimeout (:timeout val))
-      (swap! debounced-events dissoc id))))
+  (doseq [[id val] @debounced-events]
+   (cancel-timeout id)))
 
 (reg/register-handler :fx
   :dispatch-debounce
