@@ -26,41 +26,41 @@
 (secretary/set-config! :prefix "#")
 
 (secretary/defroute "/" []
-  (rf/dispatch [:set-active-page [:dashboard-page] [:get-apps]]))
+  (rf/dispatch [:set-active-page :dashboard-page]))
 
 (secretary/defroute "/apps" []
-  (rf/dispatch [:set-active-page [:apps-page] [:get-apps]]))
+  (rf/dispatch [:set-active-page :apps-page]))
 
 (secretary/defroute "/apps/:id" {:as params}
   (let [id (:id params)]
-   (rf/dispatch [:set-active-page [:app-page id] [:get-app id]])))
+   (rf/dispatch [:set-active-page :app-page id])))
 
 (secretary/defroute "/store" []
-  (rf/dispatch [:set-active-page [:store-page] [:get-appstore-all]]))
+  (rf/dispatch [:set-active-page :store-page]))
 
 (secretary/defroute "/store/:id" {:as params}
   (let [id (:id params)]
-   (rf/dispatch [:set-active-page [:store-installer-page id]])))
+   (rf/dispatch [:set-active-page :store-installer-page id])))
 
 (secretary/defroute "/tasks" []
-  (rf/dispatch [:set-active-page [:tasks-page] [:get-tasks]]))
+  (rf/dispatch [:set-active-page :tasks-page]))
 
 (secretary/defroute "/tasks/:id" {:as params}
   (let [id (:id params)]
-   (rf/dispatch [:set-active-page [:task-page id] [:get-task id]])))
+   (rf/dispatch [:set-active-page :task-page id])))
 
 (secretary/defroute "/resources" []
-  (rf/dispatch [:set-active-page [:resources-page] [:get-resources]]))
+  (rf/dispatch [:set-active-page :resources-page]))
 
 (secretary/defroute "/resources/:id" {:as params}
   (let [id (:id params)]
-   (rf/dispatch [:set-active-page [:resource-page id] [:get-resource id]])))
+   (rf/dispatch [:set-active-page :resource-page id])))
 
 (secretary/defroute "/init" []
-  (rf/dispatch [:set-active-page [:init-page]]))
+  (rf/dispatch [:set-active-page :init-page]))
 
   (secretary/defroute "/login" []
-    (rf/dispatch [:set-active-page [:login-page]]))
+    (rf/dispatch [:set-active-page :login-page]))
 
 ;; -------------------------
 ;; History

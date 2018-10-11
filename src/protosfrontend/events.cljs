@@ -4,6 +4,7 @@
         [ajax.core :as ajax]
         [re-frame.core :as rf]
         [day8.re-frame.http-fx]
+        [protosfrontend.util :as util]
         [com.smxemail.re-frame-cookie-fx]
         [com.degel.re-frame.storage]
         [district0x.re-frame.interval-fx]
@@ -13,13 +14,15 @@
 
 (trace-forms {:tracer (tracer :color "green")}
 
-;; -- Static fata ----------------------
+;; -- Static data ----------------------
 
-(def resources {:apps "apps"
-                :installers "installers"
-                :app ["apps" :param]
-                :installer ["installers" :param]
-                :installer-metadata ["installers" :param "metadata"]})
+(def static-data {:pages {:dashboard-page [:get-apps]
+                          :tasks-page [:get-tasks]
+                          :app-page [:get-app]
+                          :apps-page [:get-apps]
+                          :store-page [:get-appstore-all]
+                          :resources-page [:get-resources]
+                          :resource-page [:get-resource]}})
 
 ;; -- Helper functions ---------------------------------------------
 
@@ -100,7 +103,7 @@
   :redirect-login
   (fn redirect-login-handler
     [{db :db} _]
-    {:dispatch [:set-active-page [:login-page]]
+    {:dispatch [:set-active-page :login-page]
      :db (assoc db :previous-page (:active-page db))}))
 
 ;; -- Alert events -----------------------------------------------
@@ -143,13 +146,17 @@
 (rf/reg-event-fx
   :set-active-page
   (fn set-active-page-handler
-    [{db :db} [_ active-page update-event]]
-    (let [res {:db (-> db
-                       (assoc :active-page active-page)
+    [{db :db} [_ active-page item-id]]
+    (let [ap (if item-id [active-page item-id] [active-page])
+          update-event (get-in static-data [:pages active-page])
+          res {:db (-> db
+                       (assoc :active-page ap)
                        (assoc-in [:dashboard :alert] nil))
                :dispatch-debounce {:action :cancel-all}}]
       (if update-event
-        (assoc res :dispatch update-event)
+        (assoc res :dispatch (if item-id
+                                 (conj update-event item-id)
+                                 update-event))
         res))))
 
 ;; -- HTTP operations ---------------------------------------------
