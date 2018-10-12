@@ -22,7 +22,7 @@
      :db (-> db
              (assoc-in [:previous-page] nil)
              (assoc-in [:auth] result)
-             (assoc-in [:login :alert] {:type "success" :message "Login successful"}))}))
+             (assoc :login nil))}))
 
 (rf/reg-event-fx
   :load-username
