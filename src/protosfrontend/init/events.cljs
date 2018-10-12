@@ -1,8 +1,8 @@
 (ns init.events
     (:require
         [re-frame.core :as rf]
+        [protosfrontend.events :as util]
         [clairvoyant.core :refer-macros [trace-forms]]
-        [protosfrontend.events :as pe]
         [re-frame-tracer.core :refer [tracer]]))
 
 (trace-forms {:tracer (tracer :color "green")}
@@ -57,7 +57,7 @@
   :get-installer-init
   (fn get-installer-init-handler
     [_ [_ step id]]
-    {:dispatch [:http-get {:url (pe/createurl ["e" "installers" (name id)])
+    {:dispatch [:http-get {:url (util/createurl ["e" "installers" (name id)])
                            :on-success [:get-installer-init-success step]
                            :on-failure [:init-failure step]}]}))
 
@@ -79,7 +79,7 @@
           installers (get-in db [:init-wizard step :provider-list])
           name (:name (installer-id installers))
           version (last (sort (:versions (get installers installer-id))))]
-    {:dispatch [:http-post {:url (pe/createurl ["e" "apps"])
+    {:dispatch [:http-post {:url (util/createurl ["e" "apps"])
                             :on-success [:create-app-during-init-success step]
                             :on-failure [:init-failure step]
                             :post-data {:installer-id installer-id :installer-version version :name name :installer-params installer-params}}]})))
@@ -97,7 +97,7 @@
   :start-app-during-init
   (fn start-app-during-init-handler
     [{db :db} [_ step app-id]]
-    {:dispatch [:http-post {:url (pe/createurl ["e" "apps" app-id "action"])
+    {:dispatch [:http-post {:url (util/createurl ["e" "apps" app-id "action"])
                             :on-success [:start-app-during-init-success step]
                             :on-failure [:init-failure step]
                             :post-data {:name "start"}}]}))
@@ -114,7 +114,7 @@
   :register-user-domain
   (fn register-user-domain-handler
     [{db :db} _]
-    {:dispatch [:http-post {:url (pe/createurl ["auth" "register"])
+    {:dispatch [:http-post {:url (util/createurl ["auth" "register"])
                             :on-success [:register-user-domain-success]
                             :on-failure [:init-failure :step1]
                             :post-data (get-in db [:init-wizard :step1 :form])}]}))
@@ -134,7 +134,7 @@
   :get-dns-providers
   (fn get-dns-providers-handler
     [_ _]
-    {:dispatch [:http-get {:url (str (pe/createurl ["e" "store" "search"]) "?provides=dns")
+    {:dispatch [:http-get {:url (str (util/createurl ["e" "store" "search"]) "?provides=dns")
                            :on-success [:get-dns-providers-success]
                            :on-failure [:init-failure :step2]}]}))
 
@@ -154,7 +154,7 @@
           installers (get-in db [:init-wizard :step2 :provider-list])
           name (:name (id installers))
           version (last (sort (:versions (get installers id))))]
-    {:dispatch [:http-post {:url (pe/createurl ["e" "store" "download"])
+    {:dispatch [:http-post {:url (util/createurl ["e" "store" "download"])
                             :on-success [:download-dns-provider-success id]
                             :on-failure [:init-failure :step2]
                             :post-data {:id id :version version :name name}}]})))
@@ -173,7 +173,7 @@
   :get-cert-providers
   (fn get-cert-providers-handler
     [_ _]
-    {:dispatch [:http-get {:url (str (pe/createurl ["e" "store" "search"]) "?provides=certificate")
+    {:dispatch [:http-get {:url (str (util/createurl ["e" "store" "search"]) "?provides=certificate")
                            :on-success [:get-cert-providers-success]
                            :on-failure [:init-failure :step3]}]}))
 
@@ -193,7 +193,7 @@
           installers (get-in db [:init-wizard :step3 :provider-list])
           name (:name (id installers))
           version (last (sort (:versions (get installers id))))]
-    {:dispatch [:http-post {:url (pe/createurl ["e" "store" "download"])
+    {:dispatch [:http-post {:url (util/createurl ["e" "store" "download"])
                             :on-success [:download-cert-provider-success id]
                             :on-failure [:init-failure :step3]
                             :post-data {:id id :version version :name name}}]})))
@@ -211,7 +211,7 @@
   :create-init-resources
   (fn create-init-resources-handler
     [_ _]
-    {:dispatch [:http-post {:url (pe/createurl ["e" "protos" "resources"])
+    {:dispatch [:http-post {:url (util/createurl ["e" "protos" "resources"])
                             :on-success [:create-init-resources-success]
                             :on-failure [:init-failure :step4]
                             :post-data {}}]}))
@@ -230,7 +230,7 @@
   :retrieve-init-resource
   (fn retrieve-init-resource-handler
     [_ [_ id]]
-    {:dispatch [:http-get {:url (pe/createurl ["e" "resources" (name id)])
+    {:dispatch [:http-get {:url (util/createurl ["e" "resources" (name id)])
                            :on-success [:retrieve-init-resource-success id]
                            :on-failure [:init-failure :step4]}]}))
 

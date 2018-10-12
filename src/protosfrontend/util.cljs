@@ -1,10 +1,14 @@
 (ns protosfrontend.util
   (:require
+    [clojure.string :as string]
     [re-frame.core      :as rf]
     [re-frame.registrar :as reg]
     [re-frame.router    :as router]
     [re-frame.loggers   :refer [console]]
     [cljs-time.format   :as timeformat]))
+
+(defn createurl [urlkeys]
+    (str "/api/v1/" (string/join "/" (flatten [urlkeys]))))
 
 (defn form-events
   [dbpath]

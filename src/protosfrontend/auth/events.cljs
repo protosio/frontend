@@ -1,8 +1,8 @@
 (ns auth.events
     (:require
         [re-frame.core :as rf]
+        [protosfrontend.util :as util]
         [clairvoyant.core :refer-macros [trace-forms]]
-        [protosfrontend.events :as pe]
         [re-frame-tracer.core :refer [tracer]]))
 
 (trace-forms {:tracer (tracer :color "green")}
@@ -45,7 +45,7 @@
   :login
   (fn login-handler
     [{db :db} _]
-    {:dispatch [:http-post {:url (pe/createurl ["auth" "login"])
+    {:dispatch [:http-post {:url (util/createurl ["auth" "login"])
                             :on-success [:login-success]
                             :on-failure [:login-failure]
                             :post-data (get-in db [:login :form])}]}))
