@@ -14,7 +14,8 @@
                  [baking-soda "0.2.0"]
                  [cljsjs/react-transition-group "2.3.1-0"]
                  [cljsjs/react-popper "0.10.4-0"]
-                 [secretary "1.2.3"]
+                 [bidi "2.1.4"]
+                 [kibu/pushy "0.3.8"]
                  [cljs-ajax "0.7.3"]
                  [figwheel-sidecar "0.5.16"]
                  [com.cemerick/piggieback "0.2.1"]
@@ -43,7 +44,7 @@
                         :figwheel true
                         :compiler {:preloads [devtools.preload]
                                    :main protosfrontend.core
-                                   :asset-path "js/compiled/out"
+                                   :asset-path "/static/js/compiled/out"
                                    :output-to "resources/public/js/compiled/protosfrontend.js"
                                    :output-dir "resources/public/js/compiled/out"
                                    :closure-defines {"clairvoyant.core.devmode" true}

@@ -1,6 +1,7 @@
 (ns dashboard.resource
   (:require
     [re-frame.core :as rf]
+    [protosfrontend.routes :as routes]
     [components.buttons :as buttons]
     [components.alerts :as alerts]
     [protosfrontend.util :as util]))
@@ -29,9 +30,9 @@
             (for [{type :type id :id status :status app-id :app} (vals resources)]
               [:tr {:key id}
                 [:td {:class "text-center"}
-                  [:div {:class "avatar d-block bg-white" :style {:background-image "url(images/resource-generic.svg)" :background-size "80%"}}]]
+                  [:div {:class "avatar d-block bg-white" :style {:background-image "url(/static/images/resource-generic.svg)" :background-size "80%"}}]]
                 [:td
-                  [:a {:href (str "/#/resources/" id)} id]]
+                  [:a {:href (routes/url-for :resource-page :id id)} id]]
                 [:td
                   [:div [:span {:class "tag"} type]]]
                 [:td
@@ -54,7 +55,7 @@
               loading? @(rf/subscribe [:loading?])]
         [:div {:class "card"}
           [:div {:class "card-header"}
-            [:div {:class "avatar d-block bg-white mr-3" :style {:background-image "url(images/resource-generic.svg)" :background-size "80%"}}]
+            [:div {:class "avatar d-block bg-white mr-3" :style {:background-image "url(/static/images/resource-generic.svg)" :background-size "80%"}}]
             [:h3 {:class "card-title" :on-click #(rf/dispatch [:get-resource id])} id]
             [:div {:class "card-options"}
               [:div {:class "btn-list"}

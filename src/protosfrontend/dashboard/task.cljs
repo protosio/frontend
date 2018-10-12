@@ -2,6 +2,7 @@
     (:require
       [reagent.core :as r]
       [protosfrontend.util :as util]
+      [protosfrontend.routes :as routes]
       [components.buttons :as buttons]
       [components.alerts :as alerts]
       [reagent-forms.core :refer [bind-fields]]
@@ -32,9 +33,9 @@
               (for [{id :id status :status progress :progress started-at :started-at finished-at :finished-at} (vals tasks)]
               [:tr {:key id}
                 [:td {:class "text-center"}
-                  [:div {:class "avatar d-block bg-white" :style {:background-image "url(images/task-generic.svg)" :background-size "80%"}}]]
+                  [:div {:class "avatar d-block bg-white" :style {:background-image "url(/static/images/task-generic.svg)" :background-size "80%"}}]]
                 [:td
-                  [:a {:href (str "/#/tasks/" id)} id]]
+                  [:a {:href (routes/url-for :task-page :id id)} id]]
                 [:td {:class "text-center"}
                   [:span {:class (str "status-icon bg-" (util/task-status-color status))}] (str " " status)]
                 [:td
@@ -60,7 +61,7 @@
               loading? @(rf/subscribe [:loading?])]
         [:div {:class "card"}
           [:div {:class "card-header"}
-            [:div {:class "avatar d-block bg-white mr-3" :style {:background-image "url(images/task-generic.svg)" :background-size "80%"}}]
+            [:div {:class "avatar d-block bg-white mr-3" :style {:background-image "url(/static/images/task-generic.svg)" :background-size "80%"}}]
             [:h3 {:class "card-title" :on-click #(rf/dispatch [:get-task id])} id]]
           [alerts/for-card [:alert-dashboard]]
           [:div {:class "card-body"}

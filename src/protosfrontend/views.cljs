@@ -35,7 +35,7 @@
     [authviews/login-form]])
 
 (defn current-page []
-  (let [[active-page & params]  @(rf/subscribe [:active-page])]
+  (let [[active-page item-id & params]  @(rf/subscribe [:active-page])]
     (condp = active-page
       :init-page            [init-page]
       :login-page           [login-page]
