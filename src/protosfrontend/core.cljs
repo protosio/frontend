@@ -26,7 +26,7 @@
 
 (defn init! []
   (rf/dispatch-sync [:initialize])
-  (routes/app-routes)
+  (routes/start!)
   (mount-root))
 
 (init!)

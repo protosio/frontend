@@ -8,17 +8,17 @@
 (trace-forms {:tracer (tracer :color "green")}
 
 (rf/reg-event-fx
-    :login-failure
-    (fn init-failure-handler
-      [{db :db} [_ result]]
-      {:db (assoc-in db [:login :alert] {:type "danger" :message (get-in result [:response :error])})}))
+  :login-failure
+  (fn init-failure-handler
+    [{db :db} [_ result]]
+    {:db (assoc-in db [:login :alert] {:type "danger" :message (get-in result [:response :error])})}))
 
 (rf/reg-event-fx
   :login-success
   (fn login-success-handler
     [{db :db} [_ result]]
     {:dispatch-n [[:save-auth result]
-                  (vec (flatten [:set-active-page (:previous-page db)]))]
+                  (vec (flatten [:redirect-to (:previous-page db)]))]
      :db (-> db
              (assoc-in [:previous-page] nil)
              (assoc-in [:auth] result)
@@ -50,8 +50,6 @@
                             :on-failure [:login-failure]
                             :post-data (get-in db [:login :form])}]}))
 
-
-
 (rf/reg-event-fx
   :logout
   (fn logout-handler
@@ -61,7 +59,5 @@
                      :on-failure [:noop]}
     :storage/remove {:name :username}
     :db (assoc db :auth nil)}))
-
-
 
 )
