@@ -1,5 +1,6 @@
 (ns protosfrontend.routes
     (:require [re-frame.core :as rf]
+              [re-frame.registrar :as reg]
               [bidi.bidi :as bidi]
               [pushy.core :as pushy]))
 
@@ -57,11 +58,10 @@
           (dispatch-route parsed-path))))))
 
 ;; Event for triggering a re-direct
-(rf/reg-event-db
+(reg/register-handler :fx
   :redirect-to
-  (fn [db [& args]]
-    (apply redirect-to (drop 1 args))
-    db))
+  (fn [path]
+    (apply redirect-to path)))
 
 ;; -- Activate page -----------------------------------------------
 
@@ -69,7 +69,7 @@
   :set-active-page
   (fn set-active-page-handler
     [{db :db} [_ active-page item-id]]
-    (let [ap (if item-id [active-page item-id] [active-page])
+    (let [ap (if item-id [active-page :id item-id] [active-page])
           update-event (get-in static-data [:pages active-page])
           res {:db (-> db
                        (assoc :active-page ap)

@@ -17,8 +17,8 @@
   :login-success
   (fn login-success-handler
     [{db :db} [_ result]]
-    {:dispatch-n [[:save-auth result]
-                  (vec (flatten [:redirect-to (:previous-page db)]))]
+    {:dispatch-n [[:save-auth result]]
+     :redirect-to (:previous-page db)
      :db (-> db
              (assoc-in [:previous-page] nil)
              (assoc-in [:auth] result)

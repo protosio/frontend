@@ -92,7 +92,7 @@
   :redirect-login
   (fn redirect-login-handler
     [{db :db} _]
-    {:dispatch [:redirect-to :login-page]
+    {:redirect-to [:login-page]
      :db (assoc db :previous-page (:active-page db))}))
 
 ;; -- Alert events -----------------------------------------------
