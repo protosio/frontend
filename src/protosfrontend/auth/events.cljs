@@ -18,7 +18,9 @@
   (fn login-success-handler
     [{db :db} [_ result]]
     {:dispatch-n [[:save-auth result]]
-     :redirect-to (:previous-page db)
+     :redirect-to (if (:previous-page db)
+                      (:previous-page db)
+                      [:dashboard-page])
      :db (-> db
              (assoc-in [:previous-page] nil)
              (assoc-in [:auth] result)
