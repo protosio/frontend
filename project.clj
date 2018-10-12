@@ -14,7 +14,6 @@
                  [baking-soda "0.2.0"]
                  [cljsjs/react-transition-group "2.3.1-0"]
                  [cljsjs/react-popper "0.10.4-0"]
-                 [secretary "1.2.3"]
                  [bidi "2.1.4"]
                  [kibu/pushy "0.3.8"]
                  [cljs-ajax "0.7.3"]
