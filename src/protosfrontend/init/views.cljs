@@ -13,7 +13,7 @@
 (defn card-header []
   [:div {:class "card-header"}
     [:div {:class "mx-auto p-1"}
-      [:img {:src "images/protos-logo.svg" :class "h-7" :alt "protos logo"}]]])
+      [:img {:src "/static/images/protos-logo.svg" :class "h-7" :alt "protos logo"}]]])
 
 (defn navigation-buttons [button-text event disabled? loading?]
   [:div {:class "form-row"}

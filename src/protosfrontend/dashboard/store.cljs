@@ -35,7 +35,7 @@
           [:div {:key id :class "col-sm-4"}
             [:div.card.p-3
               [:div.d-flex.align-items-center
-                [:img {:class "d-flex mr-3 rounded" :src "images/installer-generic.svg" :alt "installer image" :width "25%"}]
+                [:img {:class "d-flex mr-3 rounded" :src "/static/images/installer-generic.svg" :alt name :width "25%"}]
                 [:div
                   [:h6.m-0 [:a {:href (str "/#/store/" (subs (str id) 1))} name]]
                   [:small.text-muted (util/trunc "test description" 60)]]]]]))]]]])
@@ -89,7 +89,7 @@
           [:div {:class "col-12"}
             [:div {:class "card"}
               [:div {:class "card-header"}
-                [:div {:class "avatar d-block bg-white mr-3" :style {:background-image "url(images/installer-generic.svg)" :background-size "80%"}}]
+                [:div {:class "avatar d-block bg-white mr-3" :style {:background-image "url(/static/images/installer-generic.svg)" :background-size "80%"}}]
                 [:h3 {:class "card-title"} (:name installer) (when loading? [:i {:class "fa fa-spin fa-circle-o-notch"}])]
                 [:form
                   [:select {:class "btn btn-secondary dropdown-toggle ml-2" :value @selected-version :on-change #(reset! selected-version (-> % .-target .-value))}

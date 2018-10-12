@@ -32,7 +32,7 @@
               (for [{name :name id :id} (vals installers)]
               [:tr {:key id}
                 [:td {:class "text-center"}
-                  [:div {:class "avatar d-block bg-white" :style {:background-image "url(images/installer-generic.svg)" :background-size "80%"}}]]
+                  [:div {:class "avatar d-block bg-white" :style {:background-image "url(/static/images/installer-generic.svg)" :background-size "80%"}}]]
                 [:td
                   [:a {:href (str "/#/installers/" id)} name]
                   [:div {:class "small text-muted"} (str "ID: " id)]]
@@ -100,7 +100,7 @@
               loading? @(rf/subscribe [:loading?])]
         [:div {:class "card"}
           [:div {:class "card-header"}
-            [:div {:class "avatar d-block bg-white mr-3" :style {:background-image "url(images/installer-generic.svg)" :background-size "80%"}}]
+            [:div {:class "avatar d-block bg-white mr-3" :style {:background-image "url(/static/images/installer-generic.svg)" :background-size "80%"}}]
             [:h3 {:class "card-title"} (:name installer) (when loading? [:i {:class "fa fa-spin fa-circle-o-notch"}])]
             [:div {:class "card-options"}
             (if (= @page-choice "details")

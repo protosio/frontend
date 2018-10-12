@@ -7,7 +7,7 @@
    [:div.container
     [:div.d-flex
      [:a.header-brand {:href "/"}
-      [:img.header-brand-img {:alt "protos logo" :src "images/protos-logo.svg"}]]
+      [:img.header-brand-img {:alt "protos logo" :src "/static/images/protos-logo.svg"}]]
     (let [loading? @(rf/subscribe [:loading?])]
       (when loading?
         [:div {:class "sk-wave"}
@@ -20,7 +20,7 @@
      [:div.d-flex.order-lg-2.ml-auto
       [:div.dropdown
        [:a.nav-link.pr-0.leading-none {:data-toggle "dropdown", :href "#"}
-        [:span.avatar {:style {:background-image "url(images/user-generic.png)"}}]
+        [:span.avatar {:style {:background-image "url(/static/images/user-generic.png)"}}]
         [:span.ml-2.d-none.d-lg-block
          [:span.text-default name]
          [:small.text-muted.d-block.mt-1 role]]]

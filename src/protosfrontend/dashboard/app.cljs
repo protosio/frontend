@@ -31,7 +31,7 @@
               (for [{name :name id :id status :status} (vals apps)]
               [:tr {:key id}
                 [:td {:class "text-center"}
-                  [:div {:class "avatar d-block bg-white" :style {:background-image "url(images/app-generic.svg)" :background-size "80%"}}
+                  [:div {:class "avatar d-block bg-white" :style {:background-image "url(/static/images/app-generic.svg)" :background-size "80%"}}
                     [:span {:class (str "avatar-status bg-" (util/app-status-color status))}]]]
                 [:td
                   [:a {:href (str "/#/apps/" id)} name]
@@ -63,7 +63,7 @@
               loading? @(rf/subscribe [:loading?])]
         [:div {:class "card"}
           [:div {:class "card-header"}
-            [:div {:class "avatar d-block bg-white mr-3" :style {:background-image "url(images/app-generic.svg)" :background-size "80%"}}
+            [:div {:class "avatar d-block bg-white mr-3" :style {:background-image "url(/static/images/app-generic.svg)" :background-size "80%"}}
               [:span {:class (str "avatar-status bg-" (util/app-status-color (:status app)))}]]
             [:h3 {:class "card-title" :on-click #(rf/dispatch [:get-app id])} (:name app)]
             [:div {:class "card-options"}

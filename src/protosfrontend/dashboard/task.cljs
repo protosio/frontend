@@ -32,7 +32,7 @@
               (for [{id :id status :status progress :progress started-at :started-at finished-at :finished-at} (vals tasks)]
               [:tr {:key id}
                 [:td {:class "text-center"}
-                  [:div {:class "avatar d-block bg-white" :style {:background-image "url(images/task-generic.svg)" :background-size "80%"}}]]
+                  [:div {:class "avatar d-block bg-white" :style {:background-image "url(/static/images/task-generic.svg)" :background-size "80%"}}]]
                 [:td
                   [:a {:href (str "/#/tasks/" id)} id]]
                 [:td {:class "text-center"}
@@ -60,7 +60,7 @@
               loading? @(rf/subscribe [:loading?])]
         [:div {:class "card"}
           [:div {:class "card-header"}
-            [:div {:class "avatar d-block bg-white mr-3" :style {:background-image "url(images/task-generic.svg)" :background-size "80%"}}]
+            [:div {:class "avatar d-block bg-white mr-3" :style {:background-image "url(/static/images/task-generic.svg)" :background-size "80%"}}]
             [:h3 {:class "card-title" :on-click #(rf/dispatch [:get-task id])} id]]
           [alerts/for-card [:alert-dashboard]]
           [:div {:class "card-body"}

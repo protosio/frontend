@@ -25,7 +25,7 @@
         [:form {:class "card align-middle"}
           [:div {:class "card-header"}
             [:div {:class "mx-auto p-1"}
-              [:img {:src "images/protos-logo.svg" :class "h-7" :alt "protos logo"}]]]
+              [:img {:src "/static/images/protos-logo.svg" :class "h-7" :alt "protos logo"}]]]
           [alerts/for-card [:alert-login]]
           [:div {:class "card-body p-6"}
             [bind-fields
