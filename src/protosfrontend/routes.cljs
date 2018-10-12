@@ -3,6 +3,14 @@
               [bidi.bidi :as bidi]
               [pushy.core :as pushy]))
 
+(def static-data {:pages {:dashboard-page [:get-apps]
+                          :tasks-page [:get-tasks]
+                          :task-page [:get-task]
+                          :app-page [:get-app]
+                          :apps-page [:get-apps]
+                          :store-page [:get-appstore-all]
+                          :resources-page [:get-resources]
+                          :resource-page [:get-resource]}})
 
 (def routes ["/ui/" {[""]               :dashboard-page
                      ["apps"]           :apps-page
@@ -19,6 +27,8 @@
 (defn- parse-url [url]
   (bidi/match-route routes url))
 
+(def url-for (partial bidi/path-for routes))
+
 (defn- dispatch-route [matched-route]
   (let [page-handler (:handler matched-route)
         route-params (:route-params matched-route)
@@ -30,4 +40,43 @@
 (defn app-routes []
   (pushy/start! (pushy/pushy dispatch-route parse-url)))
 
-(def url-for (partial bidi/path-for routes))
+(def history (atom nil))
+
+(defn start! []
+  (when (nil? @history)
+    (reset! history (pushy/pushy dispatch-route parse-url)))
+  (pushy/start! @history))
+
+(defn redirect-to [& args]
+  (when @history
+    (let [path (apply url-for args)
+          self-redirect (= path (pushy/get-token @history))]
+      (pushy/set-token! @history path)
+      (when self-redirect                                   ; If we are re-directing to itself, we need to re-trigger routing manually.
+        (when-let [parsed-path (parse-url path)]
+          (dispatch-route parsed-path))))))
+
+;; Event for triggering a re-direct
+(rf/reg-event-db
+  :redirect-to
+  (fn [db [& args]]
+    (apply redirect-to (drop 1 args))
+    db))
+
+;; -- Activate page -----------------------------------------------
+
+(rf/reg-event-fx
+  :set-active-page
+  (fn set-active-page-handler
+    [{db :db} [_ active-page item-id]]
+    (let [ap (if item-id [active-page item-id] [active-page])
+          update-event (get-in static-data [:pages active-page])
+          res {:db (-> db
+                       (assoc :active-page ap)
+                       (assoc-in [:dashboard :alert] nil))
+               :dispatch-debounce {:action :cancel-all}}]
+      (if update-event
+        (assoc res :dispatch (if item-id
+                                 (conj update-event item-id)
+                                 update-event))
+        res))))

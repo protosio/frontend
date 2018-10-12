@@ -14,17 +14,6 @@
 
 (trace-forms {:tracer (tracer :color "green")}
 
-;; -- Static data ----------------------
-
-(def static-data {:pages {:dashboard-page [:get-apps]
-                          :tasks-page [:get-tasks]
-                          :task-page [:get-task]
-                          :app-page [:get-app]
-                          :apps-page [:get-apps]
-                          :store-page [:get-appstore-all]
-                          :resources-page [:get-resources]
-                          :resource-page [:get-resource]}})
-
 ;; -- Helper functions ---------------------------------------------
 
 (defn createurl [urlkeys]
@@ -103,7 +92,7 @@
   :redirect-login
   (fn redirect-login-handler
     [{db :db} _]
-    {:dispatch [:set-active-page :login-page]
+    {:dispatch [:redirect-to :login-page]
      :db (assoc db :previous-page (:active-page db))}))
 
 ;; -- Alert events -----------------------------------------------
@@ -141,23 +130,7 @@
     (assoc db :form-data {})))
 
 
-;; -- Activate page -----------------------------------------------
 
-(rf/reg-event-fx
-  :set-active-page
-  (fn set-active-page-handler
-    [{db :db} [_ active-page item-id]]
-    (let [ap (if item-id [active-page item-id] [active-page])
-          update-event (get-in static-data [:pages active-page])
-          res {:db (-> db
-                       (assoc :active-page ap)
-                       (assoc-in [:dashboard :alert] nil))
-               :dispatch-debounce {:action :cancel-all}}]
-      (if update-event
-        (assoc res :dispatch (if item-id
-                                 (conj update-event item-id)
-                                 update-event))
-        res))))
 
 ;; -- HTTP operations ---------------------------------------------
 
