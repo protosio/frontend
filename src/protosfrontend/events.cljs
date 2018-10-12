@@ -35,14 +35,13 @@
 (rf/reg-event-fx
   :initialize
   (fn initialize
-    [_ [_ active-page]]
+    [_ _]
     {:dispatch [:load-username]
      :db {:apps {}
           :installers {}
           :tasks {}
           :store {}
-          :active-page active-page
-          :modal-data {:show-modal false}
+          :active-page [:dashboard-page]
           :form-data {}
           :init-wizard {:step 1}
           :alert nil
