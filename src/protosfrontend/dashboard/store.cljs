@@ -3,6 +3,7 @@
     [reagent.core :as r]
     [re-frame.core :as rf]
     [protosfrontend.util :as util]
+    [protosfrontend.routes :as routes]
     [components.buttons :as buttons]
     [components.alerts :as alerts]
     [reagent-forms.core :refer [bind-fields]]))
@@ -37,7 +38,7 @@
               [:div.d-flex.align-items-center
                 [:img {:class "d-flex mr-3 rounded" :src "/static/images/installer-generic.svg" :alt name :width "25%"}]
                 [:div
-                  [:h6.m-0 [:a {:href (str "/#/store/" (subs (str id) 1))} name]]
+                  [:h6.m-0 [:a {:href (routes/url-for :store-installer-page :id id)} name]]
                   [:small.text-muted (util/trunc "test description" 60)]]]]]))]]]])
 
 

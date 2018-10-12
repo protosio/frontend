@@ -2,6 +2,7 @@
     (:require
       [reagent.core :as r]
       [protosfrontend.util :as util]
+      [protosfrontend.routes :as routes]
       [components.buttons :as buttons]
       [components.alerts :as alerts]
       [reagent-forms.core :refer [bind-fields]]
@@ -34,7 +35,7 @@
                 [:td {:class "text-center"}
                   [:div {:class "avatar d-block bg-white" :style {:background-image "url(/static/images/task-generic.svg)" :background-size "80%"}}]]
                 [:td
-                  [:a {:href (str "/#/tasks/" id)} id]]
+                  [:a {:href (routes/url-for :task-page :id id)} id]]
                 [:td {:class "text-center"}
                   [:span {:class (str "status-icon bg-" (util/task-status-color status))}] (str " " status)]
                 [:td

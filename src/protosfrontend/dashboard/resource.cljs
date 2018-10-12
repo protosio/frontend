@@ -1,6 +1,7 @@
 (ns dashboard.resource
   (:require
     [re-frame.core :as rf]
+    [protosfrontend.routes :as routes]
     [components.buttons :as buttons]
     [components.alerts :as alerts]
     [protosfrontend.util :as util]))
@@ -31,7 +32,7 @@
                 [:td {:class "text-center"}
                   [:div {:class "avatar d-block bg-white" :style {:background-image "url(/static/images/resource-generic.svg)" :background-size "80%"}}]]
                 [:td
-                  [:a {:href (str "/#/resources/" id)} id]]
+                  [:a {:href (routes/url-for :resource-page :id id)} id]]
                 [:td
                   [:div [:span {:class "tag"} type]]]
                 [:td

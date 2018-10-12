@@ -2,6 +2,7 @@
     (:require
       [re-frame.core :as rf]
       [protosfrontend.util :as util]
+      [protosfrontend.routes :as routes]
       [components.alerts :as alerts]
       [components.buttons :as buttons]))
 
@@ -34,7 +35,7 @@
                   [:div {:class "avatar d-block bg-white" :style {:background-image "url(/static/images/app-generic.svg)" :background-size "80%"}}
                     [:span {:class (str "avatar-status bg-" (util/app-status-color status))}]]]
                 [:td
-                  [:a {:href (str "/#/apps/" id)} name]
+                  [:a {:href (routes/url-for :app-page :id id)} name]
                   [:div {:class "small text-muted"} (str "ID: " id)]]
                 [:td
                   [:div {:class "small text-muted"} "Application started"]
