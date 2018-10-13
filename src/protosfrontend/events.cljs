@@ -62,7 +62,7 @@
     {:dispatch-n [[:success-alert (let [msg (:alert-message options)] (if msg msg result)) (let [alert-key (:alert-key options)] (if alert-key alert-key :main))]
                   (when (:event options) [(:event options) result])]
      :dispatch-debounce {:id :disable-loading
-                         :timeout 1000
+                         :timeout 300
                          :dispatch [:disable-loading]}
      :db (if (:db-key options)
              (assoc-in db (:db-key options) result)
@@ -74,7 +74,7 @@
     [{db :db} [_ options result]]
     {:dispatch [:fail-alert (get-in result [:response :error]) (let [alert-key (:alert-key options)] (if alert-key alert-key :main))]
      :dispatch-debounce {:id :disable-loading
-                         :timeout 500
+                         :timeout 300
                          :dispatch [:disable-loading]}}))
 
 (rf/reg-event-fx
@@ -85,7 +85,7 @@
                    [:redirect-login]
                    (conj event result))
      :dispatch-debounce {:id :disable-loading
-                         :timeout 500
+                         :timeout 300
                          :dispatch [:disable-loading]}}))
 
 (rf/reg-event-fx
