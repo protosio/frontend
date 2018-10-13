@@ -12,7 +12,7 @@
 (defn installers-page [title]
   [:div {:class "container"}
     (if title
-      [:div.page-header [:h1.page-title title]])
+      [:div {:class "page-header"} [:h1 {:class "page-title"} title]])
     [alerts/for-list-page [:alert-dashboard]]
     [:div {:class "row row-cards row-deck"}
       [:div {:class "col-12"}

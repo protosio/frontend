@@ -23,7 +23,7 @@
 (defn regular-page [inner title active-page]
   [:div {:class "page-main"}
     [header/top "Alex G" "Admin" active-page]
-    [:div.my-3.my-md-5
+    [:div {:class "my-3 my-md-5"}
       [inner title]]])
 
 (defn init-page []

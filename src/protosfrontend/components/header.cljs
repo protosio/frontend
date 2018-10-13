@@ -4,11 +4,11 @@
       [protosfrontend.routes :as routes]))
 
 (defn bar [name role]
-  [:div.header.py-4
-   [:div.container
-    [:div.d-flex
-     [:a.header-brand {:href "/"}
-      [:img.header-brand-img {:alt "protos logo" :src "/static/images/protos-logo.svg"}]]
+  [:div {:class "header py-4"}
+   [:div {:class "container"}
+    [:div {:class "d-flex"}
+     [:a {:class "header-brand" :href "/"}
+      [:img {:class "header-brand-img" :alt "protos logo" :src "/static/images/protos-logo.svg"}]]
     (let [loading? @(rf/subscribe [:loading?])]
       (when loading?
         [:div {:class "sk-wave"}
@@ -18,38 +18,38 @@
           [:div {:class "sk-rect sk-rect4"}]
           [:div {:class "sk-rect sk-rect5"}]]))
 
-     [:div.d-flex.order-lg-2.ml-auto
-      [:div.dropdown
-       [:a.nav-link.pr-0.leading-none {:data-toggle "dropdown", :href "#"}
-        [:span.avatar {:style {:background-image "url(/static/images/user-generic.png)"}}]
-        [:span.ml-2.d-none.d-lg-block
-         [:span.text-default name]
-         [:small.text-muted.d-block.mt-1 role]]]
-       [:div.dropdown-menu.dropdown-menu-right.dropdown-menu-arrow
-        [:a.dropdown-item {:href "/ui/"}
-         [:i.dropdown-icon.fe.fe-user]
+     [:div {:class "d-flex order-lg-2 ml-auto"}
+      [:div {:class "dropdown"}
+       [:a {:class "nav-link pr-0 leading-none" :data-toggle "dropdown" :href "#"}
+        [:span {:class "avatar" :style {:background-image "url(/static/images/user-generic.png)"}}]
+        [:span {:class "ml-2 d-none d-lg-block"}
+         [:span {:class "text-default"} name]
+         [:small {:class "text-muted d-block mt-1"} role]]]
+       [:div {:class "dropdown-menu dropdown-menu-right dropdown-menu-arrow"}
+        [:a {:class "dropdown-item" :href "/ui/"}
+         [:i {:class "dropdown-icon fe fe-user"}]
          "Profile"]
-        [:a.dropdown-item {:href "/ui/"}
-         [:i.dropdown-icon.fe.fe-settings]
+        [:a {:class "dropdown-item" :href "/ui/"}
+         [:i {:class "dropdown-icon fe fe-settings"}]
          "Settings"]
-        [:div.dropdown-divider]
-        [:a.dropdown-item {:href "/ui/" :on-click #(rf/dispatch [:logout])}
-         [:i.dropdown-icon.fe.fe-log-out]
+        [:div {:class "dropdown-divider"}]
+        [:a {:class "dropdown-item" :href "/ui/" :on-click #(rf/dispatch [:logout])}
+         [:i {:class "dropdown-icon fe fe-log-out"}]
          "Sign out"]]]]
-     [:a.header-toggler.d-lg-none.ml-3.ml-lg-0
-      {:data-target "#headerMenuCollapse",
-       :data-toggle "collapse",
-       :href "#"}
-      [:span.header-toggler-icon]]]]])
+     [:a {:class "header-toggler d-lg-none ml-3 ml-lg-0"
+          :data-target "#headerMenuCollapse"
+          :data-toggle "collapse"
+          :href "#"}
+      [:span {:class "header-toggler-icon"}]]]]])
 
 (defn menu [active-page]
-  [:div {:class "header collapse d-lg-flex p-0", :id "headerMenuCollapse"}
+  [:div {:class "header collapse d-lg-flex p-0" :id "headerMenuCollapse"}
     [:div {:class "container"}
       [:div {:class "row align-items-center"}
         [:div {:class "col-lg order-lg-first"}
           [:ul {:class "nav nav-tabs border-0 flex-column flex-lg-row"}
             [:li {:class "nav-item"}
-              [:a {:href (routes/url-for :dashboard-page), :class (str "nav-link " (if (= active-page :dashboard-page) "active"))} [:i {:class "fe fe-home" }] " Home"]]
+              [:a {:href (routes/url-for :dashboard-page) :class (str "nav-link " (if (= active-page :dashboard-page) "active"))} [:i {:class "fe fe-home" }] " Home"]]
             [:li {:class "nav-item"}
               [:a {:href (routes/url-for :apps-page) :class (str "nav-link " (if (some #(= active-page %) [:apps-page :app-page]) "active"))} [:i {:class "fe fe-layers" }] " Apps"]]
             [:li {:class "nav-item"}

@@ -11,13 +11,13 @@
 (defn store-page [title]
   [:div {:class "container"}
   (if title
-    [:div.page-header [:h1.page-title title]])
+    [:div {:class "page-header"} [:h1 {:class "page-title"} title]])
     [alerts/for-list-page [:alert-dashboard]]
     [:div {:class "row row-cards row-deck"}
       ;; Filter card
       [:div {:class "col-sm-3"}
-        [:div.card
-          [:div.card-body
+        [:div {:class "card"}
+          [:div {:class "card-body"}
             [:div {:class "auto-form-wrapper"}
               [bind-fields
                 [:div
@@ -25,7 +25,7 @@
                   [:label {:class "form-label"} "Filter"]
                   [:input {:field :text :id :store.filter :class "form-control" :placeholder "term"}]]]
                 (util/form-events [:store-filter-form])]
-              [:div.form-footer.text-right
+              [:div {:class "form-footer text-right"}
               (let [loading? @(rf/subscribe [:loading?])]
                 [buttons/submit-button-spinner "Filter" [:search-appstore] "outline-primary btn-sm mr-2" loading? loading?])]]]]]
       ;; Application cards
@@ -34,12 +34,12 @@
         (let [installers @(rf/subscribe [:store-installers])]
           (for [[id {name :name description :description}] (seq installers)]
           [:div {:key id :class "col-sm-4"}
-            [:div.card.p-3
-              [:div.d-flex.align-items-center
+            [:div {:class "card p-3"}
+              [:div {:class "d-flex align-items-center"}
                 [:img {:class "d-flex mr-3 rounded" :src "/static/images/installer-generic.svg" :alt name :width "25%"}]
                 [:div
-                  [:h6.m-0 [:a {:href (routes/url-for :store-installer-page :id id)} name]]
-                  [:small.text-muted (util/trunc "test description" 60)]]]]]))]]]])
+                  [:h6 {:class "m-0"} [:a {:href (routes/url-for :store-installer-page :id id)} name]]
+                  [:small {:class "text-muted"} (util/trunc "test description" 60)]]]]]))]]]])
 
 
 (defn install-app [name metadata]

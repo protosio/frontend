@@ -39,7 +39,7 @@
                 [:td {:class "text-center"}
                   [:span {:class (str "status-icon bg-" (util/task-status-color status))}] (str " " status)]
                 [:td
-                  [:div.clearfix
+                  [:div {:class "clearfix"}
                    [:div {:class "float-left"} [:strong (str (:percentage progress) "%")]]]
                   [:div {:class "progress progress-xs"}
                    [:div {:class "progress-bar bg-green"
@@ -74,13 +74,13 @@
             [:div {:class "row"}
               [:div {:class "col-2"} [:strong "Progress:"]]
               [:div {:class "col-5 mb-2"}
-                [:div.clearfix [:div {:class "float-left"} [:strong (str (:percentage progress) "%")]]]
+                [:div {:class "clearfix"} [:div {:class "float-left"} [:strong (str (:percentage progress) "%")]]]
                 [:div {:class "progress progress-xs"}
                   [:div {:class "progress-bar bg-green"
-                         :aria-valuemax "100",
-                         :aria-valuemin "0",
-                         :aria-valuenow (:percentage progress),
-                         :style {:width (str (:percentage progress) "%")},
+                         :aria-valuemax "100"
+                         :aria-valuemin "0"
+                         :aria-valuenow (:percentage progress)
+                         :style {:width (str (:percentage progress) "%")}
                          :role "progressbar"}]]]]
             [:div {:class "row"}
               [:div {:class "col-2"} [:strong "Start time:"]]

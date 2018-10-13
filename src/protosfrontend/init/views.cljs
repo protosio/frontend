@@ -29,9 +29,9 @@
 
 (defn single-select-list [properties items]
   [:div {:class "form-group"}
-      [:ul.list-group properties
+      [:ul {:class "list-group"} properties
       (for [item items]
-        [:div.list-group-item {:key (:id item)} (:name item)])]])
+        [:div {:class "list-group-item" :key (:id item)} (:name item)])]])
 
 (defn step1 []
   [:form {:class "card align-middle"}
