@@ -1,7 +1,7 @@
 (ns init.events
     (:require
         [re-frame.core :as rf]
-        [protosfrontend.events :as util]
+        [protosfrontend.util :as util]
         [clairvoyant.core :refer-macros [trace-forms]]
         [re-frame-tracer.core :refer [tracer]]))
 
