@@ -61,17 +61,21 @@
     [{db :db} [_ options result]]
     {:dispatch-n [[:success-alert (let [msg (:alert-message options)] (if msg msg result)) (let [alert-key (:alert-key options)] (if alert-key alert-key :main))]
                   (when (:event options) [(:event options) result])]
-    :db (assoc (if (:db-key options)
-                (assoc-in db (:db-key options) result)
-                db)
-        :loading? false)}))
+     :dispatch-debounce {:id :disable-loading
+                         :timeout 1000
+                         :dispatch [:disable-loading]}
+     :db (if (:db-key options)
+             (assoc-in db (:db-key options) result)
+             db)}))
 
 (rf/reg-event-fx
   :bad-response
   (fn bad-response-handler
     [{db :db} [_ options result]]
-      {:dispatch [:fail-alert (get-in result [:response :error]) (let [alert-key (:alert-key options)] (if alert-key alert-key :main))]
-       :db (assoc db :loading? false)}))
+    {:dispatch [:fail-alert (get-in result [:response :error]) (let [alert-key (:alert-key options)] (if alert-key alert-key :main))]
+     :dispatch-debounce {:id :disable-loading
+                         :timeout 500
+                         :dispatch [:disable-loading]}}))
 
 (rf/reg-event-fx
   :request-finished
@@ -80,7 +84,9 @@
     {:dispatch (if (= (:status result) 401)
                    [:redirect-login]
                    (conj event result))
-     :db (assoc db :loading? false)}))
+     :dispatch-debounce {:id :disable-loading
+                         :timeout 500
+                         :dispatch [:disable-loading]}}))
 
 (rf/reg-event-fx
   :redirect-login
@@ -88,6 +94,12 @@
     [{db :db} _]
     {:redirect-to [:login-page]
      :db (assoc db :previous-page (:active-page db))}))
+
+(rf/reg-event-db
+  :disable-loading
+  (fn disable-loading-handler
+    [db _]
+    (assoc db :loading? false)))
 
 ;; -- Alert events -----------------------------------------------
 
@@ -122,9 +134,6 @@
   (fn reset-form-data-handler
     [db [_ _]]
     (assoc db :form-data {})))
-
-
-
 
 ;; -- HTTP operations ---------------------------------------------
 
