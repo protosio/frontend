@@ -52,7 +52,7 @@
     (let [path (apply url-for args)
           self-redirect (= path (pushy/get-token @history))]
       (pushy/set-token! @history path)
-      (when self-redirect                                   ; If we are re-directing to itself, we need to re-trigger routing manually.
+      (when self-redirect
         (when-let [parsed-path (parse-url path)]
           (dispatch-route parsed-path))))))
 

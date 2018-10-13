@@ -81,7 +81,10 @@
   :request-finished
   (fn request-finished-handler
     [{db :db} [_ event result]]
-    {:dispatch (if (= (:status result) 401)
+    {:db (if (= (:status result) 401)
+             (assoc db :loading? false)
+             db)
+     :dispatch (if (= (:status result) 401)
                    [:redirect-login]
                    (conj event result))
      :dispatch-debounce {:id :disable-loading
