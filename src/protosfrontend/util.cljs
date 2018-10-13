@@ -2,7 +2,6 @@
   (:require
     [clojure.string :as string]
     [re-frame.core      :as rf]
-    [re-frame.registrar :as reg]
     [re-frame.router    :as router]
     [re-frame.loggers   :refer [console]]
     [cljs-time.format   :as timeformat]))
@@ -66,7 +65,7 @@
   (doseq [[id val] @debounced-events]
    (cancel-timeout id)))
 
-(reg/register-handler :fx
+(rf/reg-fx
   :dispatch-debounce
   (fn [dispatches]
     (let [dispatches (if (sequential? dispatches) dispatches [dispatches])]

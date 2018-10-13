@@ -1,6 +1,5 @@
 (ns protosfrontend.routes
     (:require [re-frame.core :as rf]
-              [re-frame.registrar :as reg]
               [bidi.bidi :as bidi]
               [pushy.core :as pushy]))
 
@@ -58,7 +57,7 @@
           (dispatch-route parsed-path))))))
 
 ;; Event for triggering a re-direct
-(reg/register-handler :fx
+(rf/reg-fx
   :redirect-to
   (fn [path]
     (apply redirect-to path)))
