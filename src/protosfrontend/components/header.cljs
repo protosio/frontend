@@ -51,13 +51,13 @@
             [:li {:class "nav-item"}
               [:a {:href (routes/url-for :dashboard-page), :class (str "nav-link " (if (= active-page :dashboard-page) "active"))} [:i {:class "fe fe-home" }] " Home"]]
             [:li {:class "nav-item"}
-              [:a {:href (routes/url-for :apps-page) :class (str "nav-link " (if (= active-page :apps-page) "active"))} [:i {:class "fe fe-layers" }] " Apps"]]
+              [:a {:href (routes/url-for :apps-page) :class (str "nav-link " (if (some #(= active-page %) [:apps-page :app-page]) "active"))} [:i {:class "fe fe-layers" }] " Apps"]]
             [:li {:class "nav-item"}
-              [:a {:href (routes/url-for :store-page) :class (str "nav-link " (if (= active-page :store-page) "active"))} [:i {:class "fe fe-shopping-bag" }] " Store"]]
+              [:a {:href (routes/url-for :store-page) :class (str "nav-link " (if (some #(= active-page %) [:store-page :store-installer-page]) "active"))} [:i {:class "fe fe-shopping-bag" }] " Store"]]
             [:li {:class "nav-item"}
-              [:a {:href (routes/url-for :tasks-page) :class (str "nav-link " (if (= active-page :tasks-page) "active"))} [:i {:class "fe fe-check-circle" }] " Tasks"]]
+              [:a {:href (routes/url-for :tasks-page) :class (str "nav-link " (if (some #(= active-page %) [:tasks-page :task-page]) "active"))} [:i {:class "fe fe-check-circle" }] " Tasks"]]
             [:li {:class "nav-item"}
-              [:a {:href (routes/url-for :resources-page) :class (str "nav-link " (if (= active-page :resources-page) "active"))} [:i {:class "fe fe-git-merge" }] " Resources"]]]]]]])
+              [:a {:href (routes/url-for :resources-page) :class (str "nav-link " (if (some #(= active-page %) [:resources-page :resource-page]) "active"))} [:i {:class "fe fe-git-merge" }] " Resources"]]]]]]])
 
 (defn top [name role active-page]
   [:div
