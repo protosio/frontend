@@ -13,7 +13,7 @@
   (if title
     [:div {:class "page-header"} [:h1 {:class "page-title"} title]])
     [alerts/for-list-page [:alert-dashboard]]
-    [:div {:class "row row-cards row-deck"}
+    [:div {:class "row row-cards"}
       ;; Filter card
       [:div {:class "col-sm-3"}
         [:div {:class "card"}
