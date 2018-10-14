@@ -23,15 +23,15 @@
                       [:dashboard-page])
      :db (-> db
              (assoc-in [:previous-page] nil)
-             (assoc-in [:auth] result)
+             (assoc-in [:auth :userinfo] (dissoc result :token))
              (assoc :login nil))}))
 
 (rf/reg-event-fx
-  :load-username
-  [(rf/inject-cofx :storage/get {:name :username})]
-  (fn load-username-handler
-    [{db :db username :storage/get} _]
-    {:db (assoc-in db [:auth :username] username)}))
+  :load-userinfo
+  [(rf/inject-cofx :storage/get {:name :userinfo})]
+  (fn load-userinfo-handler
+    [{db :db userinfo :storage/get} _]
+    {:db (assoc-in db [:auth :userinfo] (js->clj (.parse js/JSON userinfo) :keywordize-keys true))}))
 
 (rf/reg-event-fx
   :save-auth
@@ -41,7 +41,7 @@
                   :value (:token result)
                   :on-success [:noop]
                   :on-failure [:noop]}
-    :storage/set {:name :username :value (:username result)}}))
+    :storage/set {:name :userinfo :value (.stringify js/JSON (clj->js (dissoc result :token)))}}))
 
 (rf/reg-event-fx
   :login
@@ -59,7 +59,7 @@
     {:cookie/remove {:name "token"
                      :on-success [:noop]
                      :on-failure [:noop]}
-    :storage/remove {:name :username}
+    :storage/remove {:name :userinfo}
     :db (assoc db :auth nil)}))
 
 )

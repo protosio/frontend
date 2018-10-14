@@ -19,7 +19,7 @@
   :initialize
   (fn initialize
     [_ _]
-    {:dispatch [:load-username]
+    {:dispatch [:load-userinfo]
      :db {:apps {}
           :installers {}
           :tasks {}

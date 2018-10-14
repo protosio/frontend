@@ -11,7 +11,6 @@
         [auth.views :as authviews]
         [re-frame.core :as rf]
         [free-form.re-frame :as free-form]
-        [free-form.bootstrap-3]
         [clairvoyant.core :refer-macros [trace-forms]]
         [re-frame-tracer.core :refer [tracer]]))
 
@@ -22,7 +21,7 @@
 
 (defn regular-page [inner title active-page]
   [:div {:class "page-main"}
-    [header/top "Alex G" "Admin" active-page]
+    [header/top active-page]
     [:div {:class "my-3 my-md-5"}
       [inner title]]])
 

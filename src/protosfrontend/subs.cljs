@@ -97,11 +97,11 @@
       (:auth db)))
 
 (rf/reg-sub
-  :username
-  (fn username-sub
+  :userinfo
+  (fn userinfo-sub
     [db _]
     (-> db
         :auth
-        :username)))
+        :userinfo)))
 
 )
