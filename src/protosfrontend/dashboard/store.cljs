@@ -32,14 +32,14 @@
       [:div {:class "col-sm-9"}
         [:div {:class "row"}
         (let [installers @(rf/subscribe [:store-installers])]
-          (for [[id {name :name description :description}] (seq installers)]
+          (for [[id {name :name versions :versions}] (seq installers)]
           [:div {:key id :class "col-sm-4"}
             [:div {:class "card p-3"}
               [:div {:class "d-flex align-items-center"}
                 [:img {:class "d-flex mr-3 rounded" :src "/static/images/installer-generic.svg" :alt name :width "25%"}]
                 [:div
                   [:h6 {:class "m-0"} [:a {:href (routes/url-for :store-installer-page :id id)} name]]
-                  [:small {:class "text-muted"} (util/trunc "test description" 60)]]]]]))]]]])
+                  [:small {:class "text-muted"} (util/trunc (:description (get versions (last (sort (keys versions))))) 60)]]]]]))]]]])
 
 
 (defn install-app [name metadata]
