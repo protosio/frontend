@@ -8,10 +8,10 @@
 (trace-forms {:tracer (tracer :color "brown")}
 
 (defn bar []
-    (let [loading? @(rf/subscribe [:loading?])
-          userinfo @(rf/subscribe [:userinfo])
-          username (get userinfo :username)
-          role     (get userinfo :role)]
+  (let [loading? @(rf/subscribe [:loading?])
+        userinfo @(rf/subscribe [:userinfo])
+        username (get userinfo :username)
+        role     (get userinfo :role)]
   [:div {:class "header py-4"}
    [:div {:class "container"}
     [:div {:class "d-flex"}

@@ -19,7 +19,7 @@
 ;; ---------------------------------------
 ;; Pages
 
-(defn regular-page [inner title active-page]
+(defn dashboard-page [inner title active-page]
   [:div {:class "page-main"}
     [header/top active-page]
     [:div {:class "my-3 my-md-5"}
@@ -38,14 +38,14 @@
     (condp = active-page
       :init-page            [init-page]
       :login-page           [login-page]
-      :dashboard-page       [regular-page home/home-page "Dashboard" active-page]
-      :task-page            [regular-page task/task-page item-id active-page]
-      :tasks-page           [regular-page task/tasks-page "Tasks" active-page]
-      :app-page             [regular-page app/app-page item-id active-page]
-      :apps-page            [regular-page app/apps-page "Apps" active-page]
-      :store-page           [regular-page store/store-page "Store" active-page]
-      :store-installer-page [regular-page store/store-installer-page item-id active-page]
-      :resources-page       [regular-page resource/resources-page "Resources" active-page]
-      :resource-page        [regular-page resource/resource-page item-id active-page])))
+      :dashboard-page       [dashboard-page home/home-page "Dashboard" active-page]
+      :task-page            [dashboard-page task/task-page item-id active-page]
+      :tasks-page           [dashboard-page task/tasks-page "Tasks" active-page]
+      :app-page             [dashboard-page app/app-page item-id active-page]
+      :apps-page            [dashboard-page app/apps-page "Apps" active-page]
+      :store-page           [dashboard-page store/store-page "Store" active-page]
+      :store-installer-page [dashboard-page store/store-installer-page item-id active-page]
+      :resources-page       [dashboard-page resource/resources-page "Resources" active-page]
+      :resource-page        [dashboard-page resource/resource-page item-id active-page])))
 
 )
