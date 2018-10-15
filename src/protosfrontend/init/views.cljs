@@ -15,13 +15,13 @@
     [:div {:class "mx-auto p-1"}
       [:img {:src "/static/images/protos-logo.svg" :class "h-7" :alt "protos logo"}]]])
 
-(defn navigation-buttons [button-text event disabled? loading?]
+(defn navigation-buttons [button-text event disabled? loading? step step-done]
   [:div {:class "form-row"}
     [:div {:class "mx-auto"}
       [:div {:class "col"}
-        [:button {:type "button" :class "btn btn-sm btn-icons btn-rounded btn-outline-primary mr-2" :on-click #(rf/dispatch [:decrement-init-step])} [:i {:class "fe fe-arrow-left"}]]
+        [:button {:type "button" :class "btn btn-sm btn-icons btn-rounded btn-outline-primary mr-2" :disabled (if (= step :step1) true false) :on-click #(rf/dispatch [:decrement-init-step])} [:i {:class "fe fe-arrow-left"}]]
         [buttons/submit-button-spinner button-text event "primary btn-sm mr-2" disabled? loading?]
-        [:button {:type "button" :class "btn btn-sm btn-icons btn-rounded btn-outline-primary" :on-click #(rf/dispatch [:increment-init-step])} [:i {:class "fe fe-arrow-right"}]]]]])
+        [:button {:type "button" :class "btn btn-sm btn-icons btn-rounded btn-outline-primary" :disabled (if (or (= step :step4) (not step-done)) true false) :on-click #(rf/dispatch [:increment-init-step])} [:i {:class "fe fe-arrow-right"}]]]]])
 
 (defn input-field [properties]
   ^{:key (:id properties)} [:div {:class "form-group"}
@@ -49,8 +49,9 @@
             [input-field {:field :text :id :init-wizard.step1.form.domain :class "form-control" :placeholder "domain"}]]
           (util/form-events [:init-form :step1])]]]
     [:div {:class "card-footer p-3"}
-    (let [loading? @(rf/subscribe [:loading?])]
-        [navigation-buttons "Register" [:register-user-domain] loading? loading?])]])
+    (let [loading? @(rf/subscribe [:loading?])
+          step-done @(rf/subscribe [:init-step-done :step1])]
+          [navigation-buttons "Register" [:register-user-domain] loading? loading? :step1 step-done])]])
 
 (defn step2 []
   [:form {:class "card align-middle"}

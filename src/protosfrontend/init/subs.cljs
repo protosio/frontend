@@ -64,6 +64,15 @@
           step
           :alert)))
 
+(rf/reg-sub
+  :init-step-done
+  (fn init-step-done-sub
+    [db [_ step]]
+      (-> db
+          :init-wizard
+          step
+          :done)))
+
 ;; -- Step 4 subs -----------------------------------------------
 
 (rf/reg-sub

@@ -106,7 +106,9 @@
   :start-app-during-init-success
   (fn start-app-during-init-success-handler
     [{db :db} [_ step _]]
-    {:db (assoc-in db [:init-wizard step :alert] {:type "success" :message "Provider started successfully"})}))
+    {:db (-> db
+             (assoc-in [:init-wizard step :done] true)
+             (assoc-in [:init-wizard step :alert] {:type "success" :message "Provider started successfully"}))}))
 
 ;; -- Register user and domain (step1) ---------------------------------------------
 
@@ -126,6 +128,7 @@
     {:dispatch [:save-auth result]
      :db (-> db
              (assoc-in [:auth] result)
+             (assoc-in [:init-wizard :step1 :done] true)
              (assoc-in [:init-wizard :step1 :alert] {:type "success" :message "User and domain registered successfully"}))}))
 
 ;; -- Download and run dns provider (step2) ----------------------------------------
