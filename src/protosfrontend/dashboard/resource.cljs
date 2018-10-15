@@ -24,7 +24,7 @@
                 [:th "ID"]
                 [:th "Type"]
                 [:th "Status"]
-                [:th {:class "text-center"} [:i {:class "icon-settings"}]]]]
+                [:th {:class "text-center"} [:i {:class "fe fe-settings"}]]]]
             [:tbody
           (let [resources @(rf/subscribe [:resources])]
             (for [{type :type id :id status :status app-id :app} (vals resources)]
@@ -39,7 +39,7 @@
                 (if (= status "created")
                   [:div [:span {:class "status-icon bg-green"}] status]
                   [:div [:span {:class "status-icon bg-yellow"}] status])]
-                [:td
+                [:td {:class "text-center"}
                   [:div {:class "item-action dropdown"}
                     [:a {:href "javascript:void(0)" :data-toggle "dropdown" :class "icon"}
                       [:i {:class "fe fe-more-vertical"}]]

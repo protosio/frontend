@@ -19,14 +19,13 @@
           [:table {:class "table table-hover table-outline table-vcenter text-nowrap card-table"}
             [:thead
               [:tr
-                [:th {:class "text-center w-1"}
-                  [:i {:class "icon-people"}]]
+                [:th {:class "text-center w-1"}]
                 [:th "Name"]
                 [:th "Tasks"]
                 [:th {:class "text-center"} "Runtime"]
                 [:th "Status"]
                 [:th {:class "text-center"}
-                  [:i {:class "icon-settings"}]]]]
+                  [:i {:class "fe fe-settings"}]]]]
             [:tbody
             (let [apps @(rf/subscribe [:apps])]
               (for [{name :name id :id status :status} (vals apps)]
@@ -44,16 +43,16 @@
                   [:i {:class "tech tech-docker"}]]
                 [:td
                   [:div status]]
-                [:td
+                [:td {:class "text-center"}
                   [:div {:class "item-action dropdown"}
-                    [:a {:href "javascript:void(0)" :data-toggle "dropdown" :class "icon"}
+                    [:a {:href "" :data-toggle "dropdown" :class "icon"}
                       [:i {:class "fe fe-more-vertical"}]]
                     [:div {:class "dropdown-menu dropdown-menu-right"}
-                      [:a {:href "javascript:void(0)" :class "dropdown-item"}
+                      [:a {:href "" :class "dropdown-item"}
                         [:i {:class "dropdown-icon fe fe-play"}] " Start"]
-                      [:a {:href "javascript:void(0)" :class "dropdown-item"}
+                      [:a {:href "" :class "dropdown-item"}
                         [:i {:class "dropdown-icon fe fe-stop-circle"}] " Stop"]
-                      [:a {:href "javascript:void(0)" :class "dropdown-item"}
+                      [:a {:href "" :class "dropdown-item"}
                         [:i {:class "dropdown-icon fe fe-trash"}] " Remove"]]]]]))]]]]]]])
 
 (defn app-page [id]
