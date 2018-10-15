@@ -41,10 +41,10 @@
                   [:div [:span {:class "status-icon bg-yellow"}] status])]
                 [:td {:class "text-center"}
                   [:div {:class "item-action dropdown"}
-                    [:a {:href "javascript:void(0)" :data-toggle "dropdown" :class "icon"}
+                    [:a {:data-toggle "dropdown" :class "icon"}
                       [:i {:class "fe fe-more-vertical"}]]
                     [:div {:class "dropdown-menu dropdown-menu-right"}
-                      [:a {:href "javascript:void(0)" :class "dropdown-item"}
+                      [:a {:on-click #(rf/dispatch [:remove-resource id]) :class "dropdown-item"}
                         [:i {:class "dropdown-icon fe fe-trash"}] " Remove"]]]]]))]]]]]]])
 
 (defn resource-page [id]
