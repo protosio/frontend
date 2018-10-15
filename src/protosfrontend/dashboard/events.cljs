@@ -140,6 +140,7 @@
     [{db :db} [_ result]]
     {:dispatch [:set-active-page :apps-page]
      :db (-> db
+             (update-in [:create-app] dissoc :form)
              (assoc-in [:dashboard :alert] {:type "success" :message (str "Requested app creation")})
              (assoc-in [:tasks (:id result)] result))}))
 
