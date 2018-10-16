@@ -29,9 +29,10 @@
 
 (defn single-select-list [properties items]
   [:div {:class "form-group"}
-      [:ul {:class "list-group"} properties
-      (for [item items]
-        [:div {:class "list-group-item" :key (:id item)} (:name item)])]])
+      [:ul (merge {:class "list-group"} properties)
+      (for [[id item] items]
+        [:li.list-group-item {:key id} (:name item)])]])
+
 (defn task-progress
   [task]
   [:div {:class "task-progress"}
