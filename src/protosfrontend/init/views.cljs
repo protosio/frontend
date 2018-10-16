@@ -83,7 +83,7 @@
     [card-header]
     [alerts/for-card [:alert-init :step2]]
     [:div {:class "card-body p-5"}
-      [:h4 {:class "text-center mb-4"} "Select a DNS provider"]
+      [:h4 {:class "text-center mb-4"} "Install a DNS provider"]
         [:div {:class "auto-form-wrapper"}
           ;; when we have the providers show them in a single select list
           (if-not (empty? providers)
@@ -117,7 +117,7 @@
     [card-header]
     [alerts/for-card [:alert-init :step3]]
     [:div {:class "card-body p-5"}
-      [:h4 {:class "text-center mb-4"} "Select a certificate provider"]
+      [:h4 {:class "text-center mb-4"} "Install a certificate provider"]
         [:div {:class "auto-form-wrapper"}
           ;; when we have the providers show them in a single select list
           (if-not (empty? providers)
