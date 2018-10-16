@@ -36,8 +36,9 @@
   (fn step-action-handler
   [{db :db} [_ step-nr]]
   (let [result (condp = step-nr
-                2         {:dispatch [:get-dns-providers]}
-                3         {:dispatch [:get-cert-providers]})
+                2 {:dispatch [:get-dns-providers]}
+                3 {:dispatch [:get-cert-providers]}
+                4 {:dispatch [:get-init-apps]})
         step-done (get-in db [:init-wizard (keyword (str "step" step-nr)) :done])]
     (if step-done
       {}
@@ -163,6 +164,14 @@
              (assoc-in [:init-wizard :step3 :provider-list] result))}))
 
 ;; -- Create DNS and TLS certificate (step4) -----------------------
+
+(rf/reg-event-fx
+  :get-init-apps
+  (fn get-init-apps-handler
+    [{db :db} _]
+    {:dispatch [:http-get {:url (util/createurl ["e" "apps"])
+                           :on-success [:save-response [:apps]]
+                           :on-failure [:init-failure :step4]}]}))
 
 (rf/reg-event-fx
   :create-init-resources
