@@ -27,12 +27,17 @@
   :providers
   (fn providers-sub
     [db [_ step]]
-      (vec (map (fn [itm] {:id (get itm 0)
-                           :name (get-in itm [1 :name])})
-                (-> db
-                    :init-wizard
-                    step
-                    :provider-list)))))
+    (apply hash-map (flatten (map (fn [itm] (let [kid (get itm 0)
+                                                  provider (get itm 1)
+                                                  version (last (sort (keys (:versions provider))))]
+                                                  [kid  {:id (:id provider)
+                                                         :name (:name provider)
+                                                         :version version
+                                                         :provider-params (get-in provider [:versions version :params])}]))
+                              (-> db
+                                  :init-wizard
+                                  step
+                                  :provider-list))))))
 
 (rf/reg-sub
   :provider-params
@@ -54,6 +59,14 @@
   (fn init-installer-downloaded-sub
     [db [_ step]]
       (get-in db [:init-wizard step :downloaded])))
+
+(rf/reg-sub
+  :init-step-task
+  (fn init-step-task-sub
+    [db [_ step]]
+    (let [step-task-id (get-in db [:init-wizard step :task])
+          step-task (get-in db [:tasks step-task-id])]
+      step-task)))
 
 (rf/reg-sub
   :alert-init

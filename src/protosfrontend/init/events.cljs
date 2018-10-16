@@ -72,42 +72,40 @@
 (rf/reg-event-fx
   :create-app-during-init
   (fn create-app-during-init-handler
-    [{db :db} [_ step]]
-    (let [installer-id (get-in db [:init-wizard step :selected-provider])
-          installer-params (get-in db [:init-wizard step :form])
-          installers (get-in db [:init-wizard step :provider-list])
-          name (:name (installer-id installers))
-          version (last (sort (:versions (get installers installer-id))))]
-    {:dispatch [:http-post {:url (util/createurl ["e" "apps"])
-                            :on-success [:create-app-during-init-success step]
-                            :on-failure [:init-failure step]
-                            :post-data {:installer-id installer-id :installer-version version :name name :installer-params installer-params}}]})))
+    [{db :db} [_ step installer-id name version]]
+    (let [installer-params (get-in db [:init-wizard step :form])]
+      {:dispatch [:http-post {:url (util/createurl ["e" "apps"])
+                              :on-success [:create-app-during-init-success step]
+                              :on-failure [:init-failure step]
+                              :post-data {:installer-id installer-id :installer-version version :name name :installer-params installer-params}}]})))
 
 (rf/reg-event-fx
   :create-app-during-init-success
   (fn create-app-during-init-success-handler
     [{db :db} [_ step result]]
-    {:dispatch [:start-app-during-init step (:id result)]
+    {:dispatch [:check-init-task step (:id result) result]
      :db (-> db
-             (assoc-in [:init-wizard step :app] result)
-             (assoc-in [:init-wizard step :alert] {:type "success" :message "Provider created successfully"}))}))
+             (assoc-in [:init-wizard step :task] (keyword (:id result))))}))
 
 (rf/reg-event-fx
-  :start-app-during-init
-  (fn start-app-during-init-handler
-    [{db :db} [_ step app-id]]
-    {:dispatch [:http-post {:url (util/createurl ["e" "apps" app-id "action"])
-                            :on-success [:start-app-during-init-success step]
-                            :on-failure [:init-failure step]
-                            :post-data {:name "start"}}]}))
-
-(rf/reg-event-fx
-  :start-app-during-init-success
-  (fn start-app-during-init-success-handler
-    [{db :db} [_ step _]]
-    {:db (-> db
-             (assoc-in [:init-wizard step :done] true)
-             (assoc-in [:init-wizard step :alert] {:type "success" :message "Provider started successfully"}))}))
+  :check-init-task
+  (fn check-init-task-handler
+    [{db :db} [_ step task-id task]]
+    (let [task-unfinished? (util/task-unfinished? task)
+          result {:db (assoc-in db [:tasks (keyword task-id)] task)}]
+          (if task-unfinished?
+            ;; if task is not in final state retrieve the task
+            (assoc result :dispatch-debounce {:id (keyword (str "get-init-task-" task-id))
+                                              :timeout 1000
+                                              :dispatch [:http-get {:url (util/createurl ["e" "tasks" task-id])
+                                                                    :on-success [:check-init-task step task-id]
+                                                                    :on-failure [:init-failure step]}]})
+            ;; if task is in final state set the done flag in the step struct
+            (if (= (:status task) "finished")
+                (-> result (assoc-in [:db :init-wizard step :done] true)
+                           (assoc-in [:db :init-wizard step :alert] {:type "success" :message "Provider installed successfully"}))
+                (-> result (assoc-in [:db :init-wizard step :done] false)
+                           (assoc-in [:db :init-wizard step :alert] {:type "danger" :message (get-in task [:progress :state])})))))))
 
 ;; -- Register user and domain (step1) ---------------------------------------------
 
@@ -145,29 +143,7 @@
   (fn get-dns-providers-success-handler
     [{db :db} [_ result]]
     {:db (-> db
-             (assoc-in [:init-wizard :step2 :provider-list] result)
-             (assoc-in [:init-wizard :step2 :alert] {:type "success" :message "DNS providers retrieved successfully"}))}))
-
-(rf/reg-event-fx
-  :download-dns-provider
-  (fn download-dns-provider-handler
-    [{db :db} [_ installer-name]]
-    (let [id (get-in db [:init-wizard :step2 :selected-provider])
-          installers (get-in db [:init-wizard :step2 :provider-list])
-          name (:name (id installers))
-          version (last (sort (:versions (get installers id))))]
-    {:dispatch [:http-post {:url (util/createurl ["e" "store" "download"])
-                            :on-success [:download-dns-provider-success id]
-                            :on-failure [:init-failure :step2]
-                            :post-data {:id id :version version :name name}}]})))
-
-(rf/reg-event-fx
-  :download-dns-provider-success
-  (fn download-dns-provider-success-handler
-    [{db :db} [_ installer-id result]]
-    {:dispatch [:get-installer-init :step2 installer-id]
-     :db (assoc-in db [:init-wizard :step2 :alert] {:type "success" :message "DNS provider downloaded successfully"})}))
-
+             (assoc-in [:init-wizard :step2 :provider-list] result))}))
 
 ;; -- Download and run certificate provider (step3) -----------------------
 
@@ -184,28 +160,7 @@
   (fn get-cert-providers-success-handler
     [{db :db} [_ result]]
     {:db (-> db
-             (assoc-in [:init-wizard :step3 :provider-list] result)
-             (assoc-in [:init-wizard :step3 :alert] {:type "success" :message "SSL certificate providers retrieved successfully"}))}))
-
-(rf/reg-event-fx
-  :download-cert-provider
-  (fn download-cert-provider-handler
-    [{db :db} [_ installer-name]]
-    (let [id (get-in db [:init-wizard :step3 :selected-provider])
-          installers (get-in db [:init-wizard :step3 :provider-list])
-          name (:name (id installers))
-          version (last (sort (:versions (get installers id))))]
-    {:dispatch [:http-post {:url (util/createurl ["e" "store" "download"])
-                            :on-success [:download-cert-provider-success id]
-                            :on-failure [:init-failure :step3]
-                            :post-data {:id id :version version :name name}}]})))
-
-(rf/reg-event-fx
-  :download-cert-provider-success
-  (fn download-cert-provider-success-handler
-    [{db :db} [_ installer-id result]]
-    {:dispatch [:get-installer-init :step3 installer-id]
-     :db (assoc-in db [:init-wizard :step3 :alert] {:type "success" :message "SSL certificate provider downloaded successfully"})}))
+             (assoc-in [:init-wizard :step3 :provider-list] result))}))
 
 ;; -- Create DNS and TLS certificate (step4) -----------------------
 

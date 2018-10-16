@@ -67,65 +67,71 @@
     [:div {:class "card-footer p-3"}
     (let [loading? @(rf/subscribe [:loading?])
           step-done @(rf/subscribe [:init-step-done :step1])]
-          [navigation-buttons "Register" [:register-user-domain] loading? loading? :step1 step-done])]])
+          [navigation-buttons "Register" [:register-user-domain] loading? loading? :step1 true])]])
 
 (defn step2 []
+  (let [providers @(rf/subscribe [:providers :step2])
+        selected-provider @(rf/subscribe [:selected-provider :step2])
+        selected-version (get-in providers [selected-provider :version])
+        provider-name (get-in providers [selected-provider :name])
+        params (get-in providers [selected-provider :provider-params])
+        task @(rf/subscribe [:init-step-task :step2])
+        loading? @(rf/subscribe [:loading?])
+        disabled? (or (not selected-provider) loading?)
+        step-done @(rf/subscribe [:init-step-done :step2])]
   [:form {:class "card align-middle"}
     [card-header]
     [alerts/for-card [:alert-init :step2]]
     [:div {:class "card-body p-5"}
       [:h4 {:class "text-center mb-4"} "Select a DNS provider"]
         [:div {:class "auto-form-wrapper"}
-        (let [dns-providers @(rf/subscribe [:providers :step2])]
-          (if-not (empty? dns-providers)
+          (if-not (empty? providers)
             [bind-fields
-              (single-select-list {:field :single-select :id :init-wizard.step2.selected-provider} dns-providers)
-              (util/form-events [:init-form :step2])]))
-        (let [dns-params @(rf/subscribe [:provider-params :step2])]
-          (if-not (empty? dns-params)
+              (single-select-list {:field :single-select :id :init-wizard.step2.selected-provider} providers)
+              (util/form-events [:init-form :step2])])
+          (if-not (empty? params)
             [:div
-            [:div {:class "border-top my-3"}]
-            [bind-fields
-              (into [:div ] (for [field dns-params]
-                                [input-field {:field :text :id (keyword (str "init-wizard.step2.form." field)) :class "form-control" :placeholder field}]))
-              (util/form-events [:init-form :step2])]]))]]
+              [:div {:class "border-top my-3"}]
+              [bind-fields
+                (into [:div ] (for [field params]
+                                  [input-field {:field :text :id (keyword (str "init-wizard.step2.form." field)) :class "form-control" :placeholder field}]))
+                (util/form-events [:init-form :step2])]])
+          (if-not (empty? task)
+            [task-progress task])]]
     [:div {:class "card-footer p-3"}
-      (let [loading? @(rf/subscribe [:loading?])
-        disabled? (or (not @(rf/subscribe [:selected-provider :step2])) loading?)
-        dns-params @(rf/subscribe [:provider-params :step2])]
-        (if (empty? dns-params)
-          [navigation-buttons "Download" [:download-dns-provider] disabled? loading?]
-          [navigation-buttons "Run" [:create-app-during-init :step2] disabled? loading?]))]])
+      [navigation-buttons "Install" [:create-app-during-init :step2 selected-provider provider-name selected-version] disabled? loading? :step2 step-done]]]))
 
 (defn step3 []
+  (let [providers @(rf/subscribe [:providers :step3])
+        selected-provider @(rf/subscribe [:selected-provider :step3])
+        selected-version (get-in providers [selected-provider :version])
+        provider-name (get-in providers [selected-provider :name])
+        params (get-in providers [selected-provider :provider-params])
+        task @(rf/subscribe [:init-step-task :step3])
+        loading? @(rf/subscribe [:loading?])
+        disabled? (or (not selected-provider) loading?)
+        step-done @(rf/subscribe [:init-step-done :step3])]
   [:form {:class "card align-middle"}
     [card-header]
     [alerts/for-card [:alert-init :step3]]
     [:div {:class "card-body p-5"}
       [:h4 {:class "text-center mb-4"} "Select a certificate provider"]
-      [:div {:class "auto-form-wrapper"}
-      (let [providers @(rf/subscribe [:providers :step3])]
-        (if-not (empty? providers)
-          [bind-fields
-            (single-select-list {:field :single-select :id :init-wizard.step3.selected-provider} providers)
-            (util/form-events [:init-form :step3])]))
-      (let [params @(rf/subscribe [:provider-params :step3])]
-        (if-not (empty? params)
-          [:div
-          [:div {:class "border-top my-3"}]
-          [bind-fields
-            (into [:div ] (for [field params]
-                               [input-field {:field :text :id (keyword (str "init-wizard.step3.form." field)) :class "form-control" :placeholder field}]))
-            (util/form-events [:init-form :step3])]]))]]
+        [:div {:class "auto-form-wrapper"}
+          (if-not (empty? providers)
+            [bind-fields
+              (single-select-list {:field :single-select :id :init-wizard.step3.selected-provider} providers)
+              (util/form-events [:init-form :step3])])
+          (if-not (empty? params)
+            [:div
+              [:div {:class "border-top my-3"}]
+              [bind-fields
+                (into [:div ] (for [field params]
+                                  [input-field {:field :text :id (keyword (str "init-wizard.step3.form." field)) :class "form-control" :placeholder field}]))
+                (util/form-events [:init-form :step3])]])
+          (if-not (empty? task)
+            [task-progress task])]]
     [:div {:class "card-footer p-3"}
-      (let [loading? @(rf/subscribe [:loading?])
-            disabled? (or (not @(rf/subscribe [:selected-provider :step3])) loading?)
-            installer-downloaded @(rf/subscribe [:init-installer-downloaded :step3])
-            installer-params @(rf/subscribe [:provider-params :step3])]
-        (if (not installer-downloaded)
-          [navigation-buttons "Download" [:download-cert-provider] disabled? loading?]
-          [navigation-buttons "Run" [:create-app-during-init :step3] disabled? loading?]))]])
-
+      [navigation-buttons "Install" [:create-app-during-init :step3 selected-provider provider-name selected-version] disabled? loading? :step3 step-done]]])) 
 
 (defn step4 []
   (let [resources @(rf/subscribe [:init-resources])
