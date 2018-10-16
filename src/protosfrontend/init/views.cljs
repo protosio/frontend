@@ -85,10 +85,12 @@
     [:div {:class "card-body p-5"}
       [:h4 {:class "text-center mb-4"} "Select a DNS provider"]
         [:div {:class "auto-form-wrapper"}
+          ;; when we have the providers show them in a single select list
           (if-not (empty? providers)
             [bind-fields
               (single-select-list {:field :single-select :id :init-wizard.step2.selected-provider} providers)
               (util/form-events [:init-form :step2])])
+          ;; if the selected provider requires input parameters display them in a form
           (if-not (empty? params)
             [:div
               [:div {:class "border-top my-3"}]
@@ -117,10 +119,12 @@
     [:div {:class "card-body p-5"}
       [:h4 {:class "text-center mb-4"} "Select a certificate provider"]
         [:div {:class "auto-form-wrapper"}
+          ;; when we have the providers show them in a single select list
           (if-not (empty? providers)
             [bind-fields
               (single-select-list {:field :single-select :id :init-wizard.step3.selected-provider} providers)
               (util/form-events [:init-form :step3])])
+          ;; if the selected provider requires input parameters display them in a form
           (if-not (empty? params)
             [:div
               [:div {:class "border-top my-3"}]
