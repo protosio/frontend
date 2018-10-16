@@ -32,6 +32,21 @@
       [:ul {:class "list-group"} properties
       (for [item items]
         [:div {:class "list-group-item" :key (:id item)} (:name item)])]])
+(defn task-progress
+  [task]
+  [:div {:class "task-progress"}
+    [:div {:class "clearfix"}
+      [:div {:class "float-left"}
+        [:strong (str (get-in task [:progress :percentage]) "%")]]
+      [:div {:class "float-right"}
+        [:span {:class (str "status-icon bg-" (util/task-status-color (:status task)))}] (str " " (:status task))]]
+    [:div {:class "progress progress-xs"}
+      [:div {:class "progress-bar bg-green"
+             :aria-valuemax "100"
+             :aria-valuemin "0"
+             :aria-valuenow (get-in task [:progress :percentage])
+             :style {:width (str (get-in task [:progress :percentage]) "%")}
+             :role "progressbar"}]]])
 
 (defn step1 []
   [:form {:class "card align-middle"}
