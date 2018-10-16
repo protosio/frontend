@@ -67,7 +67,7 @@
     [:div {:class "card-footer p-3"}
     (let [loading? @(rf/subscribe [:loading?])
           step-done @(rf/subscribe [:init-step-done :step1])]
-          [navigation-buttons "Register" [:register-user-domain] loading? loading? :step1 true])]])
+          [navigation-buttons "Register" [:register-user-domain] loading? loading? :step1 step-done])]])
 
 (defn step2 []
   (let [providers @(rf/subscribe [:providers :step2])
