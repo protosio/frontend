@@ -9,7 +9,7 @@
                  [org.clojure/core.async "0.4.474"]
                  [reagent "0.8.1"]
                  [reagent-utils "0.3.1"]
-                 [reagent-forms "0.5.42"]
+                 [reagent-forms "0.5.43"]
                  [cljsjs/react-bootstrap "0.31.5-0"]
                  [baking-soda "0.2.0"]
                  [cljsjs/react-transition-group "2.3.1-0"]
