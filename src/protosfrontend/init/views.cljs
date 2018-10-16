@@ -139,25 +139,41 @@
 
 (defn step4 []
   (let [resources @(rf/subscribe [:init-resources])
+        apps @(rf/subscribe [:apps])
         loading? @(rf/subscribe [:loading?])
+        providers-ready (if (= (count apps) 0)
+                               false
+                               (every? true? (for [[k v] apps]
+                                                  (= (:status v) "running"))))
         resources-created (if (= (count resources) 0)
                               false
                               (every? true? (for [[k v] resources]
-                                                 (= (:status v) "created"))))]
-  [:form {:class "card align-middle"}
-    [card-header]
-    [alerts/for-card [:alert-init :step4]]
-    [:div {:class "card-body p-5"}
-      [:h4 {:class "text-center mb-4"} "Protos DNS and TLS resources"]
-      [:div {:class "auto-form-wrapper"}
-        [:h5 {:class "mb-4"} "Resource status"]
-        [:ul {:class "list-arrow"}
-          (for [[id rsc] resources]
-            [:li {:key id} (str (:type rsc) " has status: " (:status rsc))])]]]
-    [:div {:class "card-footer p-3"}
-    (if resources-created
-      [navigation-buttons "Finish" [:restart-and-redirect] loading? loading?]
-      [navigation-buttons "Create resurces" [:create-init-resources] loading? loading?])]]))
+                                                 (= (:status v) "created"))))
+        disabled? (or (not providers-ready) loading?)]
+    [:form {:class "card align-middle"}
+      [card-header]
+      [alerts/for-card [:alert-init :step4]]
+      [:div {:class "card-body p-5"}
+        [:h4 {:class "text-center mb-4"} "Protos DNS and TLS resources"]
+        [:div {:class "auto-form-wrapper"}
+          ;; providers list
+          [:ul {:class "list-unstyled"}
+            (for [[id app] apps]
+              [:li
+                [:span {:class (str "status-icon bg-" (util/app-status-color (:status app)))}] (str " " (:name app))])]
+          [:div {:class "border-top my-3"}]
+          ;; resources list
+          (if (empty? resources)
+            (if providers-ready
+              [:p {:class "text-success"} "Ready to create DNS and TLS resources"]
+              [:p {:class "text-danger"} "Can't create the required resources until all providers are ready"])
+            [:ul {:class "list"}
+              (for [[id rsc] resources]
+                [:li {:key id} (str (:type rsc) " has status: " (:status rsc))])])]]
+      [:div {:class "card-footer p-3"}
+      (if resources-created
+        [navigation-buttons "Finish" [:restart-and-redirect] loading? loading?]
+        [navigation-buttons "Create resurces" [:create-init-resources] disabled? loading?])]]))
 
 (defn init-wizard []
   [:div {:class "container"}
