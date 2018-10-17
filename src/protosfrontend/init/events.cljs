@@ -177,7 +177,7 @@
   :create-init-resources
   (fn create-init-resources-handler
     [_ _]
-    {:dispatch [:http-post {:url (util/createurl ["e" "protos" "resources"])
+    {:dispatch [:http-post {:url (util/createurl ["e" "init" "resources"])
                             :on-success [:create-init-resources-success]
                             :on-failure [:init-failure :step4]
                             :post-data {}}]}))
