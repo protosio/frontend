@@ -101,7 +101,7 @@
           (if-not (empty? task)
             [task-progress task])]]
     [:div {:class "card-footer p-3"}
-      [navigation-buttons "Install" [:create-app-during-init :step2 selected-provider provider-name selected-version] disabled? loading? :step2 step-done]]]))
+      [navigation-buttons "Install" [:remove-and-install-provider :step2 [:create-app-during-init :step2 selected-provider provider-name selected-version]] disabled? loading? :step2 step-done]]]))
 
 (defn step3 []
   (let [providers @(rf/subscribe [:providers :step3])
@@ -135,7 +135,7 @@
           (if-not (empty? task)
             [task-progress task])]]
     [:div {:class "card-footer p-3"}
-      [navigation-buttons "Install" [:create-app-during-init :step3 selected-provider provider-name selected-version] disabled? loading? :step3 step-done]]])) 
+      [navigation-buttons "Install" [:remove-and-install-provider :step3 [:create-app-during-init :step3 selected-provider provider-name selected-version]] disabled? loading? :step3 step-done]]]))
 
 (defn step4 []
   (let [resources @(rf/subscribe [:init-resources])
@@ -154,12 +154,12 @@
       [card-header]
       [alerts/for-card [:alert-init :step4]]
       [:div {:class "card-body p-5"}
-        [:h4 {:class "text-center mb-4"} "Protos DNS and TLS resources"]
+        [:h4 {:class "text-center mb-4"} "Create DNS and TLS resources"]
         [:div {:class "auto-form-wrapper"}
           ;; providers list
           [:ul {:class "list-unstyled"}
             (for [[id app] apps]
-              [:li
+              [:li {:key id}
                 [:span {:class (str "status-icon bg-" (util/app-status-color (:status app)))}] (str " " (:name app))])]
           [:div {:class "border-top my-3"}]
           ;; resources list

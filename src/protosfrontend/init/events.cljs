@@ -81,6 +81,18 @@
                               :post-data {:installer-id installer-id :installer-version version :name name :installer-params installer-params}}]})))
 
 (rf/reg-event-fx
+  :remove-and-install-provider
+  (fn remove-and-install-provider-handler
+    [{db :db} [_ step event]]
+    (let [installer-params (get-in db [:init-wizard step :form])
+          provider-type (cond (= step :step2) "dns"
+                              (= step :step3) "certificate")]
+      {:dispatch [:http-delete {:url (util/createurl ["e" "init" (str "provider?provides=" provider-type)])
+                                :on-success event
+                                :on-failure [:init-failure step]}]
+       :db (assoc-in db [:init-wizard step :alert] nil)})))
+
+(rf/reg-event-fx
   :create-app-during-init-success
   (fn create-app-during-init-success-handler
     [{db :db} [_ step result]]
