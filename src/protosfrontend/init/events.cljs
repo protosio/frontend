@@ -117,7 +117,8 @@
     {:dispatch [:http-post {:url (util/createurl ["auth" "register"])
                             :on-success [:register-user-domain-success]
                             :on-failure [:init-failure :step1]
-                            :post-data (get-in db [:init-wizard :step1 :form])}]}))
+                            :post-data (get-in db [:init-wizard :step1 :form])}]
+     :db (assoc-in db [:init-wizard :step1 :alert] nil)}))
 
 (rf/reg-event-fx
   :register-user-domain-success
@@ -176,11 +177,12 @@
 (rf/reg-event-fx
   :create-init-resources
   (fn create-init-resources-handler
-    [_ _]
+    [{db :db} _]
     {:dispatch [:http-post {:url (util/createurl ["e" "init" "resources"])
                             :on-success [:create-init-resources-success]
                             :on-failure [:init-failure :step4]
-                            :post-data {}}]}))
+                            :post-data {}}]
+     :db (assoc-in db [:init-wizard :step4 :alert] nil)}))
 
 (rf/reg-event-fx
   :create-init-resources-success
