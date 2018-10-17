@@ -86,6 +86,15 @@
           step
           :done)))
 
+(rf/reg-sub
+  :init-step-inprogress
+  (fn init-step-inprogress-sub
+    [db [_ step]]
+      (-> db
+          :init-wizard
+          step
+          :inprogress)))
+
 ;; -- Step 4 subs -----------------------------------------------
 
 (rf/reg-sub

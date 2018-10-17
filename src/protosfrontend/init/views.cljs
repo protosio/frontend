@@ -4,6 +4,7 @@
     [protosfrontend.util :as util]
     [components.buttons :as buttons]
     [components.alerts :as alerts]
+    [components.header :as header]
     [reagent-forms.core :refer [bind-fields]]
     [clairvoyant.core :refer-macros [trace-forms]]
     [re-frame-tracer.core :refer [tracer]]))
@@ -12,15 +13,17 @@
 
 (defn card-header []
   [:div {:class "card-header"}
-    [:div {:class "mx-auto p-1"}
-      [:img {:src "/static/images/protos-logo.svg" :class "h-7" :alt "protos logo"}]]])
+    [:div {:class "card-title"}
+      [:img {:src "/static/images/protos-logo.svg" :class "h-7" :alt "protos logo"}]]
+    [:div {:class "card-options"}
+      [header/loading-indicator]]])
 
-(defn navigation-buttons [button-text event disabled? loading? step step-done]
+(defn navigation-buttons [button-text event disabled? step step-done]
   [:div {:class "form-row"}
     [:div {:class "mx-auto"}
       [:div {:class "col"}
         [:button {:type "button" :class "btn btn-sm btn-icons btn-rounded btn-outline-primary mr-2" :disabled (if (= step :step1) true false) :on-click #(rf/dispatch [:decrement-init-step])} [:i {:class "fe fe-arrow-left"}]]
-        [buttons/submit-button-spinner button-text event "primary btn-sm mr-2" disabled? loading?]
+        [buttons/submit-button button-text event "primary btn-sm mr-2" disabled?]
         [:button {:type "button" :class "btn btn-sm btn-icons btn-rounded btn-outline-primary" :disabled (if (or (= step :step4) (not step-done)) true false) :on-click #(rf/dispatch [:increment-init-step])} [:i {:class "fe fe-arrow-right"}]]]]])
 
 (defn input-field [properties]
@@ -67,7 +70,7 @@
     [:div {:class "card-footer p-3"}
     (let [loading? @(rf/subscribe [:loading?])
           step-done @(rf/subscribe [:init-step-done :step1])]
-          [navigation-buttons "Register" [:register-user-domain] loading? loading? :step1 step-done])]])
+          [navigation-buttons "Register" [:register-user-domain] loading? :step1 step-done])]])
 
 (defn step2 []
   (let [providers @(rf/subscribe [:providers :step2])
@@ -76,8 +79,8 @@
         provider-name (get-in providers [selected-provider :name])
         params (get-in providers [selected-provider :provider-params])
         task @(rf/subscribe [:init-step-task :step2])
-        loading? @(rf/subscribe [:loading?])
-        disabled? (or (not selected-provider) loading?)
+        inprogress? @(rf/subscribe [:init-step-inprogress :step2])
+        disabled? (or (not selected-provider) inprogress?)
         step-done @(rf/subscribe [:init-step-done :step2])]
   [:form {:class "card align-middle"}
     [card-header]
@@ -101,7 +104,7 @@
           (if-not (empty? task)
             [task-progress task])]]
     [:div {:class "card-footer p-3"}
-      [navigation-buttons "Install" [:remove-and-install-provider :step2 [:create-app-during-init :step2 selected-provider provider-name selected-version]] disabled? loading? :step2 step-done]]]))
+      [navigation-buttons "Install" [:remove-and-install-provider :step2 [:create-app-during-init :step2 selected-provider provider-name selected-version]] disabled? :step2 step-done]]]))
 
 (defn step3 []
   (let [providers @(rf/subscribe [:providers :step3])
@@ -110,8 +113,8 @@
         provider-name (get-in providers [selected-provider :name])
         params (get-in providers [selected-provider :provider-params])
         task @(rf/subscribe [:init-step-task :step3])
-        loading? @(rf/subscribe [:loading?])
-        disabled? (or (not selected-provider) loading?)
+        inprogress? @(rf/subscribe [:init-step-inprogress :step3])
+        disabled? (or (not selected-provider) inprogress?)
         step-done @(rf/subscribe [:init-step-done :step3])]
   [:form {:class "card align-middle"}
     [card-header]
@@ -135,12 +138,12 @@
           (if-not (empty? task)
             [task-progress task])]]
     [:div {:class "card-footer p-3"}
-      [navigation-buttons "Install" [:remove-and-install-provider :step3 [:create-app-during-init :step3 selected-provider provider-name selected-version]] disabled? loading? :step3 step-done]]]))
+      [navigation-buttons "Install" [:remove-and-install-provider :step3 [:create-app-during-init :step3 selected-provider provider-name selected-version]] disabled? :step3 step-done]]]))
 
 (defn step4 []
   (let [resources @(rf/subscribe [:init-resources])
         apps @(rf/subscribe [:apps])
-        loading? @(rf/subscribe [:loading?])
+        inprogress? @(rf/subscribe [:init-step-inprogress :step4])
         providers-ready (if (= (count apps) 0)
                                false
                                (every? true? (for [[k v] apps]
@@ -149,7 +152,7 @@
                               false
                               (every? true? (for [[k v] resources]
                                                  (= (:status v) "created"))))
-        disabled? (or (not providers-ready) loading?)]
+        disabled? (or (not providers-ready) inprogress?)]
     [:form {:class "card align-middle"}
       [card-header]
       [alerts/for-card [:alert-init :step4]]
@@ -174,11 +177,11 @@
                     [:span {:class (str "status-icon bg-" (util/resource-status-color (:status rsc)))}] (:type rsc)])]
               (if resources-created
                 [:p {:class "text-success"} "All required resources have been created successfully. Initialization complete."]
-                [:p {:class "text-warning"} "Waiting for resources to be created..."])])]]
+                [:p "Waiting for resources to be created..."])])]]
       [:div {:class "card-footer p-3"}
       (if resources-created
-        [navigation-buttons "Finish" [:restart-and-redirect] loading? loading?]
-        [navigation-buttons "Create resurces" [:create-init-resources] disabled? loading?])]]))
+        [navigation-buttons "Finish" [:restart-and-redirect] disabled?]
+        [navigation-buttons "Create resurces" [:create-init-resources] disabled?])]]))
 
 (defn init-wizard []
   [:div {:class "container"}

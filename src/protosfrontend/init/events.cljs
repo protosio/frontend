@@ -90,7 +90,9 @@
       {:dispatch [:http-delete {:url (util/createurl ["e" "init" (str "provider?provides=" provider-type)])
                                 :on-success event
                                 :on-failure [:init-failure step]}]
-       :db (assoc-in db [:init-wizard step :alert] nil)})))
+       :db  (-> db
+            (assoc-in [:init-wizard step :inprogress] true)
+            (assoc-in [:init-wizard step :alert] nil))})))
 
 (rf/reg-event-fx
   :create-app-during-init-success
@@ -116,8 +118,10 @@
             ;; if task is in final state set the done flag in the step struct
             (if (= (:status task) "finished")
                 (-> result (assoc-in [:db :init-wizard step :done] true)
+                           (assoc-in [:db :init-wizard step :inprogress] false)
                            (assoc-in [:db :init-wizard step :alert] {:type "success" :message "Provider installed successfully"}))
                 (-> result (assoc-in [:db :init-wizard step :done] false)
+                           (assoc-in [:db :init-wizard step :inprogress] false)
                            (assoc-in [:db :init-wizard step :alert] {:type "danger" :message (get-in task [:progress :state])})))))))
 
 ;; -- Register user and domain (step1) ---------------------------------------------
@@ -194,7 +198,9 @@
                             :on-success [:create-init-resources-success]
                             :on-failure [:init-failure :step4]
                             :post-data {}}]
-     :db (assoc-in db [:init-wizard :step4 :alert] nil)}))
+     :db (-> db
+             (assoc-in [:init-wizard :step4 :inprogress] 3)
+             (assoc-in [:init-wizard :step4 :alert] nil))}))
 
 (rf/reg-event-fx
   :create-init-resources-success
@@ -216,10 +222,16 @@
 (rf/reg-event-fx
   :retrieve-init-resource-success
   (fn retrieve-init-resource-success-handler
-    [{db :db} [_ id result]]
-    {:dispatch (if (= "created" (:status result))
-               [:stop-timer id]
-               [:noop])
-     :db (assoc-in db [:init-wizard :step4 :resources id] result)}))
+    [{db :db} [_ id rsc]]
+    (let [result {:db (assoc-in db [:init-wizard :step4 :resources id] rsc)}
+          inprogress (get-in db [:init-wizard :step4 :inprogress])
+          inprogress-final (if (= inprogress 1)
+                               false
+                               (- inprogress 1))]
+      (if (= "created" (:status rsc))
+        (-> result
+            (assoc-in [:db :init-wizard :step4 :inprogress] inprogress-final)
+            (assoc :dispatch [:stop-timer id]))
+        result))))
 
 )
