@@ -8,8 +8,8 @@
 (trace-forms {:tracer (tracer :color "brown")}
 
 (defn loading-indicator
-  [loading?]
-  (when loading?
+  []
+  (when @(rf/subscribe [:loading?])
     [:div {:class "sk-wave"}
       [:div {:class "sk-rect sk-rect1"}]
       [:div {:class "sk-rect sk-rect2"}]
@@ -18,8 +18,7 @@
       [:div {:class "sk-rect sk-rect5"}]]))
 
 (defn bar []
-  (let [loading? @(rf/subscribe [:loading?])
-        userinfo @(rf/subscribe [:userinfo])
+  (let [userinfo @(rf/subscribe [:userinfo])
         username (get userinfo :username)
         role     (get userinfo :role)]
   [:div {:class "header py-4"}
@@ -27,7 +26,7 @@
     [:div {:class "d-flex"}
      [:a {:class "header-brand" :href "/"}
       [:img {:class "header-brand-img" :alt "protos logo" :src "/static/images/protos-logo.svg"}]]
-      [loading-indicator loading?]
+      [loading-indicator]
      [:div {:class "d-flex order-lg-2 ml-auto"}
       [:div {:class "dropdown"}
        [:a {:class "nav-link pr-0 leading-none" :data-toggle "dropdown" :href "#"}
