@@ -33,6 +33,13 @@
    "finished"   "success"
    "warning"))
 
+(defn resource-status-color [status]
+  (condp = status
+   "requested" "warning"
+   "unknown"   "secondary"
+   "created"   "success"
+   "warning"))
+
 (defn shorten-time [time]
   (if time
     (timeformat/unparse (timeformat/formatters :date-hour-minute-second-fraction) (timeformat/parse (timeformat/formatter "yyyy-MM-dd'T'HH:mm:ss'.'SSS'Z'") time))

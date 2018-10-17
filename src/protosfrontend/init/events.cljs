@@ -201,9 +201,8 @@
   (fn create-init-resources-success-handler
     [{db :db} [_ result]]
     {:dispatch-n (vec (for [id (keys result)]
-                           [:start-timer id 5000 [:retrieve-init-resource id]]))
+                           [:start-timer id 3000 [:retrieve-init-resource id]]))
      :db (-> db
-             (assoc-in [:init-wizard :step4 :alert] {:type "success" :message "Successfully requested resource creation"})
              (assoc-in [:init-wizard :step4 :resources] result))}))
 
 (rf/reg-event-fx

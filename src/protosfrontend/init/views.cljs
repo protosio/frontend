@@ -167,9 +167,14 @@
             (if providers-ready
               [:p {:class "text-success"} "Ready to create DNS and TLS resources"]
               [:p {:class "text-danger"} "Can't create the required resources until all providers are ready"])
-            [:ul {:class "list"}
-              (for [[id rsc] resources]
-                [:li {:key id} (str (:type rsc) " has status: " (:status rsc))])])]]
+            [:div
+              [:ul {:class "list-unstyled"}
+                (for [[id rsc] resources]
+                  [:li {:key id}
+                    [:span {:class (str "status-icon bg-" (util/resource-status-color (:status rsc)))}] (:type rsc)])]
+              (if resources-created
+                [:p {:class "text-success"} "All required resources have been created successfully. Initialization complete."]
+                [:p {:class "text-warning"} "Waiting for resources to be created..."])])]]
       [:div {:class "card-footer p-3"}
       (if resources-created
         [navigation-buttons "Finish" [:restart-and-redirect] loading? loading?]
