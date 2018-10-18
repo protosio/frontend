@@ -11,6 +11,15 @@
 
 (trace-forms {:tracer (tracer :color "brown")}
 
+(defn get-resource-description
+  [rsc]
+  (condp = (:type rsc)
+    "dns" (if (= (get-in rsc [:value :type]) "A")
+                "DNS record for dashboard"
+                "DNS record for email")
+    "certificate" "TLS certificate for dashboard"
+    (:type rsc)))
+
 (defn card-header
   []
   [:div {:class "card-header"}
@@ -182,7 +191,7 @@
               [:ul {:class "list-unstyled"}
                 (for [[id rsc] resources]
                   [:li {:key id}
-                    [:span {:class (str "status-icon bg-" (util/resource-status-color (:status rsc)))}] (:type rsc)])]
+                    [:span {:class (str "status-icon bg-" (util/resource-status-color (:status rsc)))}] (get-resource-description rsc)])]
               (if resources-created
                 [:p {:class "text-success"} "All required resources have been created successfully. Initialization complete."]
                 [:p "Waiting for resources to be created..."])])]]
