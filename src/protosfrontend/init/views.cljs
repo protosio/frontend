@@ -11,14 +11,16 @@
 
 (trace-forms {:tracer (tracer :color "brown")}
 
-(defn card-header []
+(defn card-header
+  []
   [:div {:class "card-header"}
     [:div {:class "card-title"}
       [:img {:src "/static/images/protos-logo.svg" :class "h-7" :alt "protos logo"}]]
     [:div {:class "card-options"}
       [header/loading-indicator]]])
 
-(defn navigation-buttons [button-text event disabled? step step-done]
+(defn navigation-buttons
+  [button-text event disabled? step step-done]
   [:div {:class "form-row"}
     [:div {:class "mx-auto"}
       [:div {:class "col"}
@@ -26,11 +28,13 @@
         [buttons/submit-button button-text event "primary btn-sm mr-2" disabled?]
         [:button {:type "button" :class "btn btn-sm btn-icons btn-rounded btn-outline-primary" :disabled (if (or (= step :step4) (not step-done)) true false) :on-click #(rf/dispatch [:increment-init-step])} [:i {:class "fe fe-arrow-right"}]]]]])
 
-(defn input-field [properties]
+(defn input-field
+  [properties]
   ^{:key (:id properties)} [:div {:class "form-group"}
     [:input properties]])
 
-(defn single-select-list [properties items]
+(defn single-select-list
+  [properties items]
   [:div {:class "form-group"}
       [:ul (merge {:class "list-group"} properties)
       (for [[id item] items]
@@ -52,7 +56,8 @@
              :style {:width (str (get-in task [:progress :percentage]) "%")}
              :role "progressbar"}]]])
 
-(defn step1 []
+(defn step1
+  []
   [:form {:class "card align-middle"}
     [card-header]
     [alerts/for-card [:alert-init :step1]]
@@ -72,7 +77,8 @@
           step-done @(rf/subscribe [:init-step-done :step1])]
           [navigation-buttons "Register" [:register-user-domain] loading? :step1 step-done])]])
 
-(defn step2 []
+(defn step2
+  []
   (let [providers @(rf/subscribe [:providers :step2])
         selected-provider @(rf/subscribe [:selected-provider :step2])
         selected-version (get-in providers [selected-provider :version])
@@ -106,7 +112,8 @@
     [:div {:class "card-footer p-3"}
       [navigation-buttons "Install" [:remove-and-install-provider :step2 [:create-app-during-init :step2 selected-provider provider-name selected-version]] disabled? :step2 step-done]]]))
 
-(defn step3 []
+(defn step3
+  []
   (let [providers @(rf/subscribe [:providers :step3])
         selected-provider @(rf/subscribe [:selected-provider :step3])
         selected-version (get-in providers [selected-provider :version])
@@ -140,7 +147,8 @@
     [:div {:class "card-footer p-3"}
       [navigation-buttons "Install" [:remove-and-install-provider :step3 [:create-app-during-init :step3 selected-provider provider-name selected-version]] disabled? :step3 step-done]]]))
 
-(defn step4 []
+(defn step4
+  []
   (let [resources @(rf/subscribe [:init-resources])
         apps @(rf/subscribe [:apps])
         inprogress? @(rf/subscribe [:init-step-inprogress :step4])
@@ -183,7 +191,8 @@
         [navigation-buttons "Finish" [:restart-and-redirect] disabled?]
         [navigation-buttons "Create resurces" [:create-init-resources] disabled?])]]))
 
-(defn init-wizard []
+(defn init-wizard
+  []
   [:div {:class "container"}
     [:div {:class "row"}
       [:div {:class "col col-login mx-auto"}
