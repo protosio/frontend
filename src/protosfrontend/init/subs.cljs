@@ -106,4 +106,14 @@
           :step4
           :resources)))
 
+(rf/reg-sub
+  :init-dashboard-domain
+  (fn init-dashboard-domain-sub
+    [db _]
+      (-> db
+          :init-wizard
+          :step4
+          :dashboard
+          :domain)))
+
 )

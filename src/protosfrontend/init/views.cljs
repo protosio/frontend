@@ -165,10 +165,7 @@
                                false
                                (every? true? (for [[k v] apps]
                                                   (= (:status v) "running"))))
-        resources-created (if (= (count resources) 0)
-                              false
-                              (every? true? (for [[k v] resources]
-                                                 (= (:status v) "created"))))
+        dashboard-domain @(rf/subscribe [:init-dashboard-domain])
         disabled? (or (not providers-ready) inprogress?)]
     [:form {:class "card align-middle"}
       [card-header]
@@ -192,13 +189,11 @@
                 (for [[id rsc] resources]
                   [:li {:key id}
                     [:span {:class (str "status-icon bg-" (util/resource-status-color (:status rsc)))}] (get-resource-description rsc)])]
-              (if resources-created
-                [:p {:class "text-success"} "All required resources have been created successfully. Initialization complete."]
+              (if dashboard-domain
+                [:p {:class "text-success"} (str "Initialization complete. Please visit https://" dashboard-domain " to start using your Protos instance")]
                 [:p "Waiting for resources to be created..."])])]]
       [:div {:class "card-footer p-3"}
-      (if resources-created
-        [navigation-buttons "Finish" [:finish-and-redirect] disabled?]
-        [navigation-buttons "Create resources" [:create-init-resources] disabled?])]]))
+        [navigation-buttons "Create resources" [:create-init-resources] disabled?]]]))
 
 (defn init-wizard
   []

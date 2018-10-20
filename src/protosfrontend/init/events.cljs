@@ -195,7 +195,7 @@
   (fn create-init-resources-handler
     [{db :db} _]
     {:dispatch [:http-post {:url (util/createurl ["e" "init" "resources"])
-                            :on-success [:create-init-resources-success]
+                            :on-success [:retrieve-init-resources]
                             :on-failure [:init-failure :step4]
                             :post-data {}}]
      :db (-> db
@@ -203,43 +203,37 @@
              (assoc-in [:init-wizard :step4 :alert] nil))}))
 
 (rf/reg-event-fx
-  :create-init-resources-success
-  (fn create-init-resources-success-handler
-    [{db :db} [_ result]]
-    {:dispatch-n (vec (for [id (keys result)]
-                           [:start-timer id 3000 [:retrieve-init-resource id]]))
-     :db (-> db
-             (assoc-in [:init-wizard :step4 :resources] result))}))
-
-(rf/reg-event-fx
-  :retrieve-init-resource
-  (fn retrieve-init-resource-handler
-    [_ [_ id]]
-    {:dispatch [:http-get {:url (util/createurl ["e" "resources" (name id)])
-                           :on-success [:retrieve-init-resource-success id]
+  :retrieve-init-resources
+  (fn retrieve-init-resources-handler
+    [_ _]
+    {:dispatch [:http-get {:url (util/createurl ["e" "init" "resources"])
+                           :on-success [:check-init-resources]
                            :on-failure [:init-failure :step4]}]}))
 
 (rf/reg-event-fx
-  :retrieve-init-resource-success
-  (fn retrieve-init-resource-success-handler
-    [{db :db} [_ id rsc]]
-    (let [result {:db (assoc-in db [:init-wizard :step4 :resources id] rsc)}
-          inprogress (get-in db [:init-wizard :step4 :inprogress])
-          inprogress-final (if (= inprogress 1)
-                               false
-                               (- inprogress 1))]
-      (if (= "created" (:status rsc))
-        (-> result
-            (assoc-in [:db :init-wizard :step4 :inprogress] inprogress-final)
-            (assoc :dispatch [:stop-timer id]))
-        result))))
+  :check-init-resources
+  (fn check-init-resources-handler
+    [{db :db} [_ resources]]
+    (let [result {:db (assoc-in db [:init-wizard :step4 :resources] resources)}
+          resources-created (if (= (count resources) 0)
+                                false
+                                (every? true? (for [[k v] resources]
+                                                    (= (:status v) "created"))))]
+          (if (= resources-created false)
+            ;; if resources are not in created state retrieve the resources again
+            (assoc result :dispatch-debounce {:id (keyword "get-init-resources")
+                                              :timeout 3000
+                                              :dispatch [:retrieve-init-resources]})
+            ;; if resources are created, finish the init process
+            (-> result (assoc-in [:dispatch] [:finish-and-redirect])
+                       (assoc-in [:db :init-wizard :step4 :alert] {:type "success" :message "Resources created successfully"}))))))
 
 (rf/reg-event-fx
   :finish-and-redirect
   (fn finish-and-redirect-handler
     [_ _]
     {:dispatch [:http-get {:url (util/createurl ["e" "init" "finish"])
-                           :on-success [:noop]
+                           :on-success [:save-response [:init-wizard :step4 :dashboard]]
                            :on-failure [:init-failure :step4]}]}))
 
 )
