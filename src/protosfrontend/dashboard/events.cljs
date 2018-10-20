@@ -172,8 +172,7 @@
   :app-state-success
   (fn app-state-success-handler
     [{db :db} [_ app-id state]]
-    {:dispatch [:get-app app-id]
-     :db (assoc-in db [:dashboard :alert] {:type "success" :message (str "App " app-id " set to state [" state "]")})}))
+    {:dispatch [:get-app app-id]}))
 
 ;; -- Resources ------------------------------------------------
 
