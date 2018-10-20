@@ -44,7 +44,7 @@
                     [:a {:data-toggle "dropdown" :class "icon"}
                       [:i {:class "fe fe-more-vertical"}]]
                     [:div {:class "dropdown-menu dropdown-menu-right"}
-                      [:a {:on-click #(rf/dispatch [:remove-resource id]) :class "dropdown-item"}
+                      [:a {:href "javascript:void(0)" :on-click #(rf/dispatch [:remove-resource id]) :class "dropdown-item"}
                         [:i {:class "dropdown-icon fe fe-trash"}] " Remove"]]]]]))]]]]]]])
 
 (defn resource-page [id]
