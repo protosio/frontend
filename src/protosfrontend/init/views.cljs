@@ -197,8 +197,8 @@
                 [:p "Waiting for resources to be created..."])])]]
       [:div {:class "card-footer p-3"}
       (if resources-created
-        [navigation-buttons "Finish" [:restart-and-redirect] disabled?]
-        [navigation-buttons "Create resurces" [:create-init-resources] disabled?])]]))
+        [navigation-buttons "Finish" [:finish-and-redirect] disabled?]
+        [navigation-buttons "Create resources" [:create-init-resources] disabled?])]]))
 
 (defn init-wizard
   []

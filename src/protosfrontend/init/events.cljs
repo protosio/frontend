@@ -234,4 +234,12 @@
             (assoc :dispatch [:stop-timer id]))
         result))))
 
+(rf/reg-event-fx
+  :finish-and-redirect
+  (fn finish-and-redirect-handler
+    [_ _]
+    {:dispatch [:http-get {:url (util/createurl ["e" "init" "finish"])
+                           :on-success [:noop]
+                           :on-failure [:init-failure :step4]}]}))
+
 )
