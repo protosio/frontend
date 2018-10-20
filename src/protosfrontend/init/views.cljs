@@ -190,7 +190,7 @@
                   [:li {:key id}
                     [:span {:class (str "status-icon bg-" (util/resource-status-color (:status rsc)))}] (get-resource-description rsc)])]
               (if dashboard-domain
-                [:p {:class "text-success"} (str "Initialization complete. Please visit https://" dashboard-domain " to start using your Protos instance")]
+                [:p "Initialization complete. Please visit " [:a {:href (str "https://" dashboard-domain)} (str "https://" dashboard-domain)] " to start using your Protos instance"]
                 [:p "Waiting for resources to be created..."])])]]
       [:div {:class "card-footer p-3"}
         [navigation-buttons "Create resources" [:create-init-resources] disabled?]]]))
