@@ -10,7 +10,7 @@
   [:div {:class "container"}
     (if title
       [:div {:class "page-header"}
-        [:h1 {:class "page-title" :on-click #(rf/dispatch [:get-resources])} title]])
+        [:h1 {:class "page-title" :style {:cursor "pointer"} :on-click #(rf/dispatch [:get-resources])} title]])
     [alerts/for-list-page [:alert-dashboard]]
     [:div {:class "row row-cards row-deck"}
       [:div {:class "col-12"}
