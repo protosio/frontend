@@ -39,4 +39,4 @@ Session.vim
 !.vscode/extensions.json
 
 ### Compiled js ###
-resources/public/js/compiled/out
+resources/public/js/compiled/*
