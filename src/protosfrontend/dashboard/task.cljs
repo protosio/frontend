@@ -49,9 +49,9 @@
                           :style {:width (str (:percentage progress) "%")}
                           :role "progressbar"}]]]
                 [:td
-                  [:div (util/shorten-time started-at)]]
+                  [:div started-at]]
                 [:td
-                  [:div (util/shorten-time finished-at)]]]))]]]]]]])
+                  [:div finished-at]]]))]]]]]]])
 
 (defn task-page [id]
   [:div {:class "container"}
