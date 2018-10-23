@@ -1,6 +1,7 @@
 (ns protosfrontend.views
     (:require
         [components.header :as header]
+        [components.footer :as footer]
         [components.cards :as cards]
         [dashboard.home :as home]
         [dashboard.app :as app]
@@ -20,18 +21,22 @@
 ;; Pages
 
 (defn dashboard-page [inner title active-page]
-  [:div {:class "page-main"}
-    [header/top active-page]
-    [:div {:class "my-3 my-md-5"}
-      [inner title]]])
+  [:div {:class "page"}
+    [:div {:class "page-main"}
+      [header/top active-page]
+      [:div {:class "my-3 my-md-5"}
+        [inner title]]]
+    [footer/bar]])
 
 (defn init-page []
-  [:div {:class "page-single"}
-    [initviews/init-wizard]])
+  [:div {:class "page"}
+    [:div {:class "page-single"}
+      [initviews/init-wizard]]])
 
 (defn login-page []
-  [:div {:class "page-single"}
-    [authviews/login-form]])
+  [:div {:class "page"}
+    [:div {:class "page-single"}
+      [authviews/login-form]]])
 
 (defn current-page []
   (let [[active-page _ item-id]  @(rf/subscribe [:active-page])]
