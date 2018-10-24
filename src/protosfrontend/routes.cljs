@@ -3,7 +3,7 @@
               [bidi.bidi :as bidi]
               [pushy.core :as pushy]))
 
-(def static-data {:pages {:dashboard-page [:get-apps]
+(def static-data {:pages {:dashboard-page [:get-instance-info]
                           :tasks-page [:get-tasks]
                           :task-page [:get-task]
                           :app-page [:get-app]

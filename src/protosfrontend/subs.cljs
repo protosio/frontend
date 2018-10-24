@@ -16,18 +16,11 @@
         :active-page)))
 
 (rf/reg-sub
-  :show-create-app-modal
-  (fn show-create-app-modal-sub
+  :instance-info
+  (fn instance-info-sub
     [db _]
     (-> db
-        :show-create-app-modal)))
-
-(rf/reg-sub
-  :show-installer-metadata-modal
-  (fn show-installer-metadata-modal-sub
-    [db _]
-    (-> db
-        :show-installer-metadata-modal)))
+        :instance-info)))
 
 ;; -- Modal subs -----------------------------------------------
 
