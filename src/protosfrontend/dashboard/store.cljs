@@ -91,7 +91,7 @@
             [:div {:class "card"}
               [:div {:class "card-header"}
                 [:div {:class "avatar d-block bg-white mr-3" :style {:background-image "url(/static/images/installer-generic.svg)" :background-size "80%"}}]
-                [:h3 {:class "card-title"} (:name installer)]
+                [:h3 {:class "card-title" :style {:cursor "pointer"}} (:name installer)]
                 [:form
                   [:select {:class "btn btn-secondary dropdown-toggle ml-2" :value @selected-version :on-change #(reset! selected-version (-> % .-target .-value))}
                   (for [version versions]

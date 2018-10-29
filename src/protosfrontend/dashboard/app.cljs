@@ -65,7 +65,7 @@
           [:div {:class "card-header"}
             [:div {:class "avatar d-block bg-white mr-3" :style {:background-image "url(/static/images/app-generic.svg)" :background-size "80%"}}
               [:span {:class (str "avatar-status bg-" (util/app-status-color (:status app)))}]]
-            [:h3 {:class "card-title" :on-click #(rf/dispatch [:get-app id])} (:name app)]
+            [:h3 {:class "card-title" :style {:cursor "pointer"} :on-click #(rf/dispatch [:get-app id])} (:name app)]
             [:div {:class "card-options"}
               [:div {:class "btn-list"}
                 [buttons/submit-button "Start" [:app-state id "start"] "outline-success btn-sm" loading?]

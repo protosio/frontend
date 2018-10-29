@@ -56,7 +56,7 @@
         [:div {:class "card"}
           [:div {:class "card-header"}
             [:div {:class "avatar d-block bg-white mr-3" :style {:background-image "url(/static/images/resource-generic.svg)" :background-size "80%"}}]
-            [:h3 {:class "card-title" :on-click #(rf/dispatch [:get-resource id])} id]
+            [:h3 {:class "card-title" :style {:cursor "pointer"} :on-click #(rf/dispatch [:get-resource id])} id]
             [:div {:class "card-options"}
               [:div {:class "btn-list"}
                 [buttons/submit-button "Remove" [:remove-resource id] "danger btn-sm" loading?]]]]
