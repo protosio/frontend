@@ -75,6 +75,12 @@
         id)))
 
 (rf/reg-sub
+  :task-ids
+  (fn task-ids-sub
+    [db [_ ids]]
+    (select-keys (:tasks db) (vec (map keyword ids)))))
+
+(rf/reg-sub
   :resources
   (fn resources-sub
     [db _]
