@@ -70,13 +70,14 @@
 
 (defn cancel-all-timeouts []
   (doseq [[id val] @debounced-events]
-   (cancel-timeout id)))
+    (if (not (:no-cancel val))
+      (cancel-timeout id))))
 
 (rf/reg-fx
   :dispatch-debounce
   (fn [dispatches]
     (let [dispatches (if (sequential? dispatches) dispatches [dispatches])]
-      (doseq [{:keys [id action dispatch timeout]
+      (doseq [{:keys [id action dispatch timeout no-cancel]
                :or   {action :dispatch}}
               dispatches]
         (case action
@@ -87,7 +88,8 @@
                                                         (swap! debounced-events dissoc id)
                                                         (router/dispatch dispatch))
                                                       timeout)
-                              :dispatch dispatch}))
+                              :dispatch dispatch
+                              :no-cancel no-cancel}))
           :cancel (cancel-timeout id)
           :cancel-all (cancel-all-timeouts)
           :flush (let [ev (get-in @debounced-events [id :dispatch])]

@@ -139,6 +139,10 @@
   (fn create-app-success-handler
     [{db :db} [_ result]]
     {:dispatch [:set-active-page :apps-page]
+     :dispatch-debounce {:id :delayed-get-apps
+                         :timeout 1000
+                         :no-cancel true
+                         :dispatch [:get-apps]}
      :db (-> db
              (update-in [:create-app] dissoc :form)
              (assoc-in [:dashboard :alert] {:type "success" :message (str "Requested app creation")})
