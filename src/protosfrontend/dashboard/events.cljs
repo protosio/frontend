@@ -38,8 +38,18 @@
   (fn get-tasks-handler
     [{db :db} _]
     {:dispatch [:http-get {:url (util/createurl ["e" "tasks"])
-                           :on-success [:check-tasks]
+                           :on-success [:get-tasks-success]
                            :on-failure [:dashboard-failure]}]}))
+
+(rf/reg-event-db
+  :get-tasks-success
+  (fn get-tasks-success-handler
+    [db [_ result]]
+    (-> db (assoc-in [:tasks] result)
+           (assoc-in [:apps-tasks] (into {} (map (fn [[id app]]
+                                                     {id (select-keys result
+                                                                      (map keyword (:tasks app)))}))
+                                        (:apps db)) ))))
 
 (rf/reg-event-fx
   :get-task
