@@ -21,8 +21,10 @@
 (defn app-status-color [status]
   (condp = status
    "running"           "green"
-   "missing container" "red"
-   "stopped"           "red"
+   "failed"            "red"
+   "stopped"           "blue"
+   "creating"          "yellow"
+   "unknown"           "gray"
    "blue"))
 
 (defn task-status-color [status]
