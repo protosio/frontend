@@ -60,6 +60,16 @@
     true
     false))
 
+(defn app-creating? [app]
+  (if (some #(= (:status app) %) ["creating"])
+    true
+    false))
+
+(defn apps-creating? [apps]
+  (if (> (count (filter app-creating? (vals apps))) 0)
+    true
+    false))
+
 ;;
 ;; Event debouncer
 ;;
