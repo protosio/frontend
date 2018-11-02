@@ -123,17 +123,19 @@
   :get-apps
   (fn get-apps-handler
     [{db :db} _]
-    {:dispatch [:http-get {:url (util/createurl ["e" "apps"])
-                           :on-success [:save-response [:apps]]
-                           :on-failure [:dashboard-failure]}]}))
+    {:dispatch-n [[:http-get {:url (util/createurl ["e" "apps"])
+                              :on-success [:save-response [:apps]]
+                              :on-failure [:dashboard-failure]}]
+                  [:get-tasks]]}))
 
 (rf/reg-event-fx
   :get-app
   (fn get-app-handler
     [{db :db} [_ app-id]]
-    {:dispatch [:http-get {:url (util/createurl ["e" "apps" app-id])
-                           :on-success [:save-response [:apps (keyword app-id)]]
-                           :on-failure [:dashboard-failure]}]}))
+    {:dispatch-n [[:http-get {:url (util/createurl ["e" "apps" app-id])
+                              :on-success [:save-response [:apps (keyword app-id)]]
+                              :on-failure [:dashboard-failure]}]
+                  [:get-tasks]]}))
 
 (rf/reg-event-fx
   :create-app
