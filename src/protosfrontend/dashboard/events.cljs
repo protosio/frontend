@@ -56,7 +56,7 @@
   (fn get-task-handler
     [{db :db} [_ task-id]]
     {:dispatch [:http-get {:url (util/createurl ["e" "tasks" task-id])
-                           :on-success [:check-task task-id]
+                           :on-success [:save-response [:tasks (keyword task-id)]]
                            :on-failure [:dashboard-failure]}]}))
 
 (rf/reg-event-fx
