@@ -246,23 +246,4 @@
     {:db (-> db
              (assoc-in [:store :installers] result))}))
 
-
-(rf/reg-event-fx
-  :download-installer
-  (fn download-installer-handler
-    [{db :db} [_ id]]
-    (let [installer (get-in db [:store :installers (keyword id)])
-          name (:name installer)
-          version (last (sort (:versions installer)))]
-    {:dispatch [:http-post {:url (util/createurl ["e" "store" "download"])
-                            :on-success [:download-installer-success]
-                            :on-failure [:dashboard-failure]
-                            :post-data {:id id :version version :name name}}]})))
-
-(rf/reg-event-db
-  :download-installer-success
-  (fn download-installer-success-handler
-    [db _]
-    (assoc-in db [:dashboard :alert] {:type "success" :message "Installer  downloaded successfully"})))
-
 )
