@@ -138,11 +138,11 @@
   :create-app-success
   (fn create-app-success-handler
     [{db :db} [_ result]]
-    {:dispatch [:set-active-page :apps-page]
+    {:redirect-to [:apps-page]
      :dispatch-debounce {:id :delayed-get-apps
-                         :timeout 1000
-                         :no-cancel true
-                         :dispatch [:get-apps]}
+                          :timeout 1000
+                          :no-cancel true
+                          :dispatch [:get-apps]}
      :db (-> db
              (update-in [:create-app] dissoc :form)
              (assoc-in [:dashboard :alert] {:type "success" :message (str "Requested app creation")})
@@ -160,7 +160,7 @@
   :remove-app-success
   (fn remove-app-success-handler
     [{db :db} [_ app-id]]
-    {:dispatch [:set-active-page :apps-page]
+    {:redirect-to [:apps-page]
      :db (assoc-in db [:dashboard :alert] {:type "success" :message (str "App " app-id " removed")})}))
 
 (rf/reg-event-fx
@@ -208,7 +208,7 @@
   :remove-resource-success
   (fn remove-resource-success-handler
     [{db :db} _]
-    {:dispatch [:set-active-page :resources-page]}))
+    {:redirect-to [:resources-page]}))
 
 ;; -- App store ------------------------------------------------
 
