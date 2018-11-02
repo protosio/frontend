@@ -157,7 +157,6 @@
                           :dispatch [:get-apps]}
      :db (-> db
              (update-in [:create-app] dissoc :form)
-             (assoc-in [:dashboard :alert] {:type "success" :message (str "Requested app creation")})
              (assoc-in [:tasks (:id result)] result))}))
 
 (rf/reg-event-fx
@@ -172,8 +171,7 @@
   :remove-app-success
   (fn remove-app-success-handler
     [{db :db} [_ app-id]]
-    {:redirect-to [:apps-page]
-     :db (assoc-in db [:dashboard :alert] {:type "success" :message (str "App " app-id " removed")})}))
+    {:redirect-to [:apps-page]}))
 
 (rf/reg-event-fx
   :app-state
