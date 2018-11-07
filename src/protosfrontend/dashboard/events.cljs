@@ -152,12 +152,12 @@
     [{db :db} [_ result]]
     {:redirect-to [:apps-page]
      :dispatch-debounce {:id :delayed-get-apps
-                          :timeout 1000
-                          :no-cancel true
-                          :dispatch [:get-apps]}
+                         :timeout 1000
+                         :no-cancel true
+                         :dispatch [:get-apps]}
      :db (-> db
              (update-in [:create-app] dissoc :form)
-             (assoc-in [:tasks (:id result)] result))}))
+             (assoc-in [:tasks (keyword (:id result))] result))}))
 
 (rf/reg-event-fx
   :remove-app
