@@ -87,7 +87,8 @@
 
 (rf/reg-fx
   :dispatch-debounce
-  (fn [dispatches]
+  (fn dispatch-debounce-handler
+    [dispatches]
     (let [dispatches (if (sequential? dispatches) dispatches [dispatches])]
       (doseq [{:keys [id action dispatch timeout no-cancel]
                :or   {action :dispatch}}
