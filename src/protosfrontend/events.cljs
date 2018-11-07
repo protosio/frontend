@@ -17,20 +17,26 @@
 
 (rf/reg-event-fx
   :initialize
+  [(rf/inject-cofx :cookie/get [:token])]
   (fn initialize
-    [_ _]
+    [{db :db cookies :cookie/get} _]
     {:dispatch-n [[:load-userinfo]
                   [:get-instance-info]]
-     :db {:apps {}
-          :installers {}
-          :tasks {}
-          :store {}
-          :active-page [:dashboard-page]
-          :form-data {}
-          :init-wizard {:step 1}
-          :alert nil
-          :auth {}
-          :loading? false}}))
+     :init-ws (:token cookies)
+     :db (if (:initialized db)
+             db
+             {:apps {}
+               :tasks {}
+               :apps-tasks {}
+               :store {}
+               :active-page [:dashboard-page]
+               :form-data {}
+               :init-wizard {:step 1}
+               :alert nil
+               :ws-connected false
+               :initialized true
+               :auth {}
+               :loading? false})}))
 
 (rf/reg-event-fx
   :noop
