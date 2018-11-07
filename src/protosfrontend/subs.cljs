@@ -97,4 +97,12 @@
         :auth
         :userinfo)))
 
+;; -- WS queries -----------------------------------------------
+
+(rf/reg-sub
+  :ws-connected
+  (fn ws-connected-sub
+    [db _]
+      (:ws-connected db)))
+
 )
