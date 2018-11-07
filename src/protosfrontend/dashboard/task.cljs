@@ -30,12 +30,13 @@
                 [:th "Finished at"]]]
             [:tbody
             (let [tasks @(rf/subscribe [:tasks])]
-              (for [{id :id status :status progress :progress started-at :started-at finished-at :finished-at} (vals tasks)]
+              (for [{id :id name :name status :status progress :progress started-at :started-at finished-at :finished-at} (vals tasks)]
               [:tr {:key id}
                 [:td {:class "text-center"}
                   [:div {:class "avatar d-block bg-white" :style {:background-image "url(/static/images/task-generic.svg)" :background-size "80%"}}]]
                 [:td
-                  [:a {:href (routes/url-for :task-page :id id)} id]]
+                  [:a {:href (routes/url-for :task-page :id id)} name]
+                  [:div {:class "small text-muted"} (str "ID: " id)]]
                 [:td {:class "text-center"}
                   [:span {:class (str "status-icon bg-" (util/task-status-color status))}] (str " " status)]
                 [:td
