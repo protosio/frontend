@@ -32,7 +32,7 @@
           [:div {:class "nav-item d-none d-md-flex"}
             (if ws-connected
               [:i {:class "icon fe fe-cloud-lightning" :title "WebSocket connection established"}]
-              [:i {:class "icon fe fe-cloud-off" :title "WebSocket connection not active"}])]
+              [:i {:class "icon fe fe-cloud-off" :title "WebSocket connection not active (manual refresh needed)"}])]
           [:span {:class "icon" :style {:background-image "url(/static/images/user-generic.png)"}}]
           [:div {:class "dropdown"}
             [:a {:class "nav-link pr-0 leading-none" :data-toggle "dropdown" :href "#"}
