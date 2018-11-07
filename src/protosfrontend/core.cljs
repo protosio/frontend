@@ -26,8 +26,8 @@
   (reagent/render [v/current-page] (.getElementById js/document "protos")))
 
 (defn init! []
-  (rf/dispatch-sync [:initialize])
   (routes/start!)
+  (rf/dispatch-sync [:initialize])
   (mount-root))
 
 (init!)
