@@ -29,7 +29,9 @@
                  [binaryage/devtools "0.9.10"]
                  [org.clojars.stumitchell/clairvoyant "0.2.1"]
                  [day8/re-frame-tracer "0.1.1-SNAPSHOT"]
-                 [com.andrewmcveigh/cljs-time "0.5.2"]]
+                 [com.andrewmcveigh/cljs-time "0.5.2"]
+                 [jarohen/chord "0.8.1"]
+                 [com.cemerick/url "0.1.1"]]
 
   :plugins [[lein-cljsbuild "1.1.7"]
             [lein-figwheel "0.5.16"]]
