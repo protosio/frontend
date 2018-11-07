@@ -9,6 +9,7 @@
             [protosfrontend.events :as e]
             [protosfrontend.subs]
             [protosfrontend.views :as v]
+            [protosfrontend.ws :as ws]
             [auth.subs]
             [auth.events]
             [init.subs]
