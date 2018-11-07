@@ -38,50 +38,51 @@
   (fn get-tasks-handler
     [{db :db} _]
     {:dispatch [:http-get {:url (util/createurl ["e" "tasks"])
-                           :on-success [:get-tasks-success]
+                           :on-success [:save-tasks]
                            :on-failure [:dashboard-failure]}]}))
 
+(rf/reg-event-fx
+  :save-tasks
+  (fn save-tasks-handler
+    [{db :db} [_ result]]
+    {:db (assoc-in db [:tasks] result)
+     :dispatch [:map-tasks-to-apps result]}))
+
 (rf/reg-event-db
-  :get-tasks-success
-  (fn get-tasks-success-handler
-    [db [_ result]]
-    (-> db (assoc-in [:tasks] result)
-           (assoc-in [:apps-tasks] (into {} (map (fn [[id app]]
-                                                     {id (select-keys result
-                                                                      (map keyword (:tasks app)))}))
-                                        (:apps db)) ))))
+  :map-tasks-to-apps
+  (fn map-tasks-to-apps-handler
+    [db [_ tasks]]
+    (assoc-in db [:apps-tasks] (into {}
+                                     (map (fn [[id app]]
+                                              {id (select-keys tasks
+                                                               (map keyword (:tasks app)))}))
+                                     (:apps db)))))
 
 (rf/reg-event-fx
   :get-task
   (fn get-task-handler
     [{db :db} [_ task-id]]
     {:dispatch [:http-get {:url (util/createurl ["e" "tasks" task-id])
-                           :on-success [:save-response [:tasks (keyword task-id)]]
+                           :on-success [:save-task (keyword task-id)]
                            :on-failure [:dashboard-failure]}]}))
 
 (rf/reg-event-fx
-  :check-tasks
-  (fn check-tasks-handler
-    [{db :db} [_ tasks]]
-    (let [tasks-unfinished? (util/tasks-unfinished? tasks)
-          result {:db (assoc db :tasks tasks)}]
-          (if tasks-unfinished?
-            (assoc result :dispatch-debounce {:id :get-tasks-future
-                                              :timeout 2000
-                                              :dispatch [:get-tasks]})
-            result))))
-
-(rf/reg-event-fx
-  :check-task
-  (fn check-task-handler
+  :save-task
+  (fn save-task-handler
     [{db :db} [_ task-id task]]
-    (let [task-unfinished? (util/task-unfinished? task)
-          result {:db (assoc-in db [:tasks (keyword task-id)] task)}]
-          (if task-unfinished?
-            (assoc result :dispatch-debounce {:id (keyword (str "get-task-" task-id))
-                                              :timeout 2000
-                                              :dispatch [:get-task task-id]})
-            result))))
+    {:db (assoc-in db [:tasks task-id] task)
+     :dispatch [:map-task-to-apps task-id task]}))
+
+(rf/reg-event-db
+  :map-task-to-apps
+  (fn map-task-to-apps-handler
+    [db [_ task-id task]]
+    (reduce (fn [db' [app-id tasks]]
+                (if (some #(= task-id %) (keys tasks))
+                    (assoc-in db' [:apps-tasks app-id task-id] task)
+                    db'))
+            db
+            (:apps-tasks db))))
 
 ;; -- Installers -----------------------------------------------
 
@@ -133,9 +134,23 @@
   (fn get-app-handler
     [{db :db} [_ app-id]]
     {:dispatch-n [[:http-get {:url (util/createurl ["e" "apps" app-id])
-                              :on-success [:save-response [:apps (keyword app-id)]]
+                              :on-success [:save-app (keyword app-id)]
                               :on-failure [:dashboard-failure]}]
                   [:get-tasks]]}))
+
+(rf/reg-event-fx
+  :save-app
+  (fn save-app-handler
+    [{db :db} [_ app-id app]]
+    {:db (assoc-in db [:apps app-id] app)
+     :dispatch [:map-app-tasks app-id (:tasks app)]}))
+
+(rf/reg-event-db
+  :map-app-tasks
+  (fn map-app-tasks-handler
+    [db [_ app-id tasks-ids]]
+    (assoc-in db [:apps-tasks app-id] (merge (zipmap (map keyword tasks-ids) (repeat {}))
+                                             (get-in db [:apps-tasks app-id])))))
 
 (rf/reg-event-fx
   :create-app
