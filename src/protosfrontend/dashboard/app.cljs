@@ -82,8 +82,7 @@
               [:div {:class "btn-list"}
                 [buttons/submit-button "Start" [:app-state id "start"] "outline-success btn-sm" loading?]
                 [buttons/submit-button "Stop" [:app-state id "stop"] "outline-primary btn-sm" loading?]
-                [buttons/submit-button "Remove" [:remove-app id] "danger btn-sm" loading?]
-                [buttons/submit-button [:i {:class "fe fe-refresh-ccw"}] [:get-app id] "outline-primary btn-sm btn-icon" loading?]]]]
+                [buttons/submit-button "Remove" [:remove-app id] "danger btn-sm" loading?]]]]
           [alerts/for-card [:alert-dashboard]]
           [:div {:class "card-body"}
             [:div {:class "row"}
