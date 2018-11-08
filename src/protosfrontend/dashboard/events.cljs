@@ -110,14 +110,6 @@
                            :on-success [:save-response [:installers]]
                            :on-failure [:dashboard-failure]}]}))
 
-(rf/reg-event-fx
-  :remove-installer
-  (fn remove-installer-handler
-    [{db :db} [_ installer-id]]
-    {:dispatch [:http-delete {:url (util/createurl ["e" "installers" installer-id])
-                              :response-format :raw
-                              :on-success [:set-active-page [:installers-page] [:get-installers]]}]}))
-
 ;; -- Apps -----------------------------------------------------
 
 (rf/reg-event-fx
