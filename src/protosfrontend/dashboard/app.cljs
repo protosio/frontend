@@ -33,7 +33,7 @@
                     :let [app-tasks (app-id apps-tasks)
                           last-task (last (vals app-tasks))
                           progress (:progress last-task)]]
-                [:tr {:key app-id}
+                [:tr {:key app-id :style {:cursor "pointer"} :on-click #(rf/dispatch [:navigate-to [:app-page :id id]])}
                   [:td {:class "text-center"}
                     [:div {:class "avatar d-block bg-white" :style {:background-image "url(/static/images/app-generic.svg)" :background-size "80%"}}
                       [:span {:class (str "avatar-status bg-" (util/app-status-color status))}]]]

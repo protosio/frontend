@@ -31,7 +31,7 @@
             [:tbody
             (let [tasks @(rf/subscribe [:tasks])]
               (for [{id :id name :name status :status progress :progress started-at :started-at finished-at :finished-at} (vals tasks)]
-              [:tr {:key id}
+              [:tr {:key id :style {:cursor "pointer"} :on-click #(rf/dispatch [:navigate-to [:task-page :id id]])}
                 [:td {:class "text-center"}
                   [:div {:class "avatar d-block bg-white" :style {:background-image "url(/static/images/task-generic.svg)" :background-size "80%"}}]]
                 [:td

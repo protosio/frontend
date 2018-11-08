@@ -33,14 +33,13 @@
         [:div {:class "row"}
         (let [installers @(rf/subscribe [:store-installers])]
           (for [[id {name :name versions :versions}] (seq installers)]
-          [:div {:key id :class "col-sm-4"}
+          [:div {:key id :class "col-sm-4" :style {:cursor "pointer"} :on-click #(rf/dispatch [:navigate-to [:store-installer-page :id id]])}
             [:div {:class "card p-3"}
               [:div {:class "d-flex align-items-center"}
                 [:img {:class "d-flex mr-3 rounded" :src "/static/images/installer-generic.svg" :alt name :width "25%"}]
                 [:div
                   [:h6 {:class "m-0"} [:a {:href (routes/url-for :store-installer-page :id id)} name]]
                   [:small {:class "text-muted"} (util/trunc (:description (get versions (last (sort (keys versions))))) 60)]]]]]))]]]])
-
 
 (defn install-app [name metadata]
   [:div {:class "card-body"}

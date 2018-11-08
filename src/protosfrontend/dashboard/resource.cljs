@@ -28,7 +28,7 @@
             [:tbody
           (let [resources @(rf/subscribe [:resources])]
             (for [{type :type id :id status :status app-id :app} (vals resources)]
-              [:tr {:key id}
+              [:tr {:key id :style {:cursor "pointer"} :on-click #(rf/dispatch [:navigate-to [:resource-page :id id]])}
                 [:td {:class "text-center"}
                   [:div {:class "avatar d-block bg-white" :style {:background-image "url(/static/images/resource-generic.svg)" :background-size "80%"}}]]
                 [:td
