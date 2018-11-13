@@ -6,6 +6,10 @@
     [re-frame.loggers   :refer [console]]
     [cljs-time.format   :as timeformat]))
 
+(defn fmap
+  [f m]
+  (into (empty m) (for [[k v] m] [k (f v)])))
+
 (defn createurl [urlkeys]
     (str "/api/v1/" (string/join "/" (flatten [urlkeys]))))
 
