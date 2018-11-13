@@ -158,10 +158,6 @@
   (fn create-app-success-handler
     [{db :db} [_ result]]
     {:redirect-to [:apps-page]
-     :dispatch-debounce {:id :delayed-get-apps
-                         :timeout 1000
-                         :no-cancel true
-                         :dispatch [:get-apps]}
      :db (-> db
              (update-in [:create-app] dissoc :form)
              (assoc-in [:tasks (keyword (:id result))] result))}))
