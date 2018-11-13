@@ -4,7 +4,7 @@
     [re-frame.core      :as rf]
     [re-frame.router    :as router]
     [re-frame.loggers   :refer [console]]
-    [cljs-time.format   :as timeformat]))
+    [cljs-time.format   :as tf]))
 
 (defn fmap
   [f m]
@@ -48,8 +48,13 @@
 
 (defn shorten-time [time]
   (if time
-    (timeformat/unparse (timeformat/formatters :date-hour-minute-second-fraction) (timeformat/parse (timeformat/formatter "yyyy-MM-dd'T'HH:mm:ss'.'SSS'Z'") time))
+    (tf/unparse (tf/formatters :date-hour-minute-second-fraction) (tf/parse (tf/formatter :basic-date-time) time))
     "n/a"))
+
+(defn time-str [time]
+  (if time
+    (tf/unparse (tf/formatters :date-hour-minute-second-fraction) time)
+    nil))
 
 (defn trunc [s n]
   (str (subs s 0 (min (count s) n)) "..."))
@@ -73,6 +78,15 @@
   (if (> (count (filter app-creating? (vals apps))) 0)
     true
     false))
+
+(defn replace-time-in-task [task]
+  (let [started-at (tf/parse (tf/formatters :basic-date-time) (:started-at task))
+        finished-at (if (:finished-at task)
+                        (tf/parse (tf/formatters :basic-date-time) (:started-at task))
+                        nil)]
+       (-> task
+           (assoc :started-at started-at)
+           (assoc :finished-at finished-at))))
 
 ;;
 ;; Event debouncer
