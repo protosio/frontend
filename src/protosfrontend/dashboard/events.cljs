@@ -185,15 +185,18 @@
   (fn app-state-handler
     [{db :db} [_ app-id state]]
     {:dispatch [:http-post {:url (util/createurl ["e" "apps" app-id "action"])
-                            :on-success [:app-state-success app-id state]
+                            :on-success [:app-state-success (keyword app-id)]
                             :on-failure [:dashboard-failure]
                             :post-data {:name state}}]}))
 
 (rf/reg-event-fx
   :app-state-success
   (fn app-state-success-handler
-    [{db :db} [_ app-id state]]
-    {:dispatch [:get-app app-id]}))
+    [{db :db} [_ app-id task]]
+    (let [task-id (keyword (:id task))]
+         {:db (-> db
+                  (assoc-in [:tasks task-id] task)
+                  (assoc-in [:apps-tasks app-id task-id] task))})))
 
 ;; -- Resources ------------------------------------------------
 
