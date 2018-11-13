@@ -50,9 +50,9 @@
                           :style {:width (str (:percentage progress) "%")}
                           :role "progressbar"}]]]
                 [:td
-                  [:div started-at]]
+                  [:div (util/time-str started-at)]]
                 [:td
-                  [:div finished-at]]]))]]]]]]])
+                  [:div (util/time-str finished-at)]]]))]]]]]]])
 
 (defn task-page [id]
   [:div {:class "container"}
@@ -85,10 +85,10 @@
                          :role "progressbar"}]]]]
             [:div {:class "row"}
               [:div {:class "col-2"} [:strong "Start time:"]]
-              [:div {:class "col-5"} started-at]]
+              [:div {:class "col-5"} (util/time-str started-at)]]
             [:div {:class "row"}
               [:div {:class "col-2"} [:strong "End time:"]]
-              [:div {:class "col-5"} finished-at]]
+              [:div {:class "col-5"} (util/time-str finished-at)]]
             [:div {:class "row"}
               [:div {:class "col-2"} [:strong "Status message:"]]
               [:div {:class "col-5"} (:state progress)]]]])]]])

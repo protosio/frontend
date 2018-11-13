@@ -45,8 +45,9 @@
   :save-tasks
   (fn save-tasks-handler
     [{db :db} [_ result]]
-    {:db (assoc-in db [:tasks] result)
-     :dispatch [:map-tasks-to-apps result]}))
+    (let [tasks (util/fmap util/replace-time-in-task result)]
+          {:db (assoc-in db [:tasks] tasks)
+           :dispatch [:map-tasks-to-apps tasks]})))
 
 (rf/reg-event-db
   :map-tasks-to-apps
@@ -70,8 +71,9 @@
   :save-task
   (fn save-task-handler
     [{db :db} [_ task-id task]]
-    {:db (assoc-in db [:tasks task-id] task)
-     :dispatch [:map-task-to-apps task-id task]}))
+    (let [ftask (util/replace-time-in-task task)]
+         {:db (assoc-in db [:tasks task-id] ftask)
+          :dispatch [:map-task-to-apps task-id ftask]})))
 
 (rf/reg-event-db
   :map-task-to-apps
