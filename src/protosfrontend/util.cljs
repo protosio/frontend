@@ -4,6 +4,7 @@
     [re-frame.core      :as rf]
     [re-frame.router    :as router]
     [re-frame.loggers   :refer [console]]
+    [cljs-time.core     :as tc]
     [cljs-time.format   :as tf]))
 
 (defn fmap
@@ -79,14 +80,31 @@
     true
     false))
 
+;;
+;; Task helpers
+;;
+
 (defn replace-time-in-task [task]
   (let [started-at (tf/parse (tf/formatters :basic-date-time) (:started-at task))
         finished-at (if (:finished-at task)
-                        (tf/parse (tf/formatters :basic-date-time) (:started-at task))
+                        (tf/parse (tf/formatters :basic-date-time) (:finished-at task))
                         nil)]
        (-> task
            (assoc :started-at started-at)
            (assoc :finished-at finished-at))))
+
+(defn sort-tasks [tasks]
+  (into (sorted-map-by (fn [id1 id2]
+                           (let [task1 (get-in tasks [id1 :started-at])
+                                 task2 (get-in tasks [id2 :started-at])]
+                                 (cond
+                                   (= id1 id2) 0
+                                   (nil? task1) 1
+                                   (nil? task2) -1
+                                   (tc/before? task1 task2) 1
+                                   (tc/equal? task1 task2) 0
+                                   :else -1))))
+        tasks))
 
 ;;
 ;; Event debouncer
