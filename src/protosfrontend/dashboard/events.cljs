@@ -45,9 +45,10 @@
   :save-tasks
   (fn save-tasks-handler
     [{db :db} [_ result]]
-    (let [tasks (util/fmap util/replace-time-in-task result)]
-          {:db (assoc-in db [:tasks] tasks)
-           :dispatch [:map-tasks-to-apps tasks]})))
+    (let [tasks (util/fmap util/replace-time-in-task result)
+          sorted-tasks (util/sort-tasks tasks)]
+          {:db (assoc-in db [:tasks] sorted-tasks)
+           :dispatch [:map-tasks-to-apps sorted-tasks]})))
 
 (rf/reg-event-db
   :map-tasks-to-apps
@@ -70,10 +71,13 @@
 (rf/reg-event-fx
   :save-task
   (fn save-task-handler
-    [{db :db} [_ task-id task]]
-    (let [ftask (util/replace-time-in-task task)]
-         {:db (assoc-in db [:tasks task-id] ftask)
-          :dispatch [:map-task-to-apps task-id ftask]})))
+    [{db :db} [_ task-id task app-id]]
+    (let [ftask (util/replace-time-in-task task)
+          sorted-tasks (util/sort-tasks (assoc (:tasks db) task-id ftask))
+          res {:db (assoc db :tasks sorted-tasks)}]
+         (if app-id
+          (assoc-in res [:db :apps-tasks app-id task-id] ftask)
+          (assoc res :dispatch [:map-task-to-apps task-id ftask])))))
 
 (rf/reg-event-db
   :map-task-to-apps
@@ -161,8 +165,8 @@
     [{db :db} [_ result]]
     {:redirect-to [:apps-page]
      :db (-> db
-             (update-in [:create-app] dissoc :form)
-             (assoc-in [:tasks (keyword (:id result))] result))}))
+             (update-in [:create-app] dissoc :form))
+     :dispatch [:save-task (keyword (:id result)) result]}))
 
 (rf/reg-event-fx
   :remove-app
@@ -192,9 +196,7 @@
   (fn app-state-success-handler
     [{db :db} [_ app-id task]]
     (let [task-id (keyword (:id task))]
-         {:db (-> db
-                  (assoc-in [:tasks task-id] task)
-                  (assoc-in [:apps-tasks app-id task-id] task))})))
+         {:dispatch [:save-task task-id task app-id]})))
 
 ;; -- Resources ------------------------------------------------
 
