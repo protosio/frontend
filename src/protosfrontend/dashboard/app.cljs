@@ -88,26 +88,28 @@
             [:div {:class "row"}
               [:div {:class "col-6"}
                 [:div {:class "row"}
-                  [:div {:class "col-2"} [:strong "ID:"]]
-                  [:div {:class "col-4"} (:id app)]]
+                  [:div {:class "col-4"} [:strong "ID:"]]
+                  [:div {:class "col-8"} (:id app)]]
                 [:div {:class "row"}
-                  [:div {:class "col-2"} [:strong "Installer ID:"]]
-                  [:div {:class "col-5"} (:installer-id app)]]
+                  [:div {:class "col-4"} [:strong "Installer ID:"]]
+                  [:div {:class "col-8"} (:installer-id app)]]
                 [:div {:class "row"}
-                  [:div {:class "col-2"} [:strong "Status:"]]
-                  [:div {:class "col-5"} (:status app)]]]
+                  [:div {:class "col-4"} [:strong "Status:"]]
+                  [:div {:class "col-8"} (:status app)]]]
               [:div {:class "col-6"}
                 [:div {:class "row"} [:strong "Tasks"]]
-                [:div {:class "list-group list-group-transparent mb-0"}
-                (for [{id :id name :name status :status progress :progress} (vals tasks)]
-                  [:div {:key id :class "row list-group-item list-group-item-action"} [:span {:class (str "status-icon bg-" (util/task-status-color status))}] name
-                    [:div {:class "col-4 mb-2"}
-                      [:div {:class "clearfix"} [:div {:class "float-left"} [:strong (str (:percentage progress) "%")]]]
-                      [:div {:class "progress progress-xs"}
-                        [:div {:class "progress-bar bg-green"
-                               :aria-valuemax "100"
-                               :aria-valuemin "0"
-                               :aria-valuenow (:percentage progress)
-                               :style {:width (str (:percentage progress) "%")}
-                               :role "progressbar"}]]]])]]]]])]]])
-
+                [:ul {:class "timeline"}
+                (for [[id {name :name status :status progress :progress finished-at :finished-at}] tasks]
+                  [:li {:key id :class "timeline-item"}
+                    [:div {:class (str "timeline-badge bg-" (util/task-status-color status))}] [:a {:href (routes/url-for :task-page :id id)} name]
+                    (if finished-at
+                      [:div {:class "timeline-time"} (util/time-str finished-at)]
+                      [:div {:class "timeline-time col-2"}
+                        [:div {:class "clearfix"} [:div {:class "float-left"} [:strong (str (:percentage progress) "%")]]]
+                        [:div {:class "progress progress-xs"}
+                          [:div {:class "progress-bar bg-green"
+                                 :aria-valuemax "100"
+                                 :aria-valuemin "0"
+                                 :aria-valuenow (:percentage progress)
+                                 :style {:width (str (:percentage progress) "%")}
+                                 :role "progressbar"}]]])])]]]]])]]])
