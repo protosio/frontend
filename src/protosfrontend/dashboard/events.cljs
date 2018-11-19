@@ -2,6 +2,7 @@
     (:require
         [ajax.core :as ajax]
         [re-frame.core :as rf]
+        [linked.core :as linked]
         [day8.re-frame.http-fx]
         [protosfrontend.util :as util]
         [com.smxemail.re-frame-cookie-fx]
@@ -46,19 +47,8 @@
   (fn save-tasks-handler
     [{db :db} [_ result]]
     (let [tasks (util/fmap util/replace-time-in-task result)
-          sorted-tasks (util/sort-tasks tasks)]
-          {:db (assoc-in db [:tasks] sorted-tasks)
-           :dispatch [:map-tasks-to-apps sorted-tasks]})))
-
-(rf/reg-event-db
-  :map-tasks-to-apps
-  (fn map-tasks-to-apps-handler
-    [db [_ tasks]]
-    (assoc-in db [:apps-tasks] (into {}
-                                     (map (fn [[id app]]
-                                              {id (select-keys tasks
-                                                               (map keyword (:tasks app)))}))
-                                     (:apps db)))))
+          sorted-tasks (into (linked/map) (util/sort-tasks tasks))]
+          {:db (assoc db :tasks sorted-tasks)})))
 
 (rf/reg-event-fx
   :get-task
@@ -71,24 +61,13 @@
 (rf/reg-event-fx
   :save-task
   (fn save-task-handler
-    [{db :db} [_ task-id task app-id]]
-    (let [ftask (util/replace-time-in-task task)
-          sorted-tasks (util/sort-tasks (assoc (:tasks db) task-id ftask))
-          res {:db (assoc db :tasks sorted-tasks)}]
-         (if app-id
-          (assoc-in res [:db :apps-tasks app-id task-id] ftask)
-          (assoc res :dispatch [:map-task-to-apps task-id ftask])))))
-
-(rf/reg-event-db
-  :map-task-to-apps
-  (fn map-task-to-apps-handler
-    [db [_ task-id task]]
-    (reduce (fn [db' [app-id tasks]]
-                (if (some #(= task-id %) (keys tasks))
-                    (assoc-in db' [:apps-tasks app-id task-id] task)
-                    db'))
-            db
-            (:apps-tasks db))))
+    [{db :db} [_ task-id result]]
+    (let [task (util/replace-time-in-task result)
+          res {:db (assoc-in db [:tasks task-id] task)}]
+         (reduce (fn [db' app-id]
+                     (assoc-in db' [:apps app-id :tasks] task))
+                 res
+                 (:apps res)))))
 
 ;; -- Installers -----------------------------------------------
 
@@ -122,10 +101,17 @@
   :get-apps
   (fn get-apps-handler
     [{db :db} _]
-    {:dispatch-n [[:http-get {:url (util/createurl ["e" "apps"])
-                              :on-success [:save-response [:apps]]
-                              :on-failure [:dashboard-failure]}]
-                  [:get-tasks]]}))
+    {:dispatch [:http-get {:url (util/createurl ["e" "apps"])
+                           :on-success [:save-apps]
+                           :on-failure [:dashboard-failure]}]}))
+
+(rf/reg-event-fx
+  :save-apps
+  (fn save-apps-handler
+    [{db :db} [_ result]]
+    {:dispatch-n (into [] (map (fn [[app-id app]]
+                                   [:save-app app-id app])
+                               result))}))
 
 (rf/reg-event-fx
   :get-app
@@ -133,22 +119,16 @@
     [{db :db} [_ app-id]]
     {:dispatch-n [[:http-get {:url (util/createurl ["e" "apps" app-id])
                               :on-success [:save-app (keyword app-id)]
-                              :on-failure [:dashboard-failure]}]
-                  [:get-tasks]]}))
+                              :on-failure [:dashboard-failure]}]]}))
 
 (rf/reg-event-fx
   :save-app
   (fn save-app-handler
-    [{db :db} [_ app-id app]]
-    {:db (assoc-in db [:apps app-id] app)
-     :dispatch [:map-app-tasks app-id (:tasks app)]}))
-
-(rf/reg-event-db
-  :map-app-tasks
-  (fn map-app-tasks-handler
-    [db [_ app-id tasks-ids]]
-    (assoc-in db [:apps-tasks app-id] (merge (zipmap (map keyword tasks-ids) (repeat {}))
-                                             (get-in db [:apps-tasks app-id])))))
+    [{db :db} [_ app-id result]]
+    (let [tasks (util/fmap util/replace-time-in-task (:tasks result))
+          sorted-tasks (into (linked/map) (util/sort-tasks tasks))
+          app (assoc result :tasks sorted-tasks)]
+         {:db (assoc-in db [:apps app-id] app)})))
 
 (rf/reg-event-fx
   :create-app
@@ -173,14 +153,15 @@
   (fn remove-app-handler
     [{db :db} [_ app-id]]
     {:dispatch [:http-delete {:url (util/createurl ["e" "apps" app-id])
-                              :on-success [:remove-app-success app-id]
+                              :on-success [:remove-app-success (keyword app-id)]
                               :on-failure [:dashboard-failure]}]}))
 
 (rf/reg-event-fx
   :remove-app-success
   (fn remove-app-success-handler
     [{db :db} [_ app-id]]
-    {:redirect-to [:apps-page]}))
+    {:db (update-in db [:apps] dissoc app-id)
+     :redirect-to [:apps-page]}))
 
 (rf/reg-event-fx
   :app-state
@@ -196,7 +177,7 @@
   (fn app-state-success-handler
     [{db :db} [_ app-id task]]
     (let [task-id (keyword (:id task))]
-         {:dispatch [:save-task task-id task app-id]})))
+         {:dispatch [:save-task task-id task]})))
 
 ;; -- Resources ------------------------------------------------
 
