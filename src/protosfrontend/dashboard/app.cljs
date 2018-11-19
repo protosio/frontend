@@ -27,11 +27,9 @@
                 [:th {:class "text-center"}
                   [:i {:class "fe fe-settings"}]]]]
             [:tbody
-            (let [apps @(rf/subscribe [:apps])
-                  apps-tasks @(rf/subscribe [:apps-tasks])]
+            (let [apps @(rf/subscribe [:apps])]
               (for [[app-id {name :name status :status id :id tasks :tasks}] apps
-                    :let [app-tasks (app-id apps-tasks)
-                          last-task (last (vals app-tasks))
+                    :let [last-task (last (vals tasks))
                           progress (:progress last-task)]]
                 [:tr {:key app-id}
                   [:td {:class "text-center"}
@@ -71,7 +69,6 @@
     [:div {:class "row row-cards row-deck"}
       [:div {:class "col-12"}
         (let [app @(rf/subscribe [:app (keyword id)])
-              tasks @(rf/subscribe [:app-tasks (keyword id)])
               loading? @(rf/subscribe [:loading?])]
         [:div {:class "card"}
           [:div {:class "card-header"}
@@ -99,7 +96,7 @@
               [:div {:class "col-6"}
                 [:div {:class "row"} [:strong "Tasks"]]
                 [:ul {:class "timeline"}
-                (for [[id {name :name status :status progress :progress finished-at :finished-at}] tasks]
+                (for [[id {name :name status :status progress :progress finished-at :finished-at}] (rseq (:tasks app))]
                   [:li {:key id :class "timeline-item"}
                     [:div {:class (str "timeline-badge bg-" (util/task-status-color status))}] [:a {:href (routes/url-for :task-page :id id)} name]
                     (if finished-at

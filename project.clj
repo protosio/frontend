@@ -31,7 +31,8 @@
                  [day8/re-frame-tracer "0.1.1-SNAPSHOT"]
                  [com.andrewmcveigh/cljs-time "0.5.2"]
                  [jarohen/chord "0.8.1"]
-                 [com.cemerick/url "0.1.1"]]
+                 [com.cemerick/url "0.1.1"]
+                 [frankiesardo/linked "1.3.0"]]
 
   :plugins [[lein-cljsbuild "1.1.7"]
             [lein-figwheel "0.5.16"]]

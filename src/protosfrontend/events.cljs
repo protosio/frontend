@@ -3,6 +3,7 @@
       [clojure.string :as string]
       [ajax.core :as ajax]
       [re-frame.core :as rf]
+      [linked.core :as linked]
       [day8.re-frame.http-fx]
       [protosfrontend.util :as util]
       [com.smxemail.re-frame-cookie-fx]
@@ -26,17 +27,16 @@
      :db (if (:initialized db)
              db
              {:apps {}
-               :tasks {}
-               :apps-tasks {}
-               :store {}
-               :active-page [:dashboard-page]
-               :form-data {}
-               :init-wizard {:step 1}
-               :alert nil
-               :ws-connected false
-               :initialized true
-               :auth {}
-               :loading? false})}))
+              :tasks (linked/map)
+              :store {}
+              :active-page [:dashboard-page]
+              :form-data {}
+              :init-wizard {:step 1}
+              :alert nil
+              :ws-connected false
+              :initialized true
+              :auth {}
+              :loading? false})}))
 
 (rf/reg-event-fx
   :noop

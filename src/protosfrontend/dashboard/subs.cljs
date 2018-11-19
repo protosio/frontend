@@ -64,27 +64,13 @@
   :tasks
   (fn tasks-sub
     [db _]
-    (:tasks db)))
+    (rseq (:tasks db))))
 
 (rf/reg-sub
   :task
   (fn task-sub
     [db [_ id]]
-    (-> db
-        :tasks
-        id)))
-
-(rf/reg-sub
-  :apps-tasks
-  (fn apps-tasks-sub
-    [db _]
-    (:apps-tasks db)))
-
-(rf/reg-sub
-  :app-tasks
-  (fn app-tasks-sub
-    [db [_ id]]
-    (get-in db [:apps-tasks id])))
+    (get-in db [:tasks id])))
 
 (rf/reg-sub
   :resources
