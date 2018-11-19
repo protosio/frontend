@@ -1,11 +1,11 @@
 (ns protosfrontend.util
   (:require
-    [clojure.string :as string]
-    [re-frame.core      :as rf]
-    [re-frame.router    :as router]
-    [re-frame.loggers   :refer [console]]
-    [cljs-time.core     :as tc]
-    [cljs-time.format   :as tf]))
+    [clojure.string   :as string]
+    [re-frame.core    :as rf]
+    [re-frame.router  :as router]
+    [re-frame.loggers :refer [console]]
+    [cljs-time.core   :as tc]
+    [cljs-time.format :as tf]))
 
 (defn fmap
   [f m]
@@ -101,9 +101,9 @@
                                    (= id1 id2) 0
                                    (nil? task1) 1
                                    (nil? task2) -1
-                                   (tc/before? task1 task2) 1
-                                   (tc/equal? task1 task2) 0
-                                   :else -1))))
+                                   (tc/before? task1 task2) -1
+                                   (tc/after? task1 task2) 1
+                                   :else 0))))
         tasks))
 
 ;;
