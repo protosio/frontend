@@ -85,20 +85,20 @@
           [alerts/for-card [:alert-dashboard]]
           [:div {:class "card-body"}
             [:div {:class "row"}
-              [:div {:class "col-6"}
+              [:div {:class "col-lg-6"}
                 [:div {:class "row"}
-                  [:div {:class "col-4"} [:strong "ID:"]]
-                  [:div {:class "col-8"} (:id app)]]
+                  [:div {:class "col-sm-4"} [:strong "ID:"]]
+                  [:div {:class "col-sm-8"} (:id app)]]
                 [:div {:class "row"}
-                  [:div {:class "col-4"} [:strong "Installer ID:"]]
-                  [:div {:class "col-8"} (:installer-id app)]]
+                  [:div {:class "col-sm-4"} [:strong "Installer ID:"]]
+                  [:div {:class "col-sm-8"} (:installer-id app)]]
                 [:div {:class "row"}
-                  [:div {:class "col-4"} [:strong "Status:"]]
-                  [:div {:class "col-8"} [:span {:class (str "tag tag-rounded tag-" (util/app-status-color (:status app)))} (:status app)]]]
+                  [:div {:class "col-sm-4"} [:strong "Status:"]]
+                  [:div {:class "col-sm-8"} [:span {:class (str "tag tag-rounded tag-" (util/app-status-color (:status app)))} (:status app)]]]
                 [:div {:class "row"}
-                  [:div {:class "col-4"} [:strong "IP:"]]
-                  [:div {:class "col-8"} (:ip app)]]]
-              [:div {:class "col-6"}
+                  [:div {:class "col-sm-4"} [:strong "IP:"]]
+                  [:div {:class "col-sm-8"} (:ip app)]]]
+              [:div {:class "col-lg-6"}
                 [:div {:class "row"} [:strong "Tasks"]]
                 [:ul {:class "timeline"}
                 (for [[id {name :name status :status progress :progress finished-at :finished-at}] (rseq (:tasks app))]

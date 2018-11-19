@@ -70,32 +70,34 @@
           [alerts/for-card [:alert-dashboard]]
           [:div {:class "card-body"}
             [:div {:class "row"}
-              [:div {:class "col-2"} [:strong "ID:"]]
-              [:div {:class "col-5"} id]]
-            [:div {:class "row"}
-              [:div {:class "col-2"} [:strong "Status:"]]
-              [:div {:class "col-5"} [:span {:class (str "status-icon bg-" (util/task-status-color status))}] (str " " status)]]
-            [:div {:class "row"}
-              [:div {:class "col-2"} [:strong "Progress:"]]
-              [:div {:class "col-5 mb-2"}
-                [:div {:class "clearfix"} [:div {:class "float-left"} [:strong (str (:percentage progress) "%")]]]
-                [:div {:class "progress progress-xs"}
-                  [:div {:class "progress-bar bg-green"
-                         :aria-valuemax "100"
-                         :aria-valuemin "0"
-                         :aria-valuenow (:percentage progress)
-                         :style {:width (str (:percentage progress) "%")}
-                         :role "progressbar"}]]]]
-            [:div {:class "row"}
-              [:div {:class "col-2"} [:strong "Start time:"]]
-              [:div {:class "col-5"} (util/time-str started-at)]]
-            [:div {:class "row"}
-              [:div {:class "col-2"} [:strong "End time:"]]
-              [:div {:class "col-5"} (util/time-str finished-at)]]
-            [:div {:class "row"}
-              [:div {:class "col-2"} [:strong "Duration:"]]
-              [:div {:class "col-5"} (util/formatted-interval started-at finished-at)]]
-            [:div {:class "row"}
-              [:div {:class "col-2"} [:strong "Status message:"]]
-              [:div {:class "col-5"} (:state progress)]]]])]]])
+              [:div {:class "col-lg-6"}
+                [:div {:class "row"}
+                  [:div {:class "col-sm-4"} [:strong "ID:"]]
+                  [:div {:class "col-sm-8"} id]]
+                [:div {:class "row"}
+                  [:div {:class "col-sm-4"} [:strong "Status:"]]
+                  [:div {:class "col-sm-8"} [:span {:class (str "status-icon bg-" (util/task-status-color status))}] (str " " status)]]
+                [:div {:class "row"}
+                  [:div {:class "col-sm-4"} [:strong "Progress:"]]
+                  [:div {:class "col-sm-8 mb-2"}
+                    [:div {:class "clearfix"} [:div {:class "float-left"} [:strong (str (:percentage progress) "%")]]]
+                    [:div {:class "progress progress-xs"}
+                      [:div {:class "progress-bar bg-green"
+                             :aria-valuemax "100"
+                             :aria-valuemin "0"
+                             :aria-valuenow (:percentage progress)
+                             :style {:width (str (:percentage progress) "%")}
+                             :role "progressbar"}]]]]
+                [:div {:class "row"}
+                  [:div {:class "col-sm-4"} [:strong "Start time:"]]
+                  [:div {:class "col-sm-8"} (util/time-str started-at)]]
+                [:div {:class "row"}
+                  [:div {:class "col-sm-4"} [:strong "End time:"]]
+                  [:div {:class "col-sm-8"} (util/time-str finished-at)]]
+                [:div {:class "row"}
+                  [:div {:class "col-sm-4"} [:strong "Duration:"]]
+                  [:div {:class "col-sm-8"} (util/formatted-interval started-at finished-at)]]
+                [:div {:class "row"}
+                  [:div {:class "col-sm-4"} [:strong "Status message:"]]
+                  [:div {:class "col-sm-8"} (:state progress)]]]]]])]]])
 
