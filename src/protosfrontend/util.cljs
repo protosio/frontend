@@ -47,16 +47,6 @@
    "created"   "success"
    "warning"))
 
-(defn shorten-time [time]
-  (if time
-    (tf/unparse (tf/formatters :date-hour-minute-second-fraction) (tf/parse (tf/formatter :basic-date-time) time))
-    "n/a"))
-
-(defn time-str [time]
-  (if time
-    (tf/unparse (tf/formatters :date-hour-minute-second-fraction) time)
-    nil))
-
 (defn trunc [s n]
   (str (subs s 0 (min (count s) n)) "..."))
 
@@ -79,6 +69,25 @@
   (if (> (count (filter app-creating? (vals apps))) 0)
     true
     false))
+
+;;
+;; Time helpers
+;;
+
+(defn shorten-time [time]
+  (if time
+    (tf/unparse (tf/formatters :date-hour-minute-second-fraction) (tf/parse (tf/formatter :basic-date-time) time))
+    "n/a"))
+
+(defn time-str [time]
+  (if time
+    (tf/unparse (tf/formatters :date-hour-minute-second-fraction) time)
+    nil))
+
+(defn formatted-interval [start end]
+  (if (and start end)
+      (tf/unparse-duration (tc/interval start end))
+      nil))
 
 ;;
 ;; Task helpers
