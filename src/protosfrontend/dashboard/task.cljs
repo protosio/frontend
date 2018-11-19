@@ -6,6 +6,7 @@
       [components.buttons :as buttons]
       [components.alerts :as alerts]
       [reagent-forms.core :refer [bind-fields]]
+      [cljs-time.core :as tc]
       [re-frame.core :as rf]))
 
 (defn tasks-page [title]
@@ -26,10 +27,11 @@
                 [:th "ID"]
                 [:th {:class "text-center"} "Status"]
                 [:th "Progress"]
-                [:th "Started at"]
-                [:th "Finished at"]]]
+                [:th "Started"]
+                [:th "Finished"]]]
             [:tbody
-            (let [tasks @(rf/subscribe [:tasks])]
+            (let [tasks @(rf/subscribe [:tasks])
+                  time-now (tc/now)]
               (for [{id :id name :name status :status progress :progress started-at :started-at finished-at :finished-at} (vals tasks)]
               [:tr {:key id}
                 [:td {:class "text-center"}
@@ -52,14 +54,15 @@
                 [:td
                   [:div (util/time-str started-at)]]
                 [:td
-                  [:div (util/time-str finished-at)]]]))]]]]]]])
+                  [:div (str (util/formatted-interval finished-at time-now) " ago")]]]))]]]]]]])
 
 (defn task-page [id]
   [:div {:class "container"}
     [:div {:class "row row-cards row-deck"}
       [:div {:class "col-12"}
         (let [{id :id status :status progress :progress started-at :started-at finished-at :finished-at} @(rf/subscribe [:task (keyword id)])
-              loading? @(rf/subscribe [:loading?])]
+              loading? @(rf/subscribe [:loading?])
+              time-now (tc/now)]
         [:div {:class "card"}
           [:div {:class "card-header"}
             [:div {:class "avatar d-block bg-white mr-3" :style {:background-image "url(/static/images/task-generic.svg)" :background-size "80%"}}]
@@ -89,6 +92,9 @@
             [:div {:class "row"}
               [:div {:class "col-2"} [:strong "End time:"]]
               [:div {:class "col-5"} (util/time-str finished-at)]]
+            [:div {:class "row"}
+              [:div {:class "col-2"} [:strong "Duration:"]]
+              [:div {:class "col-5"} (util/formatted-interval started-at finished-at)]]
             [:div {:class "row"}
               [:div {:class "col-2"} [:strong "Status message:"]]
               [:div {:class "col-5"} (:state progress)]]]])]]])

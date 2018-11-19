@@ -4,7 +4,8 @@
       [protosfrontend.util :as util]
       [protosfrontend.routes :as routes]
       [components.alerts :as alerts]
-      [components.buttons :as buttons]))
+      [components.buttons :as buttons]
+      [cljs-time.core :as tc]))
 
 (defn apps-page [title]
   [:div {:class "container"}
@@ -69,7 +70,8 @@
     [:div {:class "row row-cards row-deck"}
       [:div {:class "col-12"}
         (let [app @(rf/subscribe [:app (keyword id)])
-              loading? @(rf/subscribe [:loading?])]
+              loading? @(rf/subscribe [:loading?])
+              time-now (tc/now)]
         [:div {:class "card"}
           [:div {:class "card-header"}
             [:div {:class "avatar d-block bg-white mr-3" :style {:background-image "url(/static/images/app-generic.svg)" :background-size "80%"}}
@@ -103,7 +105,7 @@
                   [:li {:key id :class "timeline-item"}
                     [:div {:class (str "timeline-badge bg-" (util/task-status-color status))}] [:a {:href (routes/url-for :task-page :id id)} name]
                     (if finished-at
-                      [:div {:class "timeline-time"} (util/time-str finished-at)]
+                      [:div {:class "timeline-time"} (str (util/formatted-interval finished-at time-now) " ago")]
                       [:div {:class "timeline-time col-2"}
                         [:div {:class "clearfix"} [:div {:class "float-left"} [:strong (str (:percentage progress) "%")]]]
                         [:div {:class "progress progress-xs"}
