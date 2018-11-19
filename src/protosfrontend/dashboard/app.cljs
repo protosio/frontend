@@ -92,7 +92,10 @@
                   [:div {:class "col-8"} (:installer-id app)]]
                 [:div {:class "row"}
                   [:div {:class "col-4"} [:strong "Status:"]]
-                  [:div {:class "col-8"} (:status app)]]]
+                  [:div {:class "col-8"} (:status app)]]
+                [:div {:class "row"}
+                  [:div {:class "col-4"} [:strong "IP:"]]
+                  [:div {:class "col-8"} (:ip app)]]]
               [:div {:class "col-6"}
                 [:div {:class "row"} [:strong "Tasks"]]
                 [:ul {:class "timeline"}
