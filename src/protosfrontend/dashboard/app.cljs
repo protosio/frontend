@@ -92,7 +92,7 @@
                   [:div {:class "col-8"} (:installer-id app)]]
                 [:div {:class "row"}
                   [:div {:class "col-4"} [:strong "Status:"]]
-                  [:div {:class "col-8"} (:status app)]]
+                  [:div {:class "col-8"} [:span {:class (str "tag tag-rounded tag-" (util/app-status-color (:status app)))} (:status app)]]]
                 [:div {:class "row"}
                   [:div {:class "col-4"} [:strong "IP:"]]
                   [:div {:class "col-8"} (:ip app)]]]
