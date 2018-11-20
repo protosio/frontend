@@ -62,17 +62,19 @@
                 [buttons/submit-button "Remove" [:remove-resource id] "danger btn-sm" loading?]]]]
           [alerts/for-card [:alert-dashboard]]
           [:div {:class "card-body"}
-            [:div {:class "row mb-1"}
-              [:div {:class "col-2"} [:strong "ID:"]]
-              [:div {:class "col-5"} id]]
-            [:div {:class "row mb-1"}
-              [:div {:class "col-2"} [:strong "Type:"]]
-              [:div {:class "col-5"} [:div [:span {:class "tag"} (:type resource)]]]]
-            [:div {:class "row mb-1"}
-              [:div {:class "col-2"} [:strong "Status:"]]
-            (if (= (:status resource) "created")
-              [:div {:class "col-5"} [:span {:class "status-icon bg-green"}] (:status resource)]
-              [:div {:class "col-5"} [:span {:class "status-icon bg-yellow"}] (:status resource)])]
-            [:div {:class "row mb-1"}
-              [:div {:class "col-2"} [:strong "Value:"]]
-              [:div {:class "col-5"} (:value resource)]]]])]]])
+            [:div {:class "row"}
+              [:div {:class "col-lg-6"}
+                [:div {:class "row mb-1"}
+                  [:div {:class "col-sm-4"} [:strong "ID:"]]
+                  [:div {:class "col-sm-8"} id]]
+                [:div {:class "row mb-1"}
+                  [:div {:class "col-sm-4"} [:strong "Type:"]]
+                  [:div {:class "col-sm-8"} [:div [:span {:class "tag"} (:type resource)]]]]
+                [:div {:class "row mb-1"}
+                  [:div {:class "col-sm-4"} [:strong "Status:"]]
+                (if (= (:status resource) "created")
+                  [:div {:class "col-sm-8"} [:span {:class "status-icon bg-green"}] (:status resource)]
+                  [:div {:class "col-sm-8"} [:span {:class "status-icon bg-yellow"}] (:status resource)])]
+                [:div {:class "row mb-1"}
+                  [:div {:class "col-sm-4"} [:strong "Value:"]]
+                  [:div {:class "col-sm-8"} (:value resource)]]]]]])]]])
