@@ -64,10 +64,10 @@
     [{db :db} [_ task-id result]]
     (let [task (util/replace-time-in-task result)
           res {:db (assoc-in db [:tasks task-id] task)}]
-         (reduce (fn [db' app-id]
-                     (assoc-in db' [:apps app-id :tasks] task))
+         (reduce (fn [res' app-id]
+                     (assoc-in res' [:db :apps (keyword app-id) :tasks task-id] task))
                  res
-                 (:apps res)))))
+                 (:apps task)))))
 
 ;; -- Installers -----------------------------------------------
 
