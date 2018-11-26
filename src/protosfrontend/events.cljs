@@ -46,7 +46,7 @@
 
 (rf/reg-event-fx
   :get-instance-info
-  (fn get-info-handler
+  (fn get-instance-info-handler
     [_ _]
     {:dispatch [:http-get {:url (util/createurl ["e" "info"])
                            :on-success [:save-instance-info]
