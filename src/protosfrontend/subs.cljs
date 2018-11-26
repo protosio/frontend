@@ -22,32 +22,6 @@
     (-> db
         :instance-info)))
 
-;; -- Modal subs -----------------------------------------------
-
-(rf/reg-sub
-  :show-modal
-  (fn show-modal-sub
-    [db _]
-    (-> db
-        :modal-data
-        :show-modal)))
-
-(rf/reg-sub
-  :active-modal
-  (fn active-modal-sub
-    [db _]
-    (-> db
-        :modal-data
-        :active-modal)))
-
-(rf/reg-sub
-  :modal-params
-  (fn modal-params-sub
-    [db _]
-    (-> db
-        :modal-data
-        :modal-params)))
-
 ;; -- Form subs -----------------------------------------------
 
 (rf/reg-sub
