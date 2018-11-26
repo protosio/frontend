@@ -21,6 +21,7 @@
      :redirect-to (if (:previous-page db)
                       (:previous-page db)
                       [:dashboard-page])
+     :init-ws (:token result)
      :db (-> db
              (assoc-in [:previous-page] nil)
              (assoc-in [:auth :userinfo] (dissoc result :token))
