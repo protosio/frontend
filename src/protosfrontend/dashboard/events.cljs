@@ -105,13 +105,15 @@
                            :on-success [:save-apps]
                            :on-failure [:dashboard-failure]}]}))
 
-(rf/reg-event-fx
+(rf/reg-event-db
   :save-apps
   (fn save-apps-handler
-    [{db :db} [_ result]]
-    {:dispatch-n (into [] (map (fn [[app-id app]]
-                                   [:save-app app-id app])
-                               result))}))
+    [db [_ result]]
+    (assoc db :apps (into {} (map (fn [[app-id app]]
+                                      {app-id (assoc app :tasks (into (linked/map)
+                                                                      (util/sort-tasks (util/fmap util/replace-time-in-task
+                                                                                                  (:tasks app)))))})
+                                  result)))))
 
 (rf/reg-event-fx
   :get-app
@@ -160,8 +162,7 @@
   :remove-app-success
   (fn remove-app-success-handler
     [{db :db} [_ app-id]]
-    {:db (update-in db [:apps] dissoc app-id)
-     :redirect-to [:apps-page]}))
+    {:redirect-to [:apps-page]}))
 
 (rf/reg-event-fx
   :app-state
