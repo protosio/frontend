@@ -65,7 +65,9 @@
     (let [task (util/replace-time-in-task result)
           res {:db (assoc-in db [:tasks task-id] task)}]
          (reduce (fn [res' app-id]
-                     (assoc-in res' [:db :apps (keyword app-id) :tasks task-id] task))
+                     (if (get-in res' [:db :apps (keyword app-id)])
+                         (assoc-in res' [:db :apps (keyword app-id) :tasks task-id] task)
+                         res'))
                  res
                  (:apps task)))))
 
