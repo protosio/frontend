@@ -21,7 +21,8 @@
   [(rf/inject-cofx :cookie/get [:token])]
   (fn initialize
     [{db :db cookies :cookie/get} _]
-    {:dispatch-n [[:load-userinfo]]
+    {:dispatch-n [[:load-userinfo]
+                  [:get-instance-info]]
      :init-ws (:token cookies)
      :db (if (:initialized db)
              db
