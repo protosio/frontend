@@ -15,7 +15,7 @@
     [alerts/for-list-page [:alert-dashboard]]
     [:div {:class "row row-cards"}
       ;; Filter card
-      [:div {:class "col-sm-3"}
+      [:div {:class "col-lg-3"}
         [:div {:class "card"}
           [:div {:class "card-body"}
             [:div {:class "auto-form-wrapper"}
@@ -29,11 +29,11 @@
               (let [loading? @(rf/subscribe [:loading?])]
                 [buttons/submit-button-spinner "Filter" [:search-appstore] "outline-primary btn-sm mr-2" loading? loading?])]]]]]
       ;; Application cards
-      [:div {:class "col-sm-9"}
+      [:div {:class "col-lg-9"}
         [:div {:class "row"}
         (let [installers @(rf/subscribe [:store-installers])]
           (for [[id {name :name versions :versions}] (seq installers)]
-          [:div {:key id :class "col-sm-4"}
+          [:div {:key id :class "col-lg-4"}
             [:div {:class "card p-3"}
               [:div {:class "d-flex align-items-center"}
                 [:img {:class "d-flex mr-3 rounded" :src "/static/images/installer-generic.svg" :alt name :width "25%"}]
