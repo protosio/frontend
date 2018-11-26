@@ -33,7 +33,7 @@
         [:div {:class "row"}
         (let [installers @(rf/subscribe [:store-installers])]
           (for [[id {name :name versions :versions}] (seq installers)]
-          [:div {:key id :class "col-lg-4"}
+          [:div {:key id :class "col-lg-4 col-md-6"}
             [:div {:class "card p-3"}
               [:div {:class "d-flex align-items-center"}
                 [:img {:class "d-flex mr-3 rounded" :src "/static/images/installer-generic.svg" :alt name :width "25%"}]
