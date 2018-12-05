@@ -60,13 +60,18 @@
   [:div {:class "container"}
     [:div {:class "row row-cards row-deck"}
       [:div {:class "col-12"}
-        (let [{id :id status :status progress :progress started-at :started-at finished-at :finished-at} @(rf/subscribe [:task (keyword id)])
+        (let [task @(rf/subscribe [:task (keyword id)])
+              {id :id status :status progress :progress started-at :started-at finished-at :finished-at killable :killable} task
               loading? @(rf/subscribe [:loading?])
               time-now (tc/now)]
         [:div {:class "card"}
           [:div {:class "card-header"}
             [:div {:class "avatar d-block bg-white mr-3" :style {:background-image "url(/static/images/task-generic.svg)" :background-size "80%"}}]
-            [:h3 {:class "card-title" :style {:cursor "pointer"} :on-click #(rf/dispatch [:get-task id])} id]]
+            [:h3 {:class "card-title" :style {:cursor "pointer"} :on-click #(rf/dispatch [:get-task id])} id]
+            (if (and killable  (util/task-unfinished? task))
+              [:div {:class "card-options"}
+                [:div {:class "btn-list"}
+                  [buttons/submit-button "Cancel" [:cancel-task id] "danger btn-sm" loading?]]])]
           [alerts/for-card [:alert-dashboard]]
           [:div {:class "card-body"}
             [:div {:class "row"}

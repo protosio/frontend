@@ -50,16 +50,6 @@
 (defn trunc [s n]
   (str (subs s 0 (min (count s) n)) "..."))
 
-(defn task-unfinished? [task]
-  (if (some #(= (:status task) %) ["finished" "failed"])
-    false
-    true))
-
-(defn tasks-unfinished? [tasks]
-  (if (> (count (filter task-unfinished? (vals tasks))) 0)
-    true
-    false))
-
 (defn app-creating? [app]
   (if (some #(= (:status app) %) ["creating"])
     true
@@ -92,6 +82,16 @@
 ;;
 ;; Task helpers
 ;;
+
+(defn task-unfinished? [task]
+  (if (some #(= (:status task) %) ["finished" "failed"])
+    false
+    true))
+
+(defn tasks-unfinished? [tasks]
+  (if (> (count (filter task-unfinished? (vals tasks))) 0)
+    true
+    false))
 
 (defn replace-time-in-task [task]
   (let [started-at (tf/parse (tf/formatters :basic-date-time) (:started-at task))

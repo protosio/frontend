@@ -71,6 +71,13 @@
                  res
                  (:apps task)))))
 
+(rf/reg-event-fx
+  :cancel-task
+  (fn cancel-task-handler
+    [{db :db} [_ task-id]]
+    {:dispatch [:http-put {:url (util/createurl ["e" "tasks" task-id "cancel"])
+                           :on-failure [:dashboard-failure]}]}))
+
 ;; -- Installers -----------------------------------------------
 
 (rf/reg-event-fx
