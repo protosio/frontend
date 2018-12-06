@@ -61,7 +61,7 @@
                      :on-success [:noop]
                      :on-failure [:noop]}
     :storage/remove {:name :userinfo}
-    :redirect-to [:dashboard-page]
+    :redirect-to [:login-page]
     :db (assoc db :auth nil)}))
 
 )

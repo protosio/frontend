@@ -81,6 +81,7 @@
           update-event (get-in static-data [:pages active-page])
           res {:db (-> db
                        (assoc :active-page ap)
+                       (assoc :loading? false)
                        (assoc-in [:dashboard :alert] nil))
                :dispatch-debounce {:action :cancel-all}}]
       (if update-event
