@@ -36,9 +36,7 @@
                 [:td
                   [:div [:span {:class "tag"} type]]]
                 [:td
-                (if (= status "created")
-                  [:div [:span {:class "status-icon bg-green"}] status]
-                  [:div [:span {:class "status-icon bg-yellow"}] status])]
+                  [:div [:span {:class (str "status-icon bg-" (util/resource-status-color status))}] status]]
                 [:td {:class "text-center"}
                   [:div {:class "item-action dropdown"}
                     [:a {:data-toggle "dropdown" :class "icon"}
@@ -72,9 +70,7 @@
                   [:div {:class "col-sm-8"} [:div [:span {:class "tag"} (:type resource)]]]]
                 [:div {:class "row mb-1"}
                   [:div {:class "col-sm-4"} [:strong "Status:"]]
-                (if (= (:status resource) "created")
-                  [:div {:class "col-sm-8"} [:span {:class "status-icon bg-green"}] (:status resource)]
-                  [:div {:class "col-sm-8"} [:span {:class "status-icon bg-yellow"}] (:status resource)])]
+                  [:div {:class "col-sm-8"} [:span {:class (str "status-icon bg-" (util/resource-status-color (:status resource)))}] (:status resource)]]
                 [:div {:class "row mb-1"}
                   [:div {:class "col-sm-4"} [:strong "Value:"]]
                   [:div {:class "col-sm-8"} (:value resource)]]]]]])]]])
