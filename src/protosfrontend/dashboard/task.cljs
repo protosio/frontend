@@ -54,7 +54,7 @@
                 [:td
                   [:div (util/time-str started-at)]]
                 [:td
-                  [:div (str (util/formatted-interval finished-at time-now) " ago")]]]))]]]]]]])
+                  [:div (if finished-at (str (util/formatted-interval finished-at time-now) " ago"))]]]))]]]]]]])
 
 (defn task-page [id]
   [:div {:class "container"}
