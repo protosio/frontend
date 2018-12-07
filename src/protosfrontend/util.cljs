@@ -32,20 +32,6 @@
    "unknown"           "gray"
    "blue"))
 
-(defn task-status-color [status]
-  (condp = status
-   "requested"  "secondary"
-   "inprogress" "warning"
-   "failed"     "danger"
-   "finished"   "success"
-   "warning"))
-
-(defn resource-status-color [status]
-  (condp = status
-   "requested" "warning"
-   "unknown"   "secondary"
-   "created"   "success"
-   "warning"))
 
 (defn trunc [s n]
   (str (subs s 0 (min (count s) n)) "..."))
@@ -83,6 +69,14 @@
 ;; Task helpers
 ;;
 
+(defn task-status-color [status]
+  (condp = status
+   "requested"  "secondary"
+   "inprogress" "warning"
+   "failed"     "danger"
+   "finished"   "success"
+   "warning"))
+
 (defn task-unfinished? [task]
   (if (some #(= (:status task) %) ["finished" "failed"])
     false
@@ -114,6 +108,22 @@
                                    (tc/after? task1 task2) 1
                                    :else 0))))
         tasks))
+
+;;
+;; Resource helpers
+;;
+
+(defn resource-status-color [status]
+  (condp = status
+   "requested" "warning"
+   "unknown"   "secondary"
+   "created"   "success"
+   "warning"))
+
+(defn resource-created? [rsc]
+  (if (= (:status rsc) "created")
+    true
+    false))
 
 ;;
 ;; Event debouncer
