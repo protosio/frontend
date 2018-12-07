@@ -85,7 +85,8 @@
           [alerts/for-card [:alert-dashboard]]
           [:div {:class "card-body"}
             [:div {:class "row"}
-              [:div {:class "col-lg-6"}
+              [:div {:class "col-lg-6 mb-1"}
+                [:div {:class "row"} [:h3 {:class "card-title mb-2"} "App info"]]
                 [:div {:class "row"}
                   [:div {:class "col-sm-4"} [:strong "ID:"]]
                   [:div {:class "col-sm-8"} (:id app)]]
@@ -98,8 +99,8 @@
                 [:div {:class "row"}
                   [:div {:class "col-sm-4"} [:strong "IP:"]]
                   [:div {:class "col-sm-8"} (:ip app)]]]
-              [:div {:class "col-lg-6"}
-                [:div {:class "row"} [:strong "Tasks"]]
+              [:div {:class "col-lg-6 mb-1"}
+                [:div {:class "row"} [:h3 {:class "card-title mb-2"} "Tasks"]]
                 [:ul {:class "timeline"}
                 (for [[id {name :name status :status progress :progress finished-at :finished-at}] (rseq (:tasks app))]
                   [:li {:key id :class "timeline-item"}
@@ -114,4 +115,9 @@
                                  :aria-valuemin "0"
                                  :aria-valuenow (:percentage progress)
                                  :style {:width (str (:percentage progress) "%")}
-                                 :role "progressbar"}]]])])]]]]])]]])
+                                 :role "progressbar"}]]])])]]
+              [:div {:class "col-lg-6 mb-1"}
+                [:div {:class "row"} [:h3 {:class "card-title mb-2"} "Resources"]]
+                (for [{id :id status :status type :type} (vals (:resources app))]
+                  [:div {:key id :class "row mb-1"}
+                    [:div {:class "col-sm-12"} [:span {:class (str "status-icon bg-"  (util/resource-status-color status))}] [:span {:class "tag"} type] " " [:a {:href (routes/url-for :resource-page :id id)} id]]])]]]])]]])
