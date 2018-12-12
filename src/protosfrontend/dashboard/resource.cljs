@@ -73,4 +73,7 @@
                   [:div {:class "col-sm-8"} [:span {:class (str "status-icon bg-" (util/resource-status-color (:status resource)))}] (:status resource)]]
                 [:div {:class "row mb-1"}
                   [:div {:class "col-sm-4"} [:strong "Value:"]]
-                  [:div {:class "col-sm-8"} (:value resource)]]]]]])]]])
+                  [:div {:class "col-sm-8"} (:value resource)]]
+                [:div {:class "row mb-1"}
+                  [:div {:class "col-sm-4"} [:strong "App:"]]
+                  [:div {:class "col-sm-8"} [:a {:href (routes/url-for :app-page :id (:app resource))} (:app resource)]]]]]]])]]])
