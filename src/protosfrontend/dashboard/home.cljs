@@ -7,7 +7,7 @@
       [protosfrontend.util :as util]))
 
 (defn home-page [title]
-  [:div {:class "page-main"}]
+  [:div {:class "page-main"}
     [:div {:class "container"}
       (if title
         [:div {:class "page-header"} [:h1 {:class "page-title"} title]])
@@ -32,4 +32,35 @@
                         [:div (str/join " " ports)]]])]]]])]]
         [:div {:class "col-lg-6"}
           [:div {:class "card"}
-            [:div {:class "card-header"} [:h3 {:class "card-title"} "Hardware"]]]]]])
+            [:div {:class "card-header"} [:h3 {:class "card-title" :style {:cursor "pointer"} :on-click #(rf/dispatch [:get-hwstats])} "Hardware"]]
+            (let [{{cpuusage :usage cpuinfo :info} :cpu memory :memory storage :storage} @(rf/subscribe [:hwstats])]
+            [:div {:class "card-body"}
+              [:div {:class "m-2 mb-5"}
+                [:div {:class (str "c100 " "p" cpuusage " small")}
+                  [:span  (str cpuusage "%")]
+                  [:div {:class "slice"}
+                    [:div {:class "bar"}]
+                    [:div {:class "fill"}]]]
+                [:div [:img {:src "/static/images/icons/protos-processor.svg" :class "h-5" :alt "cpu"}] " CPU"]
+                [:div (str (:cores cpuinfo) " x " (:model cpuinfo))]
+                [:div (str (:frequency cpuinfo) " MHz & " (:cache cpuinfo) " KB")]]
+              [:div {:class "m-2 mb-5"}
+                [:div {:class "c100 p42 small"}
+                  [:span "42%"]
+                  [:div {:class "slice"}
+                    [:div {:class "bar"}]
+                    [:div {:class "fill"}]]]
+                [:div [:img {:src "/static/images/icons/protos-memory.svg" :class "h-5" :alt "cpu"}] " Memory"]
+                [:div "2 cores"]
+                [:div "1700 mhx"]
+                [:div "Intel Xeon"]]
+              [:div {:class "m-2"}
+                [:div {:class "c100 p72 small"}
+                  [:span "72%"]
+                  [:div {:class "slice"}
+                    [:div {:class "bar"}]
+                    [:div {:class "fill"}]]]
+                [:div [:img {:src "/static/images/icons/protos-ssd.svg" :class "h-5" :alt "cpu"}] " Storage"]
+                [:div "2 cores"]
+                [:div "1700 mhx"]
+                [:div "Intel Xeon"]]])]]]]])
