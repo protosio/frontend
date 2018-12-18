@@ -250,9 +250,23 @@
 ;; -- Dashboard ------------------------------------------------
 
 (rf/reg-event-fx
+  :get-dashboard
+  (fn get-dashboard-handler
+    [_ _]
+    {:dispatch-n [[:get-services] [:get-hwstats]]}))
+
+(rf/reg-event-fx
   :get-services
   (fn get-services-handler
     [_ _]
     {:dispatch [:http-get {:url (util/createurl ["e" "services"])
                            :on-success [:save-response [:services]]
+                           :on-failure [:dashboard-failure]}]}))
+
+(rf/reg-event-fx
+  :get-hwstats
+  (fn get-hwstats-handler
+    [_ _]
+    {:dispatch [:http-get {:url (util/createurl ["e" "hwstats"])
+                           :on-success [:save-response [:hwstats]]
                            :on-failure [:dashboard-failure]}]}))

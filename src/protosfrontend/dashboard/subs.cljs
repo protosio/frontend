@@ -14,6 +14,13 @@
         :services)))
 
 (rf/reg-sub
+  :hwstats
+  (fn hwstats-sub
+    [db _]
+    (-> db
+        :hwstats)))
+
+(rf/reg-sub
   :apps
   (fn apps-sub
     [db _]
