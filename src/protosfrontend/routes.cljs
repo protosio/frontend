@@ -5,7 +5,8 @@
               [clairvoyant.core :refer-macros [trace-forms]]
               [re-frame-tracer.core :refer [tracer]]))
 
-(def static-data {:pages {:tasks-page [:get-tasks]
+(def static-data {:pages {:dashboard-page [:get-services]
+                          :tasks-page [:get-tasks]
                           :task-page [:get-task]
                           :app-page [:get-app]
                           :apps-page [:get-apps]

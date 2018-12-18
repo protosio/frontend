@@ -126,6 +126,15 @@
     false))
 
 ;;
+;; Service helpers
+;;
+
+(defn service-status-color [status]
+  (condp = status
+   "active"  "success"
+   "danger"))
+
+;;
 ;; Event debouncer
 ;;
 

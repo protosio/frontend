@@ -7,6 +7,13 @@
 (trace-forms {:tracer (tracer :color "blue")}
 
 (rf/reg-sub
+  :services
+  (fn services-sub
+    [db _]
+    (-> db
+        :services)))
+
+(rf/reg-sub
   :apps
   (fn apps-sub
     [db _]

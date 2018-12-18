@@ -246,3 +246,13 @@
              (assoc-in [:store :installers] result))}))
 
 )
+
+;; -- Dashboard ------------------------------------------------
+
+(rf/reg-event-fx
+  :get-services
+  (fn get-services-handler
+    [_ _]
+    {:dispatch [:http-get {:url (util/createurl ["e" "services"])
+                           :on-success [:save-response [:services]]
+                           :on-failure [:dashboard-failure]}]}))
