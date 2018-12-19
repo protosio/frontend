@@ -35,30 +35,36 @@
             [:div {:class "card-header"} [:h3 {:class "card-title" :style {:cursor "pointer"} :on-click #(rf/dispatch [:get-hwstats])} "Hardware"]]
             (let [{{cpuusage :usage cpuinfo :info} :cpu memory :memory storage :storage} @(rf/subscribe [:hwstats])]
             [:div {:class "card-body"}
-              [:div {:class "m-2 mb-5"}
-                [:div {:class (str "c100 " "p" cpuusage " small")}
-                  [:span  (str cpuusage "%")]
-                  [:div {:class "slice"}
-                    [:div {:class "bar"}]
-                    [:div {:class "fill"}]]]
-                [:div [:img {:src "/static/images/icons/protos-processor.svg" :class "h-5" :alt "cpu"}] " CPU"]
-                [:div (str (:cores cpuinfo) " x " (:model cpuinfo))]
-                [:div (str (:frequency cpuinfo) " MHz & " (:cache cpuinfo) " KB")]]
-              [:div {:class "m-2 mb-5"}
-                [:div {:class (str "c100 p" (:usage memory) " small")}
-                  [:span (str (:usage memory) "%")]
-                  [:div {:class "slice"}
-                    [:div {:class "bar"}]
-                    [:div {:class "fill"}]]]
-                [:div [:img {:src "/static/images/icons/protos-memory.svg" :class "h-5" :alt "cpu"}] " Memory"]
-                [:div (str "Total: " (:total memory) "MB Available: " (:available memory) "MB")]
-                [:div (str "Cached: " (:cached memory) "MB")]]
-              [:div {:class "m-2"}
-                [:div {:class (str "c100 p" (:usage storage) " small")}
+              [:div {:class "row m-2 align-items-center"}
+                [:div {:class "col-md-3"}
+                  [:div {:class (str "c100 " "p" cpuusage " small float-right")}
+                    [:span  (str cpuusage "%")]
+                    [:div {:class "slice"}
+                      [:div {:class "bar"}]
+                      [:div {:class "fill"}]]]]
+                [:div {:class "col-md-9"}
+                  [:div [:img {:src "/static/images/icons/protos-processor.svg" :class "h-5" :alt "cpu"}] [:b " CPU"]]
+                  [:div (str (:cores cpuinfo) " x " (:model cpuinfo))]
+                  [:div (str (:frequency cpuinfo) " MHz & " (:cache cpuinfo) " KB")]]]
+              [:div {:class "row m-2 align-items-center"}
+                [:div {:class "col-md-3"}
+                  [:div {:class (str "c100 p" (:usage memory) " small float-right")}
+                    [:span (str (:usage memory) "%")]
+                    [:div {:class "slice"}
+                      [:div {:class "bar"}]
+                      [:div {:class "fill"}]]]]
+                [:div {:class "col-md-9"}
+                  [:div [:img {:src "/static/images/icons/protos-memory.svg" :class "h-5" :alt "cpu"}] [:b " Memory"]]
+                  [:div (str "Total: " (:total memory) "MB Available: " (:available memory) "MB")]
+                  [:div (str "Cached: " (:cached memory) "MB")]]]
+              [:div {:class "row m-2 align-items-center"}
+                [:div {:class "col-md-3"}
+                [:div {:class (str "c100 p" (:usage storage) " small float-right")}
                   [:span (str (:usage storage) "%")]
                   [:div {:class "slice"}
                     [:div {:class "bar"}]
-                    [:div {:class "fill"}]]]
-                [:div [:img {:src "/static/images/icons/protos-ssd.svg" :class "h-5" :alt "cpu"}] " Storage"]
+                    [:div {:class "fill"}]]]]
+                [:div {:class "col-md-9"}
+                [:div [:img {:src "/static/images/icons/protos-ssd.svg" :class "h-5" :alt "cpu"}] [:b " Storage"]]
                 [:div (str "Total: " (:total storage) "MB Available: " (:available storage) "MB")]
-                [:div (str "Path: \"" (:path storage) "\"")]]])]]]]])
+                [:div (str "Path: \"" (:path storage) "\"")]]]])]]]]])
