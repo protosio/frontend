@@ -54,12 +54,11 @@
                 [:div (str "Total: " (:total memory) "MB Available: " (:available memory) "MB")]
                 [:div (str "Cached: " (:cached memory) "MB")]]
               [:div {:class "m-2"}
-                [:div {:class "c100 p72 small"}
-                  [:span "72%"]
+                [:div {:class (str "c100 p" (:usage storage) " small")}
+                  [:span (str (:usage storage) "%")]
                   [:div {:class "slice"}
                     [:div {:class "bar"}]
                     [:div {:class "fill"}]]]
                 [:div [:img {:src "/static/images/icons/protos-ssd.svg" :class "h-5" :alt "cpu"}] " Storage"]
-                [:div "2 cores"]
-                [:div "1700 mhx"]
-                [:div "Intel Xeon"]]])]]]]])
+                [:div (str "Total: " (:total storage) "MB Available: " (:available storage) "MB")]
+                [:div (str "Path: \"" (:path storage) "\"")]]])]]]]])
