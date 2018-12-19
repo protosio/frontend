@@ -45,15 +45,14 @@
                 [:div (str (:cores cpuinfo) " x " (:model cpuinfo))]
                 [:div (str (:frequency cpuinfo) " MHz & " (:cache cpuinfo) " KB")]]
               [:div {:class "m-2 mb-5"}
-                [:div {:class "c100 p42 small"}
-                  [:span "42%"]
+                [:div {:class (str "c100 p" (:usage memory) " small")}
+                  [:span (str (:usage memory) "%")]
                   [:div {:class "slice"}
                     [:div {:class "bar"}]
                     [:div {:class "fill"}]]]
                 [:div [:img {:src "/static/images/icons/protos-memory.svg" :class "h-5" :alt "cpu"}] " Memory"]
-                [:div "2 cores"]
-                [:div "1700 mhx"]
-                [:div "Intel Xeon"]]
+                [:div (str "Total: " (:total memory) "MB Available: " (:available memory) "MB")]
+                [:div (str "Cached: " (:cached memory) "MB")]]
               [:div {:class "m-2"}
                 [:div {:class "c100 p72 small"}
                   [:span "72%"]
