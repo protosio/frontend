@@ -15,7 +15,7 @@
       [:div {:class "row row-cards"}
         [:div {:class "col-lg-6"}
           [:div {:class "card"}
-            [:div {:class "card-header"} [:h3 {:class "card-title"} "Public services"]]
+            [:div {:class "card-header"} [:h3 {:class "card-title" :style {:cursor "pointer"} :on-click #(rf/dispatch [:get-services])} "Public services"]]
             (let [services @(rf/subscribe [:services])]
             [:div {:class "card-body"}
               [:div {:class "table-responsive"}
