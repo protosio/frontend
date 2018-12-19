@@ -16,7 +16,7 @@
         [:div {:class "col-lg-6"}
           [:div {:class "card"}
             [:div {:class "card-header"} [:h3 {:class "card-title" :style {:cursor "pointer"} :on-click #(rf/dispatch [:get-services])} "Public services"]]
-            (let [services @(rf/subscribe [:services])]
+            (if-let [services @(rf/subscribe [:services])]
             [:div {:class "card-body"}
               [:div {:class "table-responsive"}
                 [:table {:class "table table-hover table-outline table-vcenter text-nowrap card-table"}
@@ -33,7 +33,7 @@
         [:div {:class "col-lg-6"}
           [:div {:class "card"}
             [:div {:class "card-header"} [:h3 {:class "card-title" :style {:cursor "pointer"} :on-click #(rf/dispatch [:get-hwstats])} "Hardware"]]
-            (let [{{cpuusage :usage cpuinfo :info} :cpu memory :memory storage :storage} @(rf/subscribe [:hwstats])]
+            (if-let [{{cpuusage :usage cpuinfo :info} :cpu memory :memory storage :storage} @(rf/subscribe [:hwstats])]
             [:div {:class "card-body"}
               [:div {:class "row m-2 align-items-center"}
                 [:div {:class "col-md-3"}
