@@ -21,8 +21,7 @@
   [(rf/inject-cofx :cookie/get [:token])]
   (fn initialize
     [{db :db cookies :cookie/get} _]
-    {:dispatch-n [[:load-userinfo]
-                  [:get-instance-info]]
+    {:dispatch-n [[:load-userinfo]]
      :init-ws (:token cookies)
      :db (if (:initialized db)
              db
@@ -43,20 +42,6 @@
   (fn noop-handler
     [_ _]
     {}))
-
-(rf/reg-event-fx
-  :get-instance-info
-  (fn get-instance-info-handler
-    [_ _]
-    {:dispatch [:http-get {:url (util/createurl ["e" "info"])
-                           :on-success [:save-instance-info]
-                           :on-failure [:dashboard-failure]}]}))
-
-(rf/reg-event-db
-  :save-instance-info
-  (fn save-info-handler
-    [db [_ result]]
-    (assoc db :instance-info result)))
 
 ;; -- Timer events --------------------------------
 

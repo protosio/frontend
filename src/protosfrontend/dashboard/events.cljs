@@ -245,15 +245,22 @@
     {:db (-> db
              (assoc-in [:store :installers] result))}))
 
-)
-
 ;; -- Dashboard ------------------------------------------------
 
 (rf/reg-event-fx
   :get-dashboard
   (fn get-dashboard-handler
+    [{db :db} _]
+    {:dispatch-n [[:get-services] [:get-hwstats] (if (not (:instance-info db)) [:get-instance-info])]}))
+
+
+(rf/reg-event-fx
+  :get-instance-info
+  (fn get-instance-info-handler
     [_ _]
-    {:dispatch-n [[:get-services] [:get-hwstats]]}))
+    {:dispatch [:http-get {:url (util/createurl ["e" "info"])
+                           :on-success [:save-response [:instance-info]]
+                           :on-failure [:dashboard-failure]}]}))
 
 (rf/reg-event-fx
   :get-services
@@ -270,3 +277,5 @@
     {:dispatch [:http-get {:url (util/createurl ["e" "hwstats"])
                            :on-success [:save-response [:hwstats]]
                            :on-failure [:dashboard-failure]}]}))
+
+)
