@@ -1,9 +1,9 @@
-(ns dashboard.home
+(ns protosfrontend.dashboard.home
     (:require
       [clojure.string :as str]
       [re-frame.core :as rf]
-      [components.cards :as cards]
-      [components.alerts :as alerts]
+      [protosfrontend.components.cards :as cards]
+      [protosfrontend.components.alerts :as alerts]
       [protosfrontend.util :as util]))
 
 (defn home-page [title]

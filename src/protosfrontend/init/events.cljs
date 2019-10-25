@@ -1,4 +1,4 @@
-(ns init.events
+(ns protosfrontend.init.events
     (:require
         [re-frame.core :as rf]
         [protosfrontend.util :as util]
@@ -73,12 +73,12 @@
 (rf/reg-event-fx
   :create-app-during-init
   (fn create-app-during-init-handler
-    [{db :db} [_ step installer-id name version]]
+    [{db :db} [_ step installer-id name]]
     (let [installer-params (get-in db [:init-wizard step :form])]
       {:dispatch [:http-post {:url (util/createurl ["e" "apps"])
                               :on-success [:create-app-during-init-success step]
                               :on-failure [:init-failure step]
-                              :post-data {:installer-id installer-id :installer-version version :name name :installer-params installer-params}}]})))
+                              :post-data {:installer-id installer-id :name name :installer-params installer-params}}]})))
 
 (rf/reg-event-fx
   :remove-and-install-provider

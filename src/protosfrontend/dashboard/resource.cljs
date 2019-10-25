@@ -1,9 +1,9 @@
-(ns dashboard.resource
+(ns protosfrontend.dashboard.resource
   (:require
     [re-frame.core :as rf]
     [protosfrontend.routes :as routes]
-    [components.buttons :as buttons]
-    [components.alerts :as alerts]
+    [protosfrontend.components.buttons :as buttons]
+    [protosfrontend.components.alerts :as alerts]
     [protosfrontend.util :as util]))
 
 (defn resources-page [title]

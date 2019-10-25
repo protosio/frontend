@@ -1,8 +1,8 @@
-(ns auth.views
+(ns protosfrontend.auth.views
   (:require
       [re-frame.core :as rf]
-      [components.buttons :as buttons]
-      [components.alerts :as alerts]
+      [protosfrontend.components.buttons :as buttons]
+      [protosfrontend.components.alerts :as alerts]
       [reagent-forms.core :refer [bind-fields]]
       [clairvoyant.core :refer-macros [trace-forms]]
       [re-frame-tracer.core :refer [tracer]]))

@@ -1,4 +1,4 @@
-(ns init.subs
+(ns protosfrontend.init.subs
     (:require
         [re-frame.core :as rf]
         [clairvoyant.core :refer-macros [trace-forms]]

@@ -1,4 +1,4 @@
-(ns components.header
+(ns protosfrontend.components.header
     (:require
       [re-frame.core :as rf]
       [protosfrontend.routes :as routes]

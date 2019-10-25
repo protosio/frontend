@@ -1,4 +1,4 @@
-(ns components.buttons
+(ns protosfrontend.components.buttons
   (:require
     [re-frame.core :as rf]))
 

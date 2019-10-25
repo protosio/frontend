@@ -1,10 +1,10 @@
-(ns init.views
+(ns protosfrontend.init.views
   (:require
     [re-frame.core :as rf]
     [protosfrontend.util :as util]
-    [components.buttons :as buttons]
-    [components.alerts :as alerts]
-    [components.header :as header]
+    [protosfrontend.components.buttons :as buttons]
+    [protosfrontend.components.alerts :as alerts]
+    [protosfrontend.components.header :as header]
     [reagent-forms.core :refer [bind-fields]]
     [clairvoyant.core :refer-macros [trace-forms]]
     [re-frame-tracer.core :refer [tracer]]))
@@ -90,7 +90,6 @@
   []
   (let [providers @(rf/subscribe [:providers :step2])
         selected-provider @(rf/subscribe [:selected-provider :step2])
-        selected-version (get-in providers [selected-provider :version])
         provider-name (get-in providers [selected-provider :name])
         params (get-in providers [selected-provider :provider-params])
         task @(rf/subscribe [:init-step-task :step2])
@@ -119,13 +118,12 @@
           (if-not (empty? task)
             [task-progress task])]]
     [:div {:class "card-footer p-3"}
-      [navigation-buttons "Install" [:remove-and-install-provider :step2 [:create-app-during-init :step2 selected-provider provider-name selected-version]] disabled? :step2 step-done]]]))
+      [navigation-buttons "Install" [:remove-and-install-provider :step2 [:create-app-during-init :step2 selected-provider provider-name]] disabled? :step2 step-done]]]))
 
 (defn step3
   []
   (let [providers @(rf/subscribe [:providers :step3])
         selected-provider @(rf/subscribe [:selected-provider :step3])
-        selected-version (get-in providers [selected-provider :version])
         provider-name (get-in providers [selected-provider :name])
         params (get-in providers [selected-provider :provider-params])
         task @(rf/subscribe [:init-step-task :step3])
@@ -154,7 +152,7 @@
           (if-not (empty? task)
             [task-progress task])]]
     [:div {:class "card-footer p-3"}
-      [navigation-buttons "Install" [:remove-and-install-provider :step3 [:create-app-during-init :step3 selected-provider provider-name selected-version]] disabled? :step3 step-done]]]))
+      [navigation-buttons "Install" [:remove-and-install-provider :step3 [:create-app-during-init :step3 selected-provider provider-name]] disabled? :step3 step-done]]]))
 
 (defn step4
   []

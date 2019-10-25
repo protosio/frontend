@@ -1,10 +1,10 @@
-(ns dashboard.app
+(ns protosfrontend.dashboard.app
     (:require
       [re-frame.core :as rf]
       [protosfrontend.util :as util]
       [protosfrontend.routes :as routes]
-      [components.alerts :as alerts]
-      [components.buttons :as buttons]
+      [protosfrontend.components.alerts :as alerts]
+      [protosfrontend.components.buttons :as buttons]
       [cljs-time.core :as tc]))
 
 (defn apps-page [title]

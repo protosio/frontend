@@ -1,4 +1,4 @@
-(ns components.footer
+(ns protosfrontend.components.footer
   (:require
     [re-frame.core :as rf]
     [protosfrontend.routes :as routes]))

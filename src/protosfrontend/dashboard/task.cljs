@@ -1,10 +1,10 @@
-(ns dashboard.task
+(ns protosfrontend.dashboard.task
     (:require
       [reagent.core :as r]
       [protosfrontend.util :as util]
       [protosfrontend.routes :as routes]
-      [components.buttons :as buttons]
-      [components.alerts :as alerts]
+      [protosfrontend.components.buttons :as buttons]
+      [protosfrontend.components.alerts :as alerts]
       [reagent-forms.core :refer [bind-fields]]
       [cljs-time.core :as tc]
       [re-frame.core :as rf]))

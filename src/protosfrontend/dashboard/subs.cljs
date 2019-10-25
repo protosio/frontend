@@ -1,4 +1,4 @@
-(ns dashboard.subs
+(ns protosfrontend.dashboard.subs
     (:require
         [re-frame.core :as rf]
         [clairvoyant.core :refer-macros [trace-forms]]

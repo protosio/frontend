@@ -1,4 +1,4 @@
-(ns auth.events
+(ns protosfrontend.auth.events
     (:require
         [re-frame.core :as rf]
         [protosfrontend.util :as util]

@@ -1,4 +1,4 @@
-(ns components.cards
+(ns protosfrontend.components.cards
     (:require
       [re-frame.core :as rf]))
 

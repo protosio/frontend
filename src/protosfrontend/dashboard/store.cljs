@@ -1,11 +1,11 @@
-(ns dashboard.store
+(ns protosfrontend.dashboard.store
   (:require
     [reagent.core :as r]
     [re-frame.core :as rf]
     [protosfrontend.util :as util]
     [protosfrontend.routes :as routes]
-    [components.buttons :as buttons]
-    [components.alerts :as alerts]
+    [protosfrontend.components.buttons :as buttons]
+    [protosfrontend.components.alerts :as alerts]
     [reagent-forms.core :refer [bind-fields]]))
 
 (defn store-page [title]

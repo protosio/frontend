@@ -1,4 +1,4 @@
-(ns components.alerts
+(ns protosfrontend.components.alerts
     (:require
       [re-frame.core :as rf]))
 

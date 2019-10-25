@@ -1,4 +1,4 @@
-(ns dashboard.events
+(ns protosfrontend.dashboard.events
     (:require
         [ajax.core :as ajax]
         [re-frame.core :as rf]
