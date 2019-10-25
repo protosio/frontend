@@ -38,5 +38,11 @@ Session.vim
 !.vscode/launch.json
 !.vscode/extensions.json
 
+.shadow-cljs/
+.shadow-cljs/*
+
+node_modules/
+node_modules/*
+
 ### Compiled js ###
 resources/public/js/compiled/*
