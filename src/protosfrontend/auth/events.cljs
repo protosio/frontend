@@ -38,11 +38,7 @@
   :save-auth
   (fn save-auth-handler
     [_ [_ result]]
-    {:cookie/set {:name "token"
-                  :value (:token result)
-                  :on-success [:noop]
-                  :on-failure [:noop]}
-    :storage/set {:name :userinfo :value (.stringify js/JSON (clj->js (dissoc result :token)))}}))
+    {:storage/set {:name :userinfo :value (.stringify js/JSON (clj->js (dissoc result :token)))}}))
 
 (rf/reg-event-fx
   :login

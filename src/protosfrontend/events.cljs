@@ -161,7 +161,6 @@
     [{db :db cookies :cookie/get} [_ params]]
    {:http-xhrio {:method          :get
                  :uri             (:url params)
-                 :headers         [:Authorization (clojure.string/join " " ["Bearer" (:token cookies)])]
                  :format          (ajax/json-request-format)
                  :response-format (ajax/json-response-format {:keywords? true})
                  :on-success [:request-finished (:on-success params)]
@@ -175,7 +174,6 @@
     [{db :db cookies :cookie/get} [_ params]]
     {:http-xhrio {:method          :post
                   :uri             (:url params)
-                  :headers         [:Authorization (clojure.string/join " " ["Bearer" (:token cookies)])]
                   :params          (let [post-data (:post-data params)]
                                     (if post-data
                                       post-data
@@ -193,7 +191,6 @@
     [{db :db cookies :cookie/get} [_ params]]
     {:http-xhrio {:method          :put
                   :uri             (:url params)
-                  :headers         [:Authorization (clojure.string/join " " ["Bearer" (:token cookies)])]
                   :params          (:put-data params)
                   :format          (ajax/json-request-format)
                   :response-format (ajax/json-response-format {:keywords? true})
@@ -208,7 +205,6 @@
     [{db :db cookies :cookie/get} [_ params]]
     {:http-xhrio {:method          :delete
                   :uri             (:url params)
-                  :headers         [:Authorization (clojure.string/join " " ["Bearer" (:token cookies)])]
                   :format          (ajax/url-request-format)
                   :response-format (ajax/json-response-format {:keywords? true})
                   :on-success [:request-finished (:on-success params)]
