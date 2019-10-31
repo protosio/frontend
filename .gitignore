@@ -46,3 +46,5 @@ node_modules/*
 
 ### Compiled js ###
 resources/public/js/compiled/*
+public/js/cljs-runtime/
+public/js/protosfrontend.js
