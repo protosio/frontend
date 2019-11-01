@@ -36,12 +36,12 @@
 (rf/reg-fx
   :init-ws
   (fn init-ws-handler
-    [token]
+    []
     (if (:ws-connected @app-db)
       (println "Websocket connection already established")
       (go
         (println "Initiating websocket connection")
-        (let [{:keys [ws-channel error]} (<! (ws-ch (str (assoc (url (websocket-url)) :query {:access_token token}))
+        (let [{:keys [ws-channel error]} (<! (ws-ch (str (url (websocket-url)))
                                               {:format :json
                                                :read-ch (chan 10)}))]
           (if error

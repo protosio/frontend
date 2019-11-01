@@ -6,7 +6,6 @@
       [linked.core :as linked]
       [day8.re-frame.http-fx]
       [protosfrontend.util :as util]
-      [com.smxemail.re-frame-cookie-fx]
       [com.degel.re-frame.storage]
       [district0x.re-frame.interval-fx]
       [clairvoyant.core :refer-macros [trace-forms]]
@@ -18,11 +17,10 @@
 
 (rf/reg-event-fx
   :initialize
-  [(rf/inject-cofx :cookie/get [:token])]
   (fn initialize
-    [{db :db cookies :cookie/get} _]
+    [{db :db} _]
     {:dispatch-n [[:load-userinfo]]
-     :init-ws (:token cookies)
+     :init-ws []
      :db (if (:initialized db)
              db
              {:apps {}
@@ -156,9 +154,8 @@
 
 (rf/reg-event-fx
   :http-get
-  [(rf/inject-cofx :cookie/get [:token])]
   (fn http-get-handler
-    [{db :db cookies :cookie/get} [_ params]]
+    [{db :db} [_ params]]
    {:http-xhrio {:method          :get
                  :uri             (:url params)
                  :format          (ajax/json-request-format)
@@ -169,9 +166,8 @@
 
 (rf/reg-event-fx
   :http-post
-  [(rf/inject-cofx :cookie/get [:token])]
   (fn http-post-handler
-    [{db :db cookies :cookie/get} [_ params]]
+    [{db :db} [_ params]]
     {:http-xhrio {:method          :post
                   :uri             (:url params)
                   :params          (let [post-data (:post-data params)]
@@ -186,9 +182,8 @@
 
 (rf/reg-event-fx
   :http-put
-  [(rf/inject-cofx :cookie/get [:token])]
   (fn http-put-handler
-    [{db :db cookies :cookie/get} [_ params]]
+    [{db :db} [_ params]]
     {:http-xhrio {:method          :put
                   :uri             (:url params)
                   :params          (:put-data params)
@@ -200,9 +195,8 @@
 
 (rf/reg-event-fx
   :http-delete
-  [(rf/inject-cofx :cookie/get [:token])]
   (fn http-delete-handler
-    [{db :db cookies :cookie/get} [_ params]]
+    [{db :db} [_ params]]
     {:http-xhrio {:method          :delete
                   :uri             (:url params)
                   :format          (ajax/url-request-format)

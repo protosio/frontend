@@ -5,7 +5,6 @@
         [linked.core :as linked]
         [day8.re-frame.http-fx]
         [protosfrontend.util :as util]
-        [com.smxemail.re-frame-cookie-fx]
         [com.degel.re-frame.storage]
         [district0x.re-frame.interval-fx]
         [clairvoyant.core :refer-macros [trace-forms]]
