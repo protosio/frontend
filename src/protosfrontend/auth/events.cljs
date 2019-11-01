@@ -8,7 +8,7 @@
 (trace-forms {:tracer (tracer :color "green")}
 
 (rf/reg-event-fx
-  :login-failure
+  :auth-failure
   (fn init-failure-handler
     [{db :db} [_ result]]
     {:db (assoc-in db [:login :alert] {:type "danger" :message (get-in result [:response :error])})}))
@@ -46,18 +46,24 @@
     [{db :db} _]
     {:dispatch [:http-post {:url (util/createurl ["auth" "login"])
                             :on-success [:login-success]
-                            :on-failure [:login-failure]
+                            :on-failure [:auth-failure]
                             :post-data (get-in db [:login :form])}]}))
 
 (rf/reg-event-fx
   :logout
   (fn logout-handler
     [{db :db} [_ result]]
-    {:cookie/remove {:name "token"
-                     :on-success [:noop]
-                     :on-failure [:noop]}
+    {:dispatch [:http-post {:url (util/createurl ["auth" "logout"])
+                :on-success [:logout-success]
+                :on-failure [:auth-failure]
+                :post-data {}}]}))
+
+(rf/reg-event-fx
+ :logout-success
+ (fn logout-success-handler
+   [{db :db} _]
+   {:redirect-to [:login-page]
     :storage/remove {:name :userinfo}
-    :redirect-to [:login-page]
     :db (assoc db :auth nil)}))
 
 )
