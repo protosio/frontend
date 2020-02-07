@@ -58,11 +58,11 @@
                       [:a {:data-toggle "dropdown" :class "icon"}
                         [:i {:class "fe fe-more-vertical"}]]
                       [:div {:class "dropdown-menu dropdown-menu-right"}
-                        [:a {:href "javascript:void(0)" :on-click #(rf/dispatch [:app-state id "start"]) :class "dropdown-item"}
+                        [:a {:href "#!" :on-click #(rf/dispatch [:app-state id "start"]) :class "dropdown-item"}
                           [:i {:class "dropdown-icon fe fe-play"}] " Start"]
-                        [:a {:href "javascript:void(0)" :on-click #(rf/dispatch [:app-state id "stop"]) :class "dropdown-item"}
+                        [:a {:href "#!" :on-click #(rf/dispatch [:app-state id "stop"]) :class "dropdown-item"}
                           [:i {:class "dropdown-icon fe fe-stop-circle"}] " Stop"]
-                        [:a {:href "javascript:void(0)" :on-click #(rf/dispatch [:remove-app id]) :class "dropdown-item"}
+                        [:a {:href "#!" :on-click #(rf/dispatch [:remove-app id]) :class "dropdown-item"}
                           [:i {:class "dropdown-icon fe fe-trash"}] " Remove"]]]]]))]]]]]]])
 
 (defn app-page [id]
