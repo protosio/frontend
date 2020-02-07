@@ -26,10 +26,10 @@
   (reagent/render [v/current-page] (.getElementById js/document "protos")))
 
 (defn stop []
-  (js/console.log "Stopping Protos frontend ..."))
+  (println "Stopping Protos frontend ..."))
 
 (defn init! []
-  (js/console.log "Starting Protos frontend ...")
+  (println "Starting Protos frontend ...")
   (routes/start!)
   (rf/dispatch-sync [:initialize])
   (mount-root))
