@@ -6,11 +6,7 @@
         [day8.re-frame.http-fx]
         [protosfrontend.util :as util]
         [com.degel.re-frame.storage]
-        [district0x.re-frame.interval-fx]
-        [clairvoyant.core :refer-macros [trace-forms]]
-        [re-frame-tracer.core :refer [tracer]]))
-
-(trace-forms {:tracer (tracer :color "green")}
+        [district0x.re-frame.interval-fx]))
 
 ;; -- Common operations ----------------------------------------
 
@@ -276,5 +272,3 @@
     {:dispatch [:http-get {:url (util/createurl ["e" "hwstats"])
                            :on-success [:save-response [:hwstats]]
                            :on-failure [:dashboard-failure]}]}))
-
-)

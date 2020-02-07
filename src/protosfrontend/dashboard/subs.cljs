@@ -1,10 +1,6 @@
 (ns protosfrontend.dashboard.subs
     (:require
-        [re-frame.core :as rf]
-        [clairvoyant.core :refer-macros [trace-forms]]
-        [re-frame-tracer.core :refer [tracer]]))
-
-(trace-forms {:tracer (tracer :color "blue")}
+        [re-frame.core :as rf]))
 
 (rf/reg-sub
   :services
@@ -111,5 +107,3 @@
   (fn alert-dashboard-sub
     [db _]
     (get-in db [:dashboard :alert])))
-
-)

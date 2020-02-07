@@ -7,11 +7,7 @@
       [day8.re-frame.http-fx]
       [protosfrontend.util :as util]
       [com.degel.re-frame.storage]
-      [district0x.re-frame.interval-fx]
-      [clairvoyant.core :refer-macros [trace-forms]]
-      [re-frame-tracer.core :refer [tracer]]))
-
-(trace-forms {:tracer (tracer :color "green")}
+      [district0x.re-frame.interval-fx]))
 
 ;; -- Event Handlers -----------------------------------------------
 
@@ -204,5 +200,3 @@
                   :on-success [:request-finished (:on-success params)]
                   :on-failure [:request-finished (:on-failure params)]}
      :db  (assoc db :loading? true)}))
-
-)

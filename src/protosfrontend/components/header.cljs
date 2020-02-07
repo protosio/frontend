@@ -1,11 +1,7 @@
 (ns protosfrontend.components.header
     (:require
       [re-frame.core :as rf]
-      [protosfrontend.routes :as routes]
-      [clairvoyant.core :refer-macros [trace-forms]]
-      [re-frame-tracer.core :refer [tracer]]))
-
-(trace-forms {:tracer (tracer :color "brown")}
+      [protosfrontend.routes :as routes]))
 
 (defn loading-indicator
   []
@@ -78,6 +74,3 @@
   [:div
     [bar]
     [menu active-page]])
-
-)
-

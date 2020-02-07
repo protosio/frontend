@@ -1,10 +1,6 @@
 (ns protosfrontend.subs
     (:require
-        [re-frame.core :as rf]
-        [clairvoyant.core :refer-macros [trace-forms]]
-        [re-frame-tracer.core :refer [tracer]]))
-
-(trace-forms {:tracer (tracer :color "blue")}
+        [re-frame.core :as rf]))
 
 ;; -- Queries -----------------------------------------------
 
@@ -79,5 +75,3 @@
   (fn ws-connected-sub
     [db _]
       (:ws-connected db)))
-
-)

@@ -7,9 +7,7 @@
             [cemerick.url :refer (url url-encode)]
             [re-frame.core :as rf]
             [re-frame.db :refer [app-db]]
-            [clojure.walk :refer [keywordize-keys]]
-            [clairvoyant.core :refer-macros [trace-forms]]
-            [re-frame-tracer.core :refer [tracer]]))
+            [clojure.walk :refer [keywordize-keys]]))
 
 
 (defn- receive-msgs!
@@ -52,7 +50,7 @@
     {}))
 
 
-(trace-forms {:tracer (tracer :color "pink")}
+; (trace-forms {:tracer (tracer :color "pink")}
 
 (rf/reg-event-fx
   :ws-message
@@ -85,5 +83,3 @@
   (fn ws-connected-handler
     [db [_ connected?]]
     (assoc db :ws-connected connected?)))
-
-)

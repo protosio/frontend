@@ -11,11 +11,7 @@
         [protosfrontend.init.views :as initviews]
         [protosfrontend.auth.views :as authviews]
         [re-frame.core :as rf]
-        [free-form.re-frame :as free-form]
-        [clairvoyant.core :refer-macros [trace-forms]]
-        [re-frame-tracer.core :refer [tracer]]))
-
-(trace-forms {:tracer (tracer :color "brown")}
+        [free-form.re-frame :as free-form]))
 
 ;; ---------------------------------------
 ;; Pages
@@ -52,5 +48,3 @@
       :store-installer-page [dashboard-page store/store-installer-page item-id active-page]
       :resources-page       [dashboard-page resource/resources-page "Resources" active-page]
       :resource-page        [dashboard-page resource/resource-page item-id active-page])))
-
-)

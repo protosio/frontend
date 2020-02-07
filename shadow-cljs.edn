@@ -11,12 +11,12 @@
                 [com.cemerick/piggieback "0.2.1"]
                 [re-frame "0.11.0"]
                 [day8.re-frame/http-fx "0.1.6"]
+                [day8.re-frame/re-frame-10x "0.4.7"]
+                [day8.re-frame/tracing "0.5.3"]
                 [com.degel/re-frame-storage-fx "0.1.1"]
                 [district0x/re-frame-interval-fx "1.0.2"]
                 [com.pupeno/free-form "0.5.0"]
                 [binaryage/devtools "0.9.10"]
-                [org.clojars.stumitchell/clairvoyant "0.2.1"]
-                [day8/re-frame-tracer "0.1.1-SNAPSHOT"]
                 [com.andrewmcveigh/cljs-time "0.5.2"]
                 [jarohen/chord "0.8.1"]
                 [com.cemerick/url "0.1.1"]
@@ -27,7 +27,11 @@
                 :output-dir "public/js"
                 :asset-path "/static"
                 :devtools {:before-load protosfrontend.core/stop
-                           :after-load protosfrontend.core/init!}
+                           :after-load protosfrontend.core/init!
+                           :preloads    [day8.re-frame-10x.preload]}
+                :dev {:closure-defines {protosfrontend.core/VERBOSE true}
+                      :compiler-options {:closure-defines {re-frame.trace/trace-enabled? true
+                                                           day8.re-frame.tracing/trace-enabled? true}}}
                 :compiler-options {:infer-externs :auto}
                 :modules {:protosfrontend {:init-fn protosfrontend.core/init!}}}}
 }

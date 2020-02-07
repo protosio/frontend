@@ -1,9 +1,7 @@
 (ns protosfrontend.routes
     (:require [re-frame.core :as rf]
               [bidi.bidi :as bidi]
-              [pushy.core :as pushy]
-              [clairvoyant.core :refer-macros [trace-forms]]
-              [re-frame-tracer.core :refer [tracer]]))
+              [pushy.core :as pushy]))
 
 (def static-data {:pages {:dashboard-page [:get-dashboard]
                           :tasks-page [:get-tasks]
@@ -64,8 +62,6 @@
   (fn [path]
     (apply redirect-to path)))
 
-(trace-forms {:tracer (tracer :color "green")}
-
 (rf/reg-event-fx
   :navigate-to
   (fn navigate-to-handler
@@ -90,5 +86,3 @@
                                  (conj update-event item-id)
                                  update-event))
         res))))
-
-)

@@ -5,11 +5,7 @@
     [protosfrontend.components.buttons :as buttons]
     [protosfrontend.components.alerts :as alerts]
     [protosfrontend.components.header :as header]
-    [reagent-forms.core :refer [bind-fields]]
-    [clairvoyant.core :refer-macros [trace-forms]]
-    [re-frame-tracer.core :refer [tracer]]))
-
-(trace-forms {:tracer (tracer :color "brown")}
+    [reagent-forms.core :refer [bind-fields]]))
 
 (defn get-resource-description
   [rsc]
@@ -204,5 +200,3 @@
                 2         [step2]
                 3         [step3]
                 4         [step4]))]]])
-
-)

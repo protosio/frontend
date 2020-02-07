@@ -1,11 +1,7 @@
 (ns protosfrontend.init.events
     (:require
         [re-frame.core :as rf]
-        [protosfrontend.util :as util]
-        [clairvoyant.core :refer-macros [trace-forms]]
-        [re-frame-tracer.core :refer [tracer]]))
-
-(trace-forms {:tracer (tracer :color "green")}
+        [protosfrontend.util :as util]))
 
 (rf/reg-event-fx
   :increment-init-step
@@ -235,5 +231,3 @@
     {:dispatch [:http-get {:url (util/createurl ["e" "init" "finish"])
                            :on-success [:save-response [:init-wizard :step4 :dashboard]]
                            :on-failure [:init-failure :step4]}]}))
-
-)

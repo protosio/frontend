@@ -3,11 +3,8 @@
       [re-frame.core :as rf]
       [protosfrontend.components.buttons :as buttons]
       [protosfrontend.components.alerts :as alerts]
-      [reagent-forms.core :refer [bind-fields]]
-      [clairvoyant.core :refer-macros [trace-forms]]
-      [re-frame-tracer.core :refer [tracer]]))
+      [reagent-forms.core :refer [bind-fields]]))
 
-(trace-forms {:tracer (tracer :color "brown")}
 
 (defn form-events
   [dbpath]
@@ -40,5 +37,3 @@
             (let [loading? @(rf/subscribe [:loading?])]
             [:div {:class "form-footer"}
               [buttons/submit-button-spinner "Login" [:login] "primary btn-block" loading? loading?]])]]]]])
-
-)

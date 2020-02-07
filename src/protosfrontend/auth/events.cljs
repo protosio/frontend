@@ -1,11 +1,7 @@
 (ns protosfrontend.auth.events
     (:require
         [re-frame.core :as rf]
-        [protosfrontend.util :as util]
-        [clairvoyant.core :refer-macros [trace-forms]]
-        [re-frame-tracer.core :refer [tracer]]))
-
-(trace-forms {:tracer (tracer :color "green")}
+        [protosfrontend.util :as util]))
 
 (rf/reg-event-fx
   :auth-failure
@@ -65,5 +61,3 @@
    {:redirect-to [:login-page]
     :storage/remove {:name :userinfo}
     :db (assoc db :auth nil)}))
-
-)
