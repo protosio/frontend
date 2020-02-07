@@ -77,6 +77,12 @@
     (rseq (:tasks db))))
 
 (rf/reg-sub
+  :tasks-filter
+  (fn tasks-filter-sub
+    [db [_ ids]]
+    (rseq (:tasks db))))
+
+(rf/reg-sub
   :task
   (fn task-sub
     [db [_ id]]
@@ -86,6 +92,12 @@
   :resources
   (fn resources-sub
     [db _]
+    (:resources db)))
+
+(rf/reg-sub
+  :resources-filter
+  (fn resources-filter-sub
+    [db [_ ids]]
     (:resources db)))
 
 (rf/reg-sub

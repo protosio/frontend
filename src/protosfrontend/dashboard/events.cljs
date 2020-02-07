@@ -57,14 +57,8 @@
   :save-task
   (fn save-task-handler
     [{db :db} [_ task-id result]]
-    (let [task (util/replace-time-in-task result)
-          res {:db (assoc-in db [:tasks task-id] task)}]
-         (reduce (fn [res' app-id]
-                     (if (get-in res' [:db :apps (keyword app-id)])
-                         (assoc-in res' [:db :apps (keyword app-id) :tasks task-id] task)
-                         res'))
-                 res
-                 (:apps task)))))
+    (let [task (util/replace-time-in-task result)]
+         {:db (assoc-in db [:tasks task-id] task)})))
 
 (rf/reg-event-fx
   :cancel-task
@@ -106,18 +100,8 @@
   (fn get-apps-handler
     [{db :db} _]
     {:dispatch [:http-get {:url (util/createurl ["e" "apps"])
-                           :on-success [:save-apps]
+                           :on-success [:save-response [:apps]]
                            :on-failure [:dashboard-failure]}]}))
-
-(rf/reg-event-db
-  :save-apps
-  (fn save-apps-handler
-    [db [_ result]]
-    (assoc db :apps (into {} (map (fn [[app-id app]]
-                                      {app-id (assoc app :tasks (into (linked/map)
-                                                                      (util/sort-tasks (util/fmap util/replace-time-in-task
-                                                                                                  (:tasks app)))))})
-                                  result)))))
 
 (rf/reg-event-fx
   :get-app

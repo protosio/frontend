@@ -29,8 +29,9 @@
                   [:i {:class "fe fe-settings"}]]]]
             [:tbody
             (let [apps @(rf/subscribe [:apps])]
-              (for [[app-id {name :name status :status id :id tasks :tasks}] apps
-                    :let [last-task (last (vals tasks))
+              (for [[app-id {name :name status :status id :id task-ids :tasks}] apps
+                    :let [tasks @(rf/subscribe [:tasks-filter task-ids])
+                          last-task (last (vals tasks))
                           progress (:progress last-task)]]
                 [:tr {:key app-id}
                   [:td {:class "text-center"}
@@ -70,6 +71,8 @@
     [:div {:class "row row-cards row-deck"}
       [:div {:class "col-12"}
         (let [app @(rf/subscribe [:app (keyword id)])
+              tasks @(rf/subscribe [:tasks-filter (:tasks app)])
+              resources @(rf/subscribe [:resources-filter (:resources app)])
               loading? @(rf/subscribe [:loading?])
               time-now (tc/now)]
         [:div {:class "card"}
@@ -102,7 +105,7 @@
               [:div {:class "col-lg-6 mb-1"}
                 [:div {:class "row"} [:h3 {:class "card-title mb-2"} "Tasks"]]
                 [:ul {:class "timeline"}
-                (for [[id {name :name status :status progress :progress finished-at :finished-at}] (rseq (:tasks app))]
+                (for [[id {name :name status :status progress :progress finished-at :finished-at}] tasks]
                   [:li {:key id :class "timeline-item"}
                     [:div {:class (str "timeline-badge bg-" (util/task-status-color status))}] [:a {:href (routes/url-for :task-page :id id)} name]
                     (if finished-at
@@ -118,6 +121,6 @@
                                  :role "progressbar"}]]])])]]
               [:div {:class "col-lg-6 mb-1"}
                 [:div {:class "row"} [:h3 {:class "card-title mb-2"} "Resources"]]
-                (for [{id :id status :status type :type} (vals (:resources app))]
+                (for [{id :id status :status type :type} (vals resources)]
                   [:div {:key id :class "row mb-1"}
                     [:div {:class "col-sm-12"} [:span {:class (str "status-icon bg-"  (util/resource-status-color status))}] [:span {:class "tag"} type] " " [:a {:href (routes/url-for :resource-page :id id)} id]]])]]]])]]])
