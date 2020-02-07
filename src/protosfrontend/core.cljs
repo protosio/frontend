@@ -33,5 +33,3 @@
   (routes/start!)
   (rf/dispatch-sync [:initialize])
   (mount-root))
-
-; (init!)
