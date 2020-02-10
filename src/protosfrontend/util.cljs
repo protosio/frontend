@@ -25,12 +25,13 @@
 
 (defn app-status-color [status]
   (condp = status
-   "running"           "green"
-   "failed"            "red"
-   "stopped"           "blue"
-   "creating"          "yellow"
-   "unknown"           "gray"
-   "blue"))
+    "running"           "green"
+    "failed"            "red"
+    "stopped"           "blue"
+    "creating"          "yellow"
+    "unknown"           "gray"
+    "deleted"           "gray"
+    "blue"))
 
 
 (defn trunc [s n]
