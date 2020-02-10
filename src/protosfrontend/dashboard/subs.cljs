@@ -1,6 +1,8 @@
 (ns protosfrontend.dashboard.subs
     (:require
-        [re-frame.core :as rf]))
+     [re-frame.core       :as rf]
+     [protosfrontend.util :as util]
+     [linked.core         :as linked]))
 
 (rf/reg-sub
   :services
@@ -80,7 +82,9 @@
   :tasks-filter
   (fn tasks-filter-sub
     [db [_ ids]]
-    (rseq (:tasks db))))
+    (rseq (into (linked/map)
+                (util/sort-tasks (select-keys (:tasks db)
+                                              (mapv keyword ids)))))))
 
 (rf/reg-sub
   :task
