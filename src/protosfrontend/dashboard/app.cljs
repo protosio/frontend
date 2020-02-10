@@ -105,20 +105,20 @@
               [:div {:class "col-lg-6 mb-1"}
                 [:div {:class "row"} [:h3 {:class "card-title mb-2"} "Tasks"]]
                 [:ul {:class "timeline"}
-                (for [[id {name :name status :status progress :progress finished-at :finished-at}] tasks]
-                  [:li {:key id :class "timeline-item"}
+                 (doall (for [[id {name :name status :status progress :progress finished-at :finished-at}] tasks]
+                   [:li {:key id :class "timeline-item"}
                     [:div {:class (str "timeline-badge bg-" (util/task-status-color status))}] [:a {:href (routes/url-for :task-page :id id)} name]
                     (if finished-at
                       [:div {:class "timeline-time"} (str (util/formatted-interval finished-at time-now) " ago")]
                       [:div {:class "timeline-time col-2"}
-                        [:div {:class "clearfix"} [:div {:class "float-left"} [:strong (str (:percentage progress) "%")]]]
-                        [:div {:class "progress progress-xs"}
-                          [:div {:class "progress-bar bg-green"
-                                 :aria-valuemax "100"
-                                 :aria-valuemin "0"
-                                 :aria-valuenow (:percentage progress)
-                                 :style {:width (str (:percentage progress) "%")}
-                                 :role "progressbar"}]]])])]]
+                       [:div {:class "clearfix"} [:div {:class "float-left"} [:strong (str (:percentage progress) "%")]]]
+                       [:div {:class "progress progress-xs"}
+                        [:div {:class "progress-bar bg-green"
+                               :aria-valuemax "100"
+                               :aria-valuemin "0"
+                               :aria-valuenow (:percentage progress)
+                               :style {:width (str (:percentage progress) "%")}
+                               :role "progressbar"}]]])]))]]
               [:div {:class "col-lg-6 mb-1"}
                 [:div {:class "row"} [:h3 {:class "card-title mb-2"} "Resources"]]
                 (for [{id :id status :status type :type} (vals resources)]
