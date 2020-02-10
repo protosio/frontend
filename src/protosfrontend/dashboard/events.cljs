@@ -114,10 +114,7 @@
   :save-app
   (fn save-app-handler
     [{db :db} [_ app-id result]]
-    (let [tasks (util/fmap util/replace-time-in-task (:tasks result))
-          sorted-tasks (into (linked/map) (util/sort-tasks tasks))
-          app (assoc result :tasks sorted-tasks)]
-         {:db (assoc-in db [:apps app-id] app)})))
+    {:db (assoc-in db [:apps app-id] result)}))
 
 (rf/reg-event-fx
   :create-app
