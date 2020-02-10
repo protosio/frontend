@@ -11,7 +11,7 @@
   [:div {:class "container"}
     (when title
       [:div {:class "page-header"}
-        [:h1 {:class "page-title" :style {:cursor "pointer"} :on-click #(rf/dispatch [:get-apps])} title ]])
+        [:h1 {:class "page-title" :style {:cursor "pointer"} :on-click #(rf/dispatch [:get-all])} title ]])
     [alerts/for-list-page [:alert-dashboard]]
     [:div {:class "row row-cards row-deck"}
       [:div {:class "col-12"}
