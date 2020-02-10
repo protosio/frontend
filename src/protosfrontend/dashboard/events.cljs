@@ -32,7 +32,7 @@
 (rf/reg-event-fx
   :get-tasks
   (fn get-tasks-handler
-    [{db :db} _]
+    [_ _]
     {:dispatch [:http-get {:url (util/createurl ["e" "tasks"])
                            :on-success [:save-tasks]
                            :on-failure [:dashboard-failure]}]}))
@@ -48,7 +48,7 @@
 (rf/reg-event-fx
   :get-task
   (fn get-task-handler
-    [{db :db} [_ task-id]]
+    [_ [_ task-id]]
     {:dispatch [:http-get {:url (util/createurl ["e" "tasks" task-id])
                            :on-success [:save-task (keyword task-id)]
                            :on-failure [:dashboard-failure]}]}))
@@ -63,7 +63,7 @@
 (rf/reg-event-fx
   :cancel-task
   (fn cancel-task-handler
-    [{db :db} [_ task-id]]
+    [_ [_ task-id]]
     {:dispatch [:http-put {:url (util/createurl ["e" "tasks" task-id "cancel"])
                            :on-failure [:dashboard-failure]}]}))
 
@@ -72,7 +72,7 @@
 (rf/reg-event-fx
   :get-installer
   (fn get-installer-handler
-    [{db :db} [_ installer-id]]
+    [_ [_ installer-id]]
     {:dispatch [:http-get {:url (util/createurl ["e" "installers" installer-id])
                            :on-success [:save-response [:installers (keyword installer-id)]]
                            :on-failure [:dashboard-failure]}]}))
@@ -80,7 +80,7 @@
 (rf/reg-event-fx
   :create-installer-metadata
   (fn create-installer-metadata-handler
-    [{db :db} [_ installer-id]]
+    [_ [_ installer-id]]
     {:dispatch [:http-post {:url (util/createurl ["e" "installers" installer-id "metadata"])
                             :response-format :raw
                             :on-success [:get-installer installer-id]}]}))
@@ -88,7 +88,7 @@
 (rf/reg-event-fx
   :get-installers
   (fn get-installers-handler
-    [{db :db} _]
+    [_ _]
     {:dispatch [:http-get {:url (util/createurl ["e" "installers"])
                            :on-success [:save-response [:installers]]
                            :on-failure [:dashboard-failure]}]}))
@@ -98,7 +98,7 @@
 (rf/reg-event-fx
   :get-apps
   (fn get-apps-handler
-    [{db :db} _]
+    [_ _]
     {:dispatch [:http-get {:url (util/createurl ["e" "apps"])
                            :on-success [:save-response [:apps]]
                            :on-failure [:dashboard-failure]}]}))
@@ -106,7 +106,7 @@
 (rf/reg-event-fx
   :get-app
   (fn get-app-handler
-    [{db :db} [_ app-id]]
+    [_ [_ app-id]]
     {:dispatch-n [[:http-get {:url (util/createurl ["e" "apps" app-id])
                               :on-success [:save-app (keyword app-id)]
                               :on-failure [:dashboard-failure]}]]}))
@@ -141,7 +141,7 @@
 (rf/reg-event-fx
   :remove-app
   (fn remove-app-handler
-    [{db :db} [_ app-id]]
+    [_ [_ app-id]]
     {:dispatch [:http-delete {:url (util/createurl ["e" "apps" app-id])
                               :on-success [:remove-app-success (keyword app-id)]
                               :on-failure [:dashboard-failure]}]}))
@@ -149,13 +149,13 @@
 (rf/reg-event-fx
   :remove-app-success
   (fn remove-app-success-handler
-    [{db :db} [_ app-id]]
+    [_ [_ _]]
     {:redirect-to [:apps-page]}))
 
 (rf/reg-event-fx
   :app-state
   (fn app-state-handler
-    [{db :db} [_ app-id state]]
+    [_ [_ app-id state]]
     {:dispatch [:http-post {:url (util/createurl ["e" "apps" app-id "action"])
                             :on-success [:app-state-success (keyword app-id)]
                             :on-failure [:dashboard-failure]
@@ -164,7 +164,7 @@
 (rf/reg-event-fx
   :app-state-success
   (fn app-state-success-handler
-    [{db :db} [_ app-id task]]
+    [_ [_ _ task]]
     (let [task-id (keyword (:id task))]
          {:dispatch [:save-task task-id task]})))
 
@@ -173,7 +173,7 @@
 (rf/reg-event-fx
   :get-resources
   (fn get-resources
-    [{db :db} _]
+    [_ _]
     {:dispatch [:http-get {:url (util/createurl ["e" "resources"])
                            :on-success [:save-response [:resources]]
                            :on-failure [:dashboard-failure]}]}))
@@ -181,7 +181,7 @@
 (rf/reg-event-fx
   :get-resource
   (fn get-resource-handler
-    [{db :db} [_ rsc-id]]
+    [_ [_ rsc-id]]
     {:dispatch [:http-get {:url (util/createurl ["e" "resources" rsc-id])
                            :on-success [:save-response [:resources (keyword rsc-id)]]
                            :on-failure [:dashboard-failure]}]}))
@@ -189,7 +189,7 @@
 (rf/reg-event-fx
   :remove-resource
   (fn remove-resource-handler
-    [{db :db} [_ id]]
+    [_ [_ id]]
     {:dispatch [:http-delete {:url (util/createurl ["e" "resources" id])
                               :on-success [:remove-resource-success]
                               :on-failure [:dashboard-failure]}]}))
@@ -197,7 +197,7 @@
 (rf/reg-event-fx
   :remove-resource-success
   (fn remove-resource-success-handler
-    [{db :db} _]
+    [_ _]
     {:redirect-to [:resources-page]}))
 
 ;; -- App store ------------------------------------------------
