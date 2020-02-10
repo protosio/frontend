@@ -1,10 +1,10 @@
 (ns protosfrontend.ws
   (:require-macros
     [cljs.core.async.macros :as asyncm :refer (go go-loop)])
-  (:require [cljs.core.async :as async :refer (<! >! put! chan)]
+  (:require [cljs.core.async :as async :refer (<! chan)]
             [chord.client :refer [ws-ch]]
             [protosfrontend.util :as util]
-            [cemerick.url :refer (url url-encode)]
+            [cemerick.url :refer (url)]
             [re-frame.core :as rf]
             [re-frame.db :refer [app-db]]
             [clojure.walk :refer [keywordize-keys]]))
@@ -55,7 +55,7 @@
 (rf/reg-event-fx
   :ws-message
   (fn ws-message-handler
-    [{db :db} [_ msg]]
+    [_ [_ msg]]
     (let [message (keywordize-keys msg)]
       (if (= (get message :MsgType) "update")
           {:dispatch [:ws-update (get message :PayloadType) (get message :PayloadValue)]}

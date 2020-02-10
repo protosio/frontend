@@ -2,7 +2,6 @@
     (:require
         [protosfrontend.components.header :as header]
         [protosfrontend.components.footer :as footer]
-        [protosfrontend.components.cards :as cards]
         [protosfrontend.dashboard.home :as home]
         [protosfrontend.dashboard.app :as app]
         [protosfrontend.dashboard.store :as store]
@@ -10,8 +9,7 @@
         [protosfrontend.dashboard.resource :as resource]
         [protosfrontend.init.views :as initviews]
         [protosfrontend.auth.views :as authviews]
-        [re-frame.core :as rf]
-        [free-form.re-frame :as free-form]))
+        [re-frame.core :as rf]))
 
 ;; ---------------------------------------
 ;; Pages

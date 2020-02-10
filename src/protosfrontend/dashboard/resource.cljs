@@ -8,7 +8,7 @@
 
 (defn resources-page [title]
   [:div {:class "container"}
-    (if title
+    (when title
       [:div {:class "page-header"}
         [:h1 {:class "page-title" :style {:cursor "pointer"} :on-click #(rf/dispatch [:get-resources])} title]])
     [alerts/for-list-page [:alert-dashboard]]
@@ -27,7 +27,7 @@
                 [:th {:class "text-center"} [:i {:class "fe fe-settings"}]]]]
             [:tbody
           (let [resources @(rf/subscribe [:resources])]
-            (for [{type :type id :id status :status app-id :app} (vals resources)]
+            (for [{type :type id :id status :status} (vals resources)]
               [:tr {:key id}
                 [:td {:class "text-center"}
                   [:div {:class "avatar d-block bg-white" :style {:background-image "url(/static/images/resource-generic.svg)" :background-size "80%"}}]]

@@ -48,7 +48,7 @@
 (rf/reg-event-fx
   :logout
   (fn logout-handler
-    [{db :db} [_ result]]
+    [_ [_ _]]
     {:dispatch [:http-post {:url (util/createurl ["auth" "logout"])
                 :on-success [:logout-success]
                 :on-failure [:auth-failure]

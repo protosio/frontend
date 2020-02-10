@@ -60,15 +60,15 @@
         [:div {:class "col-lg order-lg-first"}
           [:ul {:class "nav nav-tabs border-0 flex-column flex-lg-row"}
             [:li {:class "nav-item"}
-              [:a {:href (routes/url-for :dashboard-page) :class (str "nav-link " (if (= active-page :dashboard-page) "active"))} [:i {:class "fe fe-home" }] " Home"]]
+              [:a {:href (routes/url-for :dashboard-page) :class (str "nav-link " (when (= active-page :dashboard-page) "active"))} [:i {:class "fe fe-home" }] " Home"]]
             [:li {:class "nav-item"}
-              [:a {:href (routes/url-for :apps-page) :class (str "nav-link " (if (some #(= active-page %) [:apps-page :app-page]) "active"))} [:i {:class "fe fe-layers" }] " Apps"]]
+              [:a {:href (routes/url-for :apps-page) :class (str "nav-link " (when (some #(= active-page %) [:apps-page :app-page]) "active"))} [:i {:class "fe fe-layers" }] " Apps"]]
             [:li {:class "nav-item"}
-              [:a {:href (routes/url-for :store-page) :class (str "nav-link " (if (some #(= active-page %) [:store-page :store-installer-page]) "active"))} [:i {:class "fe fe-shopping-bag" }] " Store"]]
+              [:a {:href (routes/url-for :store-page) :class (str "nav-link " (when (some #(= active-page %) [:store-page :store-installer-page]) "active"))} [:i {:class "fe fe-shopping-bag" }] " Store"]]
             [:li {:class "nav-item"}
-              [:a {:href (routes/url-for :tasks-page) :class (str "nav-link " (if (some #(= active-page %) [:tasks-page :task-page]) "active"))} [:i {:class "fe fe-check-circle" }] " Tasks"]]
+              [:a {:href (routes/url-for :tasks-page) :class (str "nav-link " (when (some #(= active-page %) [:tasks-page :task-page]) "active"))} [:i {:class "fe fe-check-circle" }] " Tasks"]]
             [:li {:class "nav-item"}
-              [:a {:href (routes/url-for :resources-page) :class (str "nav-link " (if (some #(= active-page %) [:resources-page :resource-page]) "active"))} [:i {:class "fe fe-git-merge" }] " Resources"]]]]]]])
+              [:a {:href (routes/url-for :resources-page) :class (str "nav-link " (when (some #(= active-page %) [:resources-page :resource-page]) "active"))} [:i {:class "fe fe-git-merge" }] " Resources"]]]]]]])
 
 (defn top [active-page]
   [:div

@@ -1,7 +1,6 @@
 (ns protosfrontend.components.footer
   (:require
-    [re-frame.core :as rf]
-    [protosfrontend.routes :as routes]))
+    [re-frame.core :as rf]))
 
 (defn bar []
   [:footer {:class "footer"}

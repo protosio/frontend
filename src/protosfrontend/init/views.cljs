@@ -157,7 +157,7 @@
         inprogress? @(rf/subscribe [:init-step-inprogress :step4])
         providers-ready (if (= (count apps) 0)
                                false
-                               (every? true? (for [[k v] apps]
+                               (every? true? (for [[_ v] apps]
                                                   (= (:status v) "running"))))
         dashboard-domain @(rf/subscribe [:init-dashboard-domain])
         disabled? (or (not providers-ready) inprogress?)]

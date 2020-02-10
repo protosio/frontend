@@ -1,6 +1,4 @@
-(ns protosfrontend.components.cards
-    (:require
-      [re-frame.core :as rf]))
+(ns protosfrontend.components.cards)
 
 (defn stats [title nr]
   [:div {:class "card"}

@@ -16,7 +16,7 @@
   (fn instance-info-sub
     [db _]
     (let [version (get-in db [:instance-info :version])]
-         (if version
+         (when version
             (str "v" version)))))
 
 ;; -- Form subs -----------------------------------------------

@@ -80,7 +80,7 @@
   :remove-and-install-provider
   (fn remove-and-install-provider-handler
     [{db :db} [_ step event]]
-    (let [installer-params (get-in db [:init-wizard step :form])
+    (let [_ (get-in db [:init-wizard step :form])
           provider-type (cond (= step :step2) "dns"
                               (= step :step3) "certificate")]
       {:dispatch [:http-delete {:url (util/createurl ["e" "init" (str "provider?provides=" provider-type)])
@@ -181,7 +181,7 @@
 (rf/reg-event-fx
   :get-init-apps
   (fn get-init-apps-handler
-    [{db :db} _]
+    [_ _]
     {:dispatch [:http-get {:url (util/createurl ["e" "apps"])
                            :on-success [:save-response [:apps]]
                            :on-failure [:init-failure :step4]}]}))
@@ -213,7 +213,7 @@
     (let [result {:db (assoc-in db [:init-wizard :step4 :resources] resources)}
           resources-created (if (= (count resources) 0)
                                 false
-                                (every? true? (for [[k v] resources]
+                                (every? true? (for [[_ v] resources]
                                                     (= (:status v) "created"))))]
           (if (= resources-created false)
             ;; if resources are not in created state retrieve the resources again

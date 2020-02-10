@@ -146,7 +146,7 @@
 
 (defn cancel-all-timeouts []
   (doseq [[id val] @debounced-events]
-    (if (not (:no-cancel val))
+    (when (not (:no-cancel val))
       (cancel-timeout id))))
 
 (rf/reg-fx

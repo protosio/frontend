@@ -2,14 +2,13 @@
     (:require
       [clojure.string :as str]
       [re-frame.core :as rf]
-      [protosfrontend.components.cards :as cards]
       [protosfrontend.components.alerts :as alerts]
       [protosfrontend.util :as util]))
 
 (defn home-page [title]
   [:div {:class "page-main"}
     [:div {:class "container"}
-      (if title
+      (when title
         [:div {:class "page-header"} [:h1 {:class "page-title"} title]])
       [alerts/for-list-page [:alert-dashboard]]
       [:div {:class "row row-cards"}

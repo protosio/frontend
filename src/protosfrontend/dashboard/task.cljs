@@ -1,17 +1,16 @@
 (ns protosfrontend.dashboard.task
     (:require
-      [reagent.core :as r]
+      [reagent.core]
       [protosfrontend.util :as util]
       [protosfrontend.routes :as routes]
       [protosfrontend.components.buttons :as buttons]
       [protosfrontend.components.alerts :as alerts]
-      [reagent-forms.core :refer [bind-fields]]
       [cljs-time.core :as tc]
       [re-frame.core :as rf]))
 
 (defn tasks-page [title]
   [:div {:class "container"}
-    (if title
+    (when title
       [:div {:class "page-header"}
         [:h1 {:class "page-title" :style {:cursor "pointer"} :on-click #(rf/dispatch [:get-tasks])} title]])
     [alerts/for-list-page [:alert-dashboard]]
@@ -54,7 +53,7 @@
                 [:td
                   [:div (util/time-str started-at)]]
                 [:td
-                  [:div (if finished-at (str (util/formatted-interval finished-at time-now) " ago"))]]]))]]]]]]])
+                  [:div (when finished-at (str (util/formatted-interval finished-at time-now) " ago"))]]]))]]]]]]])
 
 (defn task-page [id]
   [:div {:class "container"}
@@ -62,13 +61,12 @@
       [:div {:class "col-12"}
         (let [task @(rf/subscribe [:task (keyword id)])
               {id :id status :status progress :progress started-at :started-at finished-at :finished-at killable :killable} task
-              loading? @(rf/subscribe [:loading?])
-              time-now (tc/now)]
+              loading? @(rf/subscribe [:loading?])]
         [:div {:class "card"}
           [:div {:class "card-header"}
             [:div {:class "avatar d-block bg-white mr-3" :style {:background-image "url(/static/images/task-generic.svg)" :background-size "80%"}}]
             [:h3 {:class "card-title" :style {:cursor "pointer"} :on-click #(rf/dispatch [:get-task id])} id]
-            (if (and killable  (util/task-unfinished? task))
+            (when (and killable  (util/task-unfinished? task))
               [:div {:class "card-options"}
                 [:div {:class "btn-list"}
                   [buttons/submit-button "Cancel" [:cancel-task id] "danger btn-sm" loading?]]])]

@@ -10,7 +10,7 @@
 
 (defn store-page [title]
   [:div {:class "container"}
-  (if title
+  (when title
     [:div {:class "page-header"} [:h1 {:class "page-title"} title]])
     [alerts/for-list-page [:alert-dashboard]]
     [:div {:class "row row-cards"}
@@ -62,7 +62,7 @@
                                [:input {:field :text :id (keyword (str "create-app.form.installer-params." field)) :class "form-control" :placeholder field}]]))
           (util/form-events [:create-app-form])]]])])
 
-(defn installer-details [id name version metadata]
+(defn installer-details [id _ _ metadata]
   [:div {:class "card-body"}
     [:div {:class "row mb-1"}
       [:div {:class "col-2"} [:strong "Description:"]]
