@@ -1,11 +1,11 @@
 (ns protosfrontend.util
   (:require
-    [clojure.string   :as string]
-    [re-frame.core    :as rf]
-    [re-frame.router  :as router]
-    [re-frame.loggers :refer [console]]
-    [cljs-time.core   :as tc]
-    [cljs-time.format :as tf]))
+   [clojure.string   :as string]
+   [re-frame.core    :as rf]
+   [re-frame.router  :as router]
+   [re-frame.loggers :refer [console]]
+   [cljs-time.core   :as tc]
+   [cljs-time.format :as tf]))
 
 (defn fmap
   [f m]
