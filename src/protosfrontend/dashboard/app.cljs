@@ -29,9 +29,9 @@
                   [:i {:class "fe fe-settings"}]]]]
             [:tbody
             (let [apps @(rf/subscribe [:apps])]
-              (for [[app-id {name :name status :status id :id task-ids :tasks}] apps
+              (doall (for [[app-id {name :name status :status id :id task-ids :tasks}] apps
                     :let [tasks @(rf/subscribe [:tasks-filter task-ids])
-                          last-task (last (vals tasks))
+                          last-task (first (vals tasks))
                           progress (:progress last-task)]]
                 [:tr {:key app-id}
                   [:td {:class "text-center"}
@@ -64,7 +64,7 @@
                         [:a {:href "#!" :on-click #(rf/dispatch [:app-state id "stop"]) :class "dropdown-item"}
                           [:i {:class "dropdown-icon fe fe-stop-circle"}] " Stop"]
                         [:a {:href "#!" :on-click #(rf/dispatch [:remove-app id]) :class "dropdown-item"}
-                          [:i {:class "dropdown-icon fe fe-trash"}] " Remove"]]]]]))]]]]]]])
+                          [:i {:class "dropdown-icon fe fe-trash"}] " Remove"]]]]])))]]]]]]])
 
 (defn app-page [id]
   [:div {:class "container"}
