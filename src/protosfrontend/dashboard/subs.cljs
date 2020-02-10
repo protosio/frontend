@@ -102,7 +102,8 @@
   :resources-filter
   (fn resources-filter-sub
     [db [_ ids]]
-    (:resources db)))
+    (select-keys (:resources db)
+                 (mapv keyword ids))))
 
 (rf/reg-sub
   :resource
