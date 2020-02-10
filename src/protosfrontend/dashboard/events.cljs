@@ -1,6 +1,5 @@
 (ns protosfrontend.dashboard.events
     (:require
-        [ajax.core :as ajax]
         [re-frame.core :as rf]
         [linked.core :as linked]
         [day8.re-frame.http-fx]
@@ -230,7 +229,7 @@
   :get-dashboard
   (fn get-dashboard-handler
     [{db :db} _]
-    {:dispatch-n [[:get-services] [:get-hwstats] (if (not (:instance-info db)) [:get-instance-info])]}))
+    {:dispatch-n [[:get-services] [:get-hwstats] (when (not (:instance-info db)) [:get-instance-info])]}))
 
 
 (rf/reg-event-fx

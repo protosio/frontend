@@ -9,7 +9,7 @@
 
 (defn apps-page [title]
   [:div {:class "container"}
-    (if title
+    (when title
       [:div {:class "page-header"}
         [:h1 {:class "page-title" :style {:cursor "pointer"} :on-click #(rf/dispatch [:get-apps])} title ]])
     [alerts/for-list-page [:alert-dashboard]]

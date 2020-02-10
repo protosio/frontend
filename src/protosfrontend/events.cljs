@@ -1,11 +1,9 @@
 (ns protosfrontend.events
     (:require
-      [clojure.string :as string]
       [ajax.core :as ajax]
       [re-frame.core :as rf]
       [linked.core :as linked]
       [day8.re-frame.http-fx]
-      [protosfrontend.util :as util]
       [com.degel.re-frame.storage]
       [district0x.re-frame.interval-fx]))
 
@@ -71,7 +69,7 @@
 (rf/reg-event-fx
   :bad-response
   (fn bad-response-handler
-    [{db :db} [_ options result]]
+    [_ [_ options result]]
     {:dispatch [:fail-alert (get-in result [:response :error]) (let [alert-key (:alert-key options)] (if alert-key alert-key :main))]
      :dispatch-debounce {:id :disable-loading
                          :timeout 300
