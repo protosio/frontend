@@ -7,7 +7,7 @@
                           :tasks-page [:get-tasks]
                           :task-page [:get-task]
                           :app-page [:get-app]
-                          :apps-page [:get-apps]
+                          :apps-page [:get-all]
                           :store-page [:get-appstore-all]
                           :resources-page [:get-resources]
                           :resource-page [:get-resource]}})

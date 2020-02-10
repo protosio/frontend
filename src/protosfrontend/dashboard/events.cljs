@@ -256,3 +256,11 @@
     {:dispatch [:http-get {:url (util/createurl ["e" "hwstats"])
                            :on-success [:save-response [:hwstats]]
                            :on-failure [:dashboard-failure]}]}))
+
+(rf/reg-event-fx
+ :get-all
+ (fn get-all-handler
+   [_ _]
+   {:dispatch-n [[:get-apps]
+                 [:get-tasks]
+                 [:get-resources]]}))
