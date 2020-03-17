@@ -126,7 +126,7 @@
   :register-user-domain
   (fn register-user-domain-handler
     [{db :db} _]
-    {:dispatch [:http-post {:url (util/createurl ["auth" "register"])
+    {:dispatch [:http-post {:url (util/createurl ["init" "register"])
                             :on-success [:register-user-domain-success]
                             :on-failure [:init-failure :step1]
                             :post-data (get-in db [:init-wizard :step1 :form])}]
