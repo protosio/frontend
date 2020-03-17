@@ -1,5 +1,6 @@
 (ns protosfrontend.core
   (:require [reagent.core :as reagent]
+            [reagent.dom :as rdom]
             [re-frame.core :as rf]
             [goog.events]
             [goog.history.EventType]
@@ -21,7 +22,7 @@
 (enable-console-print!)
 
 (defn mount-root []
-  (reagent/render [v/current-page] (.getElementById js/document "protos")))
+  (rdom/render [v/current-page] (.getElementById js/document "protos")))
 
 (defn stop []
   (println "Stopping Protos frontend ..."))
