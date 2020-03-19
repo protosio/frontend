@@ -160,7 +160,7 @@
                                (every? true? (for [[_ v] apps]
                                                   (= (:status v) "running"))))
         dashboard-domain @(rf/subscribe [:init-dashboard-domain])
-        disabled? (or (not providers-ready) inprogress?)]
+        disabled? (or (not dashboard-domain) inprogress?)]
     [:form {:class "card align-middle"}
       [card-header]
       [alerts/for-card [:alert-init :step4]]
@@ -184,10 +184,10 @@
                   [:li {:key id}
                     [:span {:class (str "status-icon bg-" (util/resource-status-color (:status rsc)))}] (get-resource-description rsc)])]
               (if dashboard-domain
-                [:p "Initialization complete. Please visit " [:a {:href (str "https://" dashboard-domain)} (str "https://" dashboard-domain)] " to start using your Protos instance"]
+                [:p "Initialization complete. Press finish to enable the secure webserver (" [:a {:href (str "https://" dashboard-domain)} (str "https://" dashboard-domain)] ") and disabled init mode."]
                 [:p "Waiting for resources to be created..."])])]]
       [:div {:class "card-footer p-3"}
-        [navigation-buttons "Create resources" [:create-init-resources] disabled?]]]))
+        [navigation-buttons "Finish" [:finish-and-redirect] disabled?]]]))
 
 (defn init-wizard
   []

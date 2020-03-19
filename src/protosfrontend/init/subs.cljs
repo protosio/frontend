@@ -109,5 +109,5 @@
       (-> db
           :init-wizard
           :step4
-          :dashboard
-          :domain)))
+          :instance-info
+          :dashboard-domain)))
