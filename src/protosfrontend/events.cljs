@@ -79,14 +79,15 @@
   :request-finished
   (fn request-finished-handler
     [{db :db} [_ event result]]
+    (println result)
     {:dispatch (condp = (:status result)
-                      401 [:redirect-login]
-                      424 [:redirect-init]
-                      (conj event result))
+                 401 [:redirect-login]
+                 424 [:redirect-init]
+                 (conj event result))
      ;; FIX: for some reason the dispatch debounce doesnt propagate when doing a redirect, so setting the loading indicator to false is required here
      :db (if (or (= (:status result) 401) (= (:status result) 424))
-             (assoc db :loading? false)
-             db)
+           (assoc db :loading? false)
+           db)
      :dispatch-debounce {:id :disable-loading
                          :timeout 300
                          :dispatch [:disable-loading]}}))
